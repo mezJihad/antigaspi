@@ -1,24 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchFilters from '../components/SearchFilters';
 import OfferCard from '../components/OfferCard';
 
-const MOCK_OFFERS = [
-    { id: 1, title: 'Baguettes Fraîches (Lot de 3)', shopName: 'La Boulangerie Bio', city: 'Paris', category: 'Boulangerie', price: 2.50, originalPrice: 5.00, expiresIn: '2h' },
-    { id: 2, title: 'Pommes Bio (2kg)', shopName: 'Marché Vert', city: 'Lyon', category: 'Primeur', price: 3.00, originalPrice: 6.50, expiresIn: '1 jour' },
-    { id: 3, title: 'Sélection de Yaourts', shopName: 'Délice Laitier', city: 'Paris', category: 'Produits Laitiers', price: 1.80, originalPrice: 3.60, expiresIn: '5h' },
-    { id: 4, title: 'Assortiment Pâtisseries', shopName: 'Douceurs Sucrées', city: 'Marseille', category: 'Boulangerie', price: 4.00, originalPrice: 12.00, expiresIn: 'Fin de jrn' },
-    { id: 5, title: 'Banc de Poulet (500g)', shopName: 'Boucherie du Coin', city: 'Bordeaux', category: 'Viande', price: 5.00, originalPrice: 8.50, expiresIn: '1 jour' },
-    { id: 6, title: 'Lait Entier (1L)', shopName: 'Mini Marché', city: 'Lyon', category: 'Produits Laitiers', price: 0.80, originalPrice: 1.20, expiresIn: '2 jours' },
-];
-
 const Explore = () => {
+    const [offers, setOffers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [filters, setFilters] = useState({ query: '', city: 'Toutes', category: 'Toutes' });
 
-    const filteredOffers = MOCK_OFFERS.filter(offer => {
-        const matchesQuery = offer.title.toLowerCase().includes(filters.query.toLowerCase());
-        const matchesCity = filters.city === 'Toutes' || offer.city === filters.city;
-        const matchesCategory = filters.category === 'Toutes' || offer.category === filters.category;
-        return matchesQuery && matchesCity && matchesCategory;
+    useEffect(() => {
+        const fetchOffers = async () => {
+            setLoading(true);
+            try {
+                const queryParams = new URLSearchParams();
+                if (filters.city !== 'Toutes') queryParams.append('city', filters.city);
+                if (filters.category !== 'Toutes') queryParams.append('category', filters.category);
+
+                const response = await fetch(`http://localhost:5000/api/offers?${queryParams.toString()}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch offers');
+                }
+                const data = await response.json();
+                setOffers(data);
+                setError(null);
+            } catch (err) {
+                console.error('Error fetching offers:', err);
+                setError('Impossible de charger les offres. Veuillez réessayer plus tard.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOffers();
+    }, [filters.city, filters.category]);
+
+    const filteredOffers = offers.filter(offer => {
+        return offer.title.toLowerCase().includes(filters.query.toLowerCase());
     });
 
     return (
@@ -33,9 +50,17 @@ const Explore = () => {
                     gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
                     gap: '2rem'
                 }}>
-                    {filteredOffers.length > 0 ? (
+                    {loading ? (
+                        <p style={{ gridColumn: '1/-1', textAlign: 'center', fontSize: '1.2rem', marginTop: '2rem' }}>
+                            Chargement des offres...
+                        </p>
+                    ) : error ? (
+                        <p style={{ gridColumn: '1/-1', textAlign: 'center', color: 'red', fontSize: '1.2rem', marginTop: '2rem' }}>
+                            {error}
+                        </p>
+                    ) : filteredOffers.length > 0 ? (
                         filteredOffers.map(offer => (
-                            <OfferCard key={offer.id} offer={offer} />
+                            <OfferCard key={offer._id || offer.id} offer={offer} />
                         ))
                     ) : (
                         <p style={{ gridColumn: '1/-1', textAlign: 'center', color: '#666', fontSize: '1.2rem', marginTop: '2rem' }}>
