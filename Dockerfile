@@ -9,7 +9,8 @@ COPY package.json package-lock.json ./
 COPY client/package.json ./client/
 COPY server/package.json ./server/
 
-# Install dependencies (from root to handle hoisting and workspaces)
+# Install dependencies (ensure devDependencies are installed for build)
+ENV NODE_ENV=development
 RUN npm install
 
 # Copy source code
@@ -17,6 +18,9 @@ COPY . .
 
 # Build client
 RUN npm run build
+
+# Set to production for runtime
+ENV NODE_ENV=production
 
 # Expose port (default for Express)
 EXPOSE 5000
