@@ -5,9 +5,13 @@ const offerSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    shopName: {
-        type: String,
+    shop: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Shop',
         required: true,
+    },
+    description: {
+        type: String,
     },
     city: {
         type: String,
@@ -26,9 +30,16 @@ const offerSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    expirationDate: {
+    expirationDate: { // Product expiration date
         type: Date,
         required: true,
+    },
+    offerStartDate: {
+        type: Date,
+        default: Date.now,
+    },
+    offerEndDate: {
+        type: Date,
     },
     imageUrl: {
         type: String,

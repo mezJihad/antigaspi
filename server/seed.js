@@ -44,21 +44,27 @@ const seedData = async () => {
         const offers = [
             {
                 title: 'Baguettes Fraîches (Lot de 3)',
-                shopName: myShop.name,
+                shop: myShop._id,
+                description: 'Trois baguettes traditionnelles cuites sur place, parfaites pour le dîner.',
                 city: myShop.address.city,
                 category: 'Boulangerie',
                 price: 2.50,
                 originalPrice: 5.00,
-                expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000) // +1 day
+                expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // +1 day (Product expiration)
+                offerStartDate: new Date(),
+                offerEndDate: new Date(Date.now() + 24 * 60 * 60 * 1000)
             },
             {
                 title: 'Croissants de la veille',
-                shopName: myShop.name,
+                shop: myShop._id,
+                description: 'Croissants pur beurre de la veille, toujours délicieux réchauffés.',
                 city: myShop.address.city,
                 category: 'Boulangerie',
                 price: 3.00,
                 originalPrice: 6.00,
-                expirationDate: new Date(Date.now() + 12 * 60 * 60 * 1000) // +12 hours
+                expirationDate: new Date(Date.now() + 12 * 60 * 60 * 1000), // +12 hours (Product expiration)
+                offerStartDate: new Date(),
+                offerEndDate: new Date(Date.now() + 12 * 60 * 60 * 1000)
             }
         ];
 
