@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import Offer from './models/Offer.js';
 
 dotenv.config();
 
@@ -23,6 +24,28 @@ mongoose.connect(MONGODB_URI)
 // Routes
 app.get('/', (req, res) => {
     res.send('Antigaspi API is running...');
+});
+
+// Get all offers with filters
+app.get('/api/offers', async (req, res) => {
+    try {
+        const { city, category } = req.query;
+        let query = {};
+
+        if (city && city !== 'Toutes') {
+            query.city = city;
+        }
+
+        if (category && category !== 'Toutes') {
+            query.category = category;
+        }
+
+        const offers = await Offer.find(query).sort({ createdAt: -1 });
+        res.json(offers);
+    } catch (error) {
+        console.error('Error fetching offers:', error);
+        res.status(500).json({ message: 'Server Error' });
+    }
 });
 
 app.listen(PORT, () => {

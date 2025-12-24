@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-const MONGODB_URI = 'mongodb+srv://admin:l2pDoOinv3oX2AOV@cluster0.zobhxx8.mongodb.net/antigaspi?appName=Cluster0';
+dotenv.config();
+
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://admin:l2pDoOinv3oX2AOV@cluster0.zobhxx8.mongodb.net/antigaspi?appName=Cluster0';
 
 console.log('Attempting to connect to MongoDB...', MONGODB_URI.replace(/:([^:@]+)@/, ':****@'));
 
