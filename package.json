@@ -11,6 +11,7 @@
         "dev:client": "npm run dev --workspace=client",
         "dev:server": "npm run dev --workspace=antigaspi-api",
         "build": "npm run build --workspace=client",
+        "start": "npm start --workspace=antigaspi-api",
         "install:all": "npm install"
     },
     "devDependencies": {

@@ -4,7 +4,13 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Offer from './models/Offer.js';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,6 +18,9 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve Static Frontend (Production)
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // Database Connection
 // For now we will use a local URI or placeholder. In production, use ENV var.
@@ -22,8 +31,18 @@ mongoose.connect(MONGODB_URI)
     .catch(err => console.error('❌ MongoDB Connection Error:', err));
 
 // Routes
-app.get('/', (req, res) => {
-    res.send('Antigaspi API is running...');
+// app.get('/', (req, res) => {
+//     res.send('Antigaspi API is running...');
+// });
+
+app.get('/api/health', (req, res) => {
+    res.send('Antigaspi API is healthy');
+});
+
+// Catch-all handler for any request that doesn't match an API route
+// Send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
 });
 
 // Get all offers with filters
