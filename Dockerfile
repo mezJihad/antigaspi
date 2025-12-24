@@ -3,7 +3,7 @@ FROM node:20-slim
 WORKDIR /app
 
 # Copy root package files
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 # Copy workspace package files
 COPY client/package.json ./client/
