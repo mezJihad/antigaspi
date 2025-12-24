@@ -1,4 +1,4 @@
-FROM node:20-slim
+FROM node:20
 
 WORKDIR /app
 
@@ -11,6 +11,8 @@ COPY server/package.json ./server/
 
 # Install dependencies (ensure devDependencies are installed for build)
 ENV NODE_ENV=development
+# Workaround for npm workspace optional dependency bug
+RUN npm install @rollup/rollup-linux-x64-gnu --save-optional
 RUN npm install
 
 # Copy source code
