@@ -46,6 +46,7 @@ app.get('/api/health', (req, res) => {
 // Get all offers with filters
 app.get('/api/offers', async (req, res) => {
     try {
+        console.log('🔍 Fetching offers...');
         const { city, category } = req.query;
         let query = {};
 
@@ -57,11 +58,86 @@ app.get('/api/offers', async (req, res) => {
             query.category = category;
         }
 
+        console.log('🔍 Query params:', query);
+
         const offers = await Offer.find(query).sort({ createdAt: -1 });
+        console.log(`✅ Found ${offers.length} offers`);
         res.json(offers);
     } catch (error) {
-        console.error('Error fetching offers:', error);
+        console.error('❌ Error fetching offers:', error);
         res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+// TEMPORARY: Route to seed the database remotely
+import User from './models/User.js';
+import Shop from './models/Shop.js';
+
+app.get('/api/test-seed', async (req, res) => {
+    try {
+        console.log('🌱 Starting remote seed...');
+        // Clean DB
+        await User.deleteMany({});
+        await Shop.deleteMany({});
+        await Offer.deleteMany({});
+        console.log('🧹 Database cleaned');
+
+        // Create Users
+        const shopUser = await User.create({
+            email: 'shop@antigaspi.com',
+            password: 'password123',
+            role: 'shop',
+            firstName: 'Jean',
+            lastName: 'Dupont'
+        });
+
+        // Create Shop
+        const myShop = await Shop.create({
+            user: shopUser._id,
+            name: 'La Boulangerie Bio',
+            description: 'Pains et viennoiseries bio faits maison.',
+            address: {
+                street: '10 Rue de la Paix',
+                city: 'Paris',
+                zipCode: '75001'
+            }
+        });
+
+        // Create Offers
+        const offers = [
+            {
+                title: 'Baguettes Fraîches (Lot de 3)',
+                shop: myShop._id,
+                description: 'Trois baguettes traditionnelles.',
+                city: myShop.address.city,
+                category: 'Boulangerie',
+                price: 2.50,
+                originalPrice: 5.00,
+                expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                offerStartDate: new Date(),
+                offerEndDate: new Date(Date.now() + 24 * 60 * 60 * 1000)
+            },
+            {
+                title: 'Croissants de la veille',
+                shop: myShop._id,
+                description: 'Croissants pur beurre.',
+                city: myShop.address.city,
+                category: 'Boulangerie',
+                price: 3.00,
+                originalPrice: 6.00,
+                expirationDate: new Date(Date.now() + 12 * 60 * 60 * 1000),
+                offerStartDate: new Date(),
+                offerEndDate: new Date(Date.now() + 12 * 60 * 60 * 1000)
+            }
+        ];
+
+        await Offer.insertMany(offers);
+        console.log(`🏷️ ${offers.length} Offers created`);
+
+        res.json({ message: '✅ Seeding successful', offersCreated: offers.length });
+    } catch (error) {
+        console.error('❌ Seeding failed:', error);
+        res.status(500).json({ message: 'Seeding failed', error: error.message });
     }
 });
 
