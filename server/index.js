@@ -24,7 +24,12 @@ app.use((req, res, next) => {
     // Debug: Log the value to check what Railway actually sees
     // console.log(`🔒 Maintenance Check: ${process.env.MAINTENANCE_MODE}`);
 
-    if (process.env.MAINTENANCE_MODE === 'true') {
+    const maintenanceMode = String(process.env.MAINTENANCE_MODE || '').trim().toLowerCase();
+
+    // Check debugging log
+    // console.log(`🔒 Maintenance Check: '${process.env.MAINTENANCE_MODE}' -> '${maintenanceMode}'`);
+
+    if (maintenanceMode === 'true') {
         // Prevent browser caching so it doesn't get "stuck"
         res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
 
