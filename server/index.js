@@ -67,10 +67,15 @@ app.get('/api/offers', async (req, res) => {
 
 // Catch-all handler for any request that doesn't match an API route
 // Send back React's index.html file.
+// Debug: Log the path we are trying to serve
+const clientDistPath = path.join(__dirname, '../client/dist');
+console.log(`📂 Serving static files from: ${clientDistPath}`);
+
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+    res.sendFile(path.join(clientDistPath, 'index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+// Explicitly bind to 0.0.0.0 to ensure external access in Docker/Railway
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
 });
