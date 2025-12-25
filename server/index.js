@@ -148,6 +148,75 @@ const clientDistPath = path.join(__dirname, '../client/dist');
 console.log(`📂 Serving static files from: ${clientDistPath}`);
 
 app.get('*', (req, res) => {
+    // Check for Maintenance Mode
+    if (process.env.MAINTENANCE_MODE === 'true') {
+        const maintenanceHtml = `
+            <!DOCTYPE html>
+            <html lang="fr">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Antigaspi - Bientôt disponible</title>
+                <style>
+                    body {
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        margin: 0;
+                        padding: 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                        color: white;
+                        text-align: center;
+                    }
+                    .container {
+                        background: rgba(255, 255, 255, 0.1);
+                        backdrop-filter: blur(10px);
+                        border-radius: 20px;
+                        padding: 3rem;
+                        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+                        max-width: 600px;
+                        width: 90%;
+                    }
+                    h1 {
+                        font-size: 3rem;
+                        margin-bottom: 1rem;
+                    }
+                    p {
+                        font-size: 1.25rem;
+                        line-height: 1.6;
+                        margin-bottom: 2rem;
+                        opacity: 0.9;
+                    }
+                    .loader {
+                        border: 4px solid rgba(255, 255, 255, 0.3);
+                        border-radius: 50%;
+                        border-top: 4px solid white;
+                        width: 40px;
+                        height: 40px;
+                        animation: spin 1s linear infinite;
+                        margin: 0 auto;
+                    }
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>Antigaspi</h1>
+                    <p>Nous préparons quelque chose de spécial pour lutter contre le gaspillage alimentaire.</p>
+                    <p>Notre plateforme sera bientôt disponible dans votre ville.</p>
+                    <div class="loader"></div>
+                </div>
+            </body>
+            </html>
+        `;
+        return res.send(maintenanceHtml);
+    }
+
     res.sendFile(path.join(clientDistPath, 'index.html'));
 });
 
