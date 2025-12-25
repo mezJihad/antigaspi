@@ -21,7 +21,13 @@ app.use(express.json());
 
 // Maintenance Mode Middleware
 app.use((req, res, next) => {
+    // Debug: Log the value to check what Railway actually sees
+    // console.log(`🔒 Maintenance Check: ${process.env.MAINTENANCE_MODE}`);
+
     if (process.env.MAINTENANCE_MODE === 'true') {
+        // Prevent browser caching so it doesn't get "stuck"
+        res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+
         const maintenanceHtml = `
             <!DOCTYPE html>
             <html lang="fr">
@@ -226,4 +232,5 @@ app.get('*', (req, res) => {
 // Explicitly bind to 0.0.0.0 to ensure external access in Docker/Railway
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
+    console.log(`🔧 Maintenance Mode: ${process.env.MAINTENANCE_MODE}`);
 });
