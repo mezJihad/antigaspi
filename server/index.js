@@ -24,7 +24,7 @@ app.use((req, res, next) => {
     // Debug: Log the value to check what Railway actually sees
     // console.log(`🔒 Maintenance Check: ${process.env.MAINTENANCE_MODE}`);
 
-    const maintenanceMode = String(process.env.SITE_MAINTENANCE || '').trim().toLowerCase();
+    const maintenanceMode = String(process.env.MAINTENANCE || '').trim().toLowerCase();
 
     // Check debugging log
     // console.log(`🔒 Maintenance Check: '${process.env.MAINTENANCE_MODE}' -> '${maintenanceMode}'`);
@@ -238,7 +238,8 @@ app.get('*', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
     // DEBUG: Print all keys valid keys to find typos
-    console.log(`� All Env Keys: ${JSON.stringify(Object.keys(process.env).sort())}`);
+    console.log(`🔑 All Env Keys: ${JSON.stringify(Object.keys(process.env).sort())}`);
     console.log(`🌍 Railway Env: ${process.env.RAILWAY_ENVIRONMENT_NAME}`);
-    console.log(`�🔧 Maintenance Mode (Site): '${process.env.SITE_MAINTENANCE}'`);
+    console.log(`🔧 Maintenance Mode (Site): '${process.env.MAINTENANCE}'`);
 });
+```
