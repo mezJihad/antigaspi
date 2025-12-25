@@ -16,7 +16,7 @@ const Explore = () => {
                 if (filters.city !== 'Toutes') queryParams.append('city', filters.city);
                 if (filters.category !== 'Toutes') queryParams.append('category', filters.category);
 
-                const response = await fetch(`http://localhost:5000/api/offers?${queryParams.toString()}`);
+                const response = await fetch(`/api/offers?${queryParams.toString()}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch offers');
                 }
