@@ -237,5 +237,8 @@ app.get('*', (req, res) => {
 // Explicitly bind to 0.0.0.0 to ensure external access in Docker/Railway
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
-    console.log(`🔧 Maintenance Mode: ${process.env.SITE_MAINTENANCE || 'off'}`);
+    // DEBUG: Print all keys valid keys to find typos
+    console.log(`� All Env Keys: ${JSON.stringify(Object.keys(process.env).sort())}`);
+    console.log(`🌍 Railway Env: ${process.env.RAILWAY_ENVIRONMENT_NAME}`);
+    console.log(`�🔧 Maintenance Mode (Site): '${process.env.SITE_MAINTENANCE}'`);
 });
