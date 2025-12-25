@@ -41,9 +41,7 @@ app.get('/api/health', (req, res) => {
 
 // Catch-all handler for any request that doesn't match an API route
 // Send back React's index.html file.
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
-});
+
 
 // Get all offers with filters
 app.get('/api/offers', async (req, res) => {
@@ -65,6 +63,12 @@ app.get('/api/offers', async (req, res) => {
         console.error('Error fetching offers:', error);
         res.status(500).json({ message: 'Server Error' });
     }
+});
+
+// Catch-all handler for any request that doesn't match an API route
+// Send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
 });
 
 app.listen(PORT, () => {
