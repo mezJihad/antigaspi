@@ -24,7 +24,7 @@ app.use((req, res, next) => {
     // Debug: Log the value to check what Railway actually sees
     // console.log(`🔒 Maintenance Check: ${process.env.MAINTENANCE_MODE}`);
 
-    const maintenanceMode = String(process.env.MAINTENANCE_MODE || '').trim().toLowerCase();
+    const maintenanceMode = String(process.env.SITE_MAINTENANCE || '').trim().toLowerCase();
 
     // Check debugging log
     // console.log(`🔒 Maintenance Check: '${process.env.MAINTENANCE_MODE}' -> '${maintenanceMode}'`);
