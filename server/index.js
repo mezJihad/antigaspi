@@ -242,4 +242,3 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`🌍 Railway Env: ${process.env.RAILWAY_ENVIRONMENT_NAME}`);
     console.log(`🔧 Maintenance Mode (Site): '${process.env.MAINTENANCE}'`);
 });
-```
