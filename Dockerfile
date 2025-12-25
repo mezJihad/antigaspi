@@ -19,7 +19,7 @@ RUN cat /etc/os-release
 RUN rm -f package-lock.json client/package-lock.json server/package-lock.json
 
 # Workaround for npm workspace optional dependency bug
-RUN npm install @rollup/rollup-linux-x64-gnu --save-optional
+RUN npm install @rollup/rollup-linux-x64-gnu @rollup/rollup-linux-x64-musl --save-optional
 RUN npm install
 
 # Copy source code
