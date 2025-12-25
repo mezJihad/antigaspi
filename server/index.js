@@ -240,5 +240,6 @@ app.listen(PORT, '0.0.0.0', () => {
     // DEBUG: Print all keys valid keys to find typos
     const keys = Object.keys(process.env).filter(k => k.includes('MAINTENANCE'));
     console.log(`🔑 Found Env Keys: ${JSON.stringify(keys)}`);
+    console.log(`🌍 Railway Env: ${process.env.RAILWAY_ENVIRONMENT_NAME}`);
     console.log(`🔧 Maintenance Mode (Raw): '${process.env.MAINTENANCE_MODE}'`);
 });
