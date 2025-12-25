@@ -238,8 +238,7 @@ app.get('*', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
     // DEBUG: Print all keys valid keys to find typos
-    const keys = Object.keys(process.env).filter(k => k.includes('MAINTENANCE'));
-    console.log(`🔑 Found Env Keys: ${JSON.stringify(keys)}`);
+    console.log(`🔑 All Env Keys: ${JSON.stringify(Object.keys(process.env).sort())}`);
     console.log(`🌍 Railway Env: ${process.env.RAILWAY_ENVIRONMENT_NAME}`);
     console.log(`🔧 Maintenance Mode (Raw): '${process.env.MAINTENANCE_MODE}'`);
 });
