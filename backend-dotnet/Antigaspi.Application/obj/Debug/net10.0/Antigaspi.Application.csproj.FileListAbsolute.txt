@@ -1,0 +1,16 @@
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\bin\Debug\net10.0\Antigaspi.Application.deps.json
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\bin\Debug\net10.0\Antigaspi.Application.dll
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\bin\Debug\net10.0\Antigaspi.Application.pdb
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\bin\Debug\net10.0\Antigaspi.Domain.dll
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\bin\Debug\net10.0\Antigaspi.Domain.pdb
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\obj\Debug\net10.0\Antigaspi.Application.csproj.AssemblyReference.cache
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\obj\Debug\net10.0\Antigaspi.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\obj\Debug\net10.0\Antigaspi.Application.AssemblyInfoInputs.cache
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\obj\Debug\net10.0\Antigaspi.Application.AssemblyInfo.cs
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\obj\Debug\net10.0\Antigaspi.Application.csproj.CoreCompileInputs.cache
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\obj\Debug\net10.0\Antigaspi.Application.sourcelink.json
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\obj\Debug\net10.0\Antigasp.F24C07C3.Up2Date
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\obj\Debug\net10.0\Antigaspi.Application.dll
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\obj\Debug\net10.0\refint\Antigaspi.Application.dll
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\obj\Debug\net10.0\Antigaspi.Application.pdb
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\obj\Debug\net10.0\ref\Antigaspi.Application.dll
