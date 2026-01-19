@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Antigaspi.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b7c6e920ede8ec86a62ce36f6859ef9131e97abf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5f480a727bea8c5c3f6facfdd0334a42f75bffc")]
 [assembly: System.Reflection.AssemblyProductAttribute("Antigaspi.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Antigaspi.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -5,10 +5,12 @@ namespace Antigaspi.Domain.Entities;
 
 public class OfferStatusEntry
 {
-    public OfferStatus Status { get; }
-    public Guid? ChangedBy { get; }
-    public DateTime ChangedAt { get; }
-    public string? Reason { get; }
+    public OfferStatus Status { get; private set; }
+    public Guid? ChangedBy { get; private set; }
+    public DateTime ChangedAt { get; private set; }
+    public string? Reason { get; private set; }
+
+    private OfferStatusEntry() { } // Required for EF Core
 
     public OfferStatusEntry(OfferStatus status, Guid? changedBy, DateTime changedAt, string? reason)
     {
@@ -23,6 +25,7 @@ public class Offer
 {
     public Guid Id { get; private set; }
     public Guid SellerId { get; private set; }
+    public virtual Seller Seller { get; private set; } = null!;
     public string Title { get; private set; }
     public string Description { get; private set; }
     public Money Price { get; private set; }

@@ -10,13 +10,15 @@ public record OfferResponse(
     Guid SellerId,
     string Title,
     string Description,
-    decimal PriceAmount,
+    decimal Price,
     string PriceCurrency,
-    decimal OriginalPriceAmount,
+    decimal OriginalPrice,
     string OriginalPriceCurrency,
     string PictureUrl,
     DateTime ExpirationDate,
     string Status,
+    string ShopName,
+    string City,
     List<OfferStatusEntryResponse> StatusHistory
 )
 {
@@ -32,6 +34,8 @@ public record OfferResponse(
         offer.PictureUrl,
         offer.ExpirationDate,
         offer.Status.ToString(),
+        offer.Seller?.StoreName ?? "Inconnu",
+        offer.Seller?.Address?.City ?? "Inconnu",
         offer.StatusHistory.Select(h => new OfferStatusEntryResponse(h.Status.ToString(), h.ChangedBy, h.ChangedAt, h.Reason)).ToList()
     );
 }

@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("3610ed4b-c894-4e58-a03e-2ffd5ab44fa8")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Antigaspi.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b7c6e920ede8ec86a62ce36f6859ef9131e97abf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5f480a727bea8c5c3f6facfdd0334a42f75bffc")]
 [assembly: System.Reflection.AssemblyProductAttribute("Antigaspi.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Antigaspi.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -47,6 +47,14 @@ public class OffersController : ControllerBase
         return Ok(OfferResponse.FromEntity(offer));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAllOffers()
+    {
+        var query = new GetAllOffersQuery();
+        var offers = await _sender.Send(query);
+        return Ok(offers.Select(OfferResponse.FromEntity));
+    }
+
     [HttpPost("{id}/submit")]
     public async Task<IActionResult> Submit(Guid id)
     {

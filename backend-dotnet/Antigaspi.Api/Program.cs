@@ -1,7 +1,6 @@
 using Antigaspi.Application;
 using Antigaspi.Application.Repositories;
-using Antigaspi.Api.Infrastructure;
-using Antigaspi.Infrastructure.Mongo;
+using Antigaspi.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +25,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddApplication();
 
 // Infrastructure Injection (MongoDB)
-builder.Services.AddMongoInfrastructure(builder.Configuration);
+// Infrastructure Injection
+builder.Services.AddInfrastructure(builder.Configuration);
 
 // Infrastructure Injection (Fake for now) - COMMENTED OUT
 // builder.Services.AddSingleton<ISellerRepository, InMemorySellerRepository>();
@@ -51,5 +51,11 @@ app.MapControllers();
 
 // Redirect root to Swagger UI
 app.MapGet("/", () => Results.Redirect("/swagger"));
+
+// Seed Database
+using (var scope = app.Services.CreateScope())
+{
+    await Antigaspi.Infrastructure.Persistence.AntigaspiSeeder.SeedAsync(scope.ServiceProvider);
+}
 
 app.Run();

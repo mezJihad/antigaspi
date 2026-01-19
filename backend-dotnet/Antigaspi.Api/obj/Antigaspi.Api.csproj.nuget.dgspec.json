@@ -35,8 +35,8 @@
               "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj": {
                 "projectPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj"
               },
-              "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure.Mongo\\Antigaspi.Infrastructure.Mongo.csproj": {
-                "projectPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure.Mongo\\Antigaspi.Infrastructure.Mongo.csproj"
+              "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\Antigaspi.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\Antigaspi.Infrastructure.csproj"
               }
             }
           }
@@ -60,6 +60,12 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[10.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[10.0.2, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -1195,14 +1201,14 @@
         }
       }
     },
-    "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure.Mongo\\Antigaspi.Infrastructure.Mongo.csproj": {
+    "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\Antigaspi.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure.Mongo\\Antigaspi.Infrastructure.Mongo.csproj",
-        "projectName": "Antigaspi.Infrastructure.Mongo",
-        "projectPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure.Mongo\\Antigaspi.Infrastructure.Mongo.csproj",
+        "projectUniqueName": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\Antigaspi.Infrastructure.csproj",
+        "projectName": "Antigaspi.Infrastructure",
+        "projectPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\Antigaspi.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\j.mezouari\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure.Mongo\\obj\\",
+        "outputPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1248,21 +1254,15 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "dependencies": {
-            "Microsoft.Extensions.Configuration.Abstractions": {
+            "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[10.0.1, )"
+              "version": "[10.0.2, )"
             },
-            "Microsoft.Extensions.Hosting.Abstractions": {
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[10.0.1, )"
-            },
-            "Microsoft.Extensions.Options": {
-              "target": "Package",
-              "version": "[10.0.1, )"
-            },
-            "MongoDB.Driver": {
-              "target": "Package",
-              "version": "[3.5.2, )"
+              "version": "[10.0.2, )"
             }
           },
           "imports": [
