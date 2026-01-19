@@ -18,8 +18,12 @@ public class OffersController : ControllerBase
     }
 
     [HttpPost]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public async Task<IActionResult> CreateOffer([FromBody] CreateOfferRequest request)
     {
+        // TODO: Validate that the logged in user is the owner of the SellerId provided
+        // For now, we trust the request but we really should fetch Seller by UserId
+        
         var command = new CreateOfferCommand(
             request.SellerId,
             request.Title,

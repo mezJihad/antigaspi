@@ -28,6 +28,25 @@ builder.Services.AddApplication();
 // Infrastructure Injection
 builder.Services.AddInfrastructure(builder.Configuration);
 
+// Authentication
+var jwtSettings = new Antigaspi.Infrastructure.Authentication.JwtSettings();
+builder.Configuration.Bind(Antigaspi.Infrastructure.Authentication.JwtSettings.SectionName, jwtSettings);
+
+builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(jwtSettings.Secret))
+        };
+    });
+
 // Infrastructure Injection (Fake for now) - COMMENTED OUT
 // builder.Services.AddSingleton<ISellerRepository, InMemorySellerRepository>();
 // builder.Services.AddSingleton<IOfferRepository, InMemoryOfferRepository>();
@@ -45,6 +64,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

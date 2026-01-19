@@ -1,6 +1,8 @@
 using Antigaspi.Application.Repositories;
 using Antigaspi.Infrastructure.Persistence;
 using Antigaspi.Infrastructure.Persistence.Repositories;
+using Antigaspi.Infrastructure.Authentication;
+using Antigaspi.Application.Common.Interfaces.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +22,12 @@ public static class DependencyInjection
         // Repositories
         services.AddScoped<ISellerRepository, SqlSellerRepository>();
         services.AddScoped<IOfferRepository, SqlOfferRepository>();
+        services.AddScoped<IUserRepository, SqlUserRepository>();
+
+        // Authentication
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
+        services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.Configure<Antigaspi.Infrastructure.Authentication.JwtSettings>(configuration.GetSection(Antigaspi.Infrastructure.Authentication.JwtSettings.SectionName));
 
         return services;
     }

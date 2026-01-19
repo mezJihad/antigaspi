@@ -124,7 +124,7 @@ namespace Antigaspi.Infrastructure.Migrations
 
             modelBuilder.Entity("Antigaspi.Domain.Entities.Offer", b =>
                 {
-                    b.HasOne("Antigaspi.Domain.Entities.Seller", null)
+                    b.HasOne("Antigaspi.Domain.Entities.Seller", "Seller")
                         .WithMany()
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -213,6 +213,8 @@ namespace Antigaspi.Infrastructure.Migrations
 
                     b.Navigation("Price")
                         .IsRequired();
+
+                    b.Navigation("Seller");
 
                     b.Navigation("StatusHistory");
                 });
