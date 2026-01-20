@@ -1,98 +1,183 @@
 import { useState } from 'react';
-import { register } from '../services/auth';
 import { useNavigate, Link } from 'react-router-dom';
-import { Leaf } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { register as registerUser, login as loginUser } from '../services/auth';
+import { registerSeller } from '../services/sellers';
+import { Leaf, Store, ArrowRight, CheckCircle2 } from 'lucide-react';
+import heroImage from '../assets/auth-hero.png';
 
 export default function Register() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [role, setRole] = useState('CUSTOMER');
     const navigate = useNavigate();
+    const { login } = useAuth();
+
+    // Step 1: Account, Step 2: Store
+    // Combining them into one seamless form for the user
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        phone: '',
+        termsAccepted: false
+    });
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setIsLoading(true);
+
         try {
-            await register(email, password, role);
-            navigate('/login');
-        } catch (error) {
-            setError('Erreur lors de l\'inscription. Veuillez réessayer.');
+            // 1. Create User Account
+            try {
+                await registerUser(formData.firstName, formData.lastName, formData.email, formData.password, 'SELLER');
+            } catch (err) {
+                // If registration fails, it might be because the user already exists. 
+                // We'll process to login to verify this. 
+                // If login fails too, then we throw the original registration error.
+                console.log("Registration failed, trying login...", err);
+            }
+
+            // 2. Login to get token (This validates if the user exists and creds are correct)
+            let loginData;
+            try {
+                loginData = await loginUser(formData.email, formData.password);
+            } catch (loginErr) {
+                // If Login fails, it means the registration validation failed effectively (or wrong password if retrying)
+                // We can assume the first error was the blocker if we couldn't register OR login
+                throw new Error("Impossible de créer le compte ou de se connecter. Vérifiez vos identifiants ou si l'email est déjà utilisé.");
+            }
+
+            // 3. Update Context & Redirect
+            login(loginData);
+            navigate('/dashboard');
+
+        } catch (err) {
+            console.error(err);
+            setError(err.message || 'Une erreur est survenue.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
-                <div className="text-center">
-                    <div className="mx-auto h-12 w-12 text-green-600 flex justify-center items-center">
-                        <Leaf size={48} />
+        <div className="min-h-screen flex text-gray-900 font-sans">
+            {/* Left Side - Hero Image */}
+            <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gray-900">
+                <div className="absolute inset-0 bg-black/40 z-10" />
+                <img
+                    src={heroImage}
+                    alt="Fresh produce"
+                    className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="relative z-20 flex flex-col justify-between h-full p-12 text-white">
+                    <div>
+                        <div className="flex items-center gap-2 text-2xl font-bold text-green-400">
+                            <Leaf size={32} />
+                            <span>Antigaspi</span>
+                        </div>
                     </div>
-                    <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-                        Créer un compte
-                    </h2>
-                    <p className="mt-2 text-sm text-gray-600">
-                        Rejoignez la communauté Antigaspi
-                    </p>
+                    <div className="max-w-md">
+                        <h1 className="text-4xl font-bold mb-6 leading-tight">Valorisez vos invendus, touchez de nouveaux clients.</h1>
+                        <p className="text-lg text-gray-200 mb-8">Rejoignez la communauté de commerçants qui s'engagent contre le gaspillage alimentaire tout en augmentant leurs revenus.</p>
+
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-green-500/20 rounded-full text-green-400"><CheckCircle2 size={20} /></div>
+                                <span>Installation rapide et gratuite</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-green-500/20 rounded-full text-green-400"><CheckCircle2 size={20} /></div>
+                                <span>Gérez vos offres simplement</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-green-500/20 rounded-full text-green-400"><CheckCircle2 size={20} /></div>
+                                <span>Touchez des clients locaux</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="text-sm text-gray-400">© 2024 Antigaspi. Tous droits réservés.</div>
                 </div>
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="rounded-md shadow-sm -space-y-px">
-                        <div className="mb-4">
-                            <label htmlFor="email" className="sr-only">Email</label>
-                            <input
-                                id="email"
-                                type='email'
-                                placeholder='Adresse Email'
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label htmlFor="password" className="sr-only">Mot de passe</label>
-                            <input
-                                id="password"
-                                type='password'
-                                placeholder='Mot de passe'
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="role" className="sr-only">Rôle</label>
-                            <select
-                                id="role"
-                                value={role}
-                                onChange={(e) => setRole(e.target.value)}
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-700 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                            >
-                                <option value='CUSTOMER'>Je veux acheter</option>
-                                <option value='SELLER'>Je veux vendre (créer un profil vendeur ensuite)</option>
-                            </select>
-                        </div>
+            </div>
+
+            {/* Right Side - Form */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
+                <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold text-gray-900">Créez votre Espace Vendeur</h2>
+                        <p className="mt-2 text-gray-600">Commencez à vendre en quelques minutes</p>
                     </div>
 
                     {error && (
-                        <div className="text-red-500 text-sm text-center">
-                            {error}
+                        <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm flex items-center gap-2">
+                            <span>⚠️</span> {error}
                         </div>
                     )}
 
-                    <div className="flex items-center justify-between">
-                        <div className="text-sm">
-                            <Link to="/login" className="font-medium text-green-600 hover:text-green-500">
-                                Déjà un compte ? Se connecter
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                                <input name="firstName" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" placeholder="Jean" onChange={handleChange} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                                <input name="lastName" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" placeholder="Dupont" onChange={handleChange} />
+                            </div>
+                        </div>
+
+
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Email professionnel</label>
+                            <input type="email" name="email" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" placeholder="contact@maboutique.com" onChange={handleChange} />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                            <input type="password" name="password" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" placeholder="••••••••" onChange={handleChange} />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <input type="checkbox" name="termsAccepted" required id="terms" className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer" onChange={handleChange} />
+                            <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">J'accepte les conditions générales de vente</label>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                        >
+                            {isLoading ? 'Création en cours...' : (
+                                <>
+                                    Créer mon compte vendeur <ArrowRight size={18} />
+                                </>
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="mt-8 pt-6 border-t border-gray-100">
+                        <div className="text-center text-sm text-gray-600 mb-4">
+                            Déjà partenaire ? <Link to="/login" className="text-green-600 font-medium hover:underline">Connectez-vous</Link>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-4 text-center">
+                            <p className="text-sm text-gray-600">Vous souhaitez simplement acheter des paniers ?</p>
+                            <Link to="/explore" className="inline-block mt-2 text-sm font-medium text-gray-900 border-b border-gray-900 hover:text-green-600 hover:border-green-600 transition-colors">
+                                Explorer les offres maintenant
                             </Link>
                         </div>
                     </div>
-
-                    <button type='submit' className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
-                        S'inscrire
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
     );

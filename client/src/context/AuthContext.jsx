@@ -7,10 +7,14 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('token'));
 
     useEffect(() => {
-        if (token) {
-            // Decode token or fetch user profile if needed
-            // For now just assume we have it or decode purely for UI
-            setUser({ token });
+        const storedUser = localStorage.getItem('user');
+        if (token && storedUser) {
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (e) {
+                // Invalid user data
+                localStorage.removeItem('user');
+            }
         }
     }, [token]);
 
@@ -18,12 +22,14 @@ export const AuthProvider = ({ children }) => {
         setToken(userData.token);
         setUser(userData);
         localStorage.setItem('token', userData.token);
+        localStorage.setItem('user', JSON.stringify(userData));
     };
 
     const logout = () => {
         setToken(null);
         setUser(null);
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
     };
 
     return (

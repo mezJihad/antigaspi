@@ -11,17 +11,24 @@ namespace Antigaspi.Api.Controllers;
 public class SellersController : ControllerBase
 {
     private readonly ISender _sender;
+    private readonly Antigaspi.Application.Repositories.ISellerRepository _sellerRepo;
 
-    public SellersController(ISender sender)
+    public SellersController(ISender sender, Antigaspi.Application.Repositories.ISellerRepository sellerRepo)
     {
         _sender = sender;
+        _sellerRepo = sellerRepo;
     }
 
     [HttpPost]
     [Microsoft.AspNetCore.Authorization.Authorize]
     public async Task<IActionResult> RegisterSeller([FromBody] RegisterSellerRequest request)
     {
-        var updatedRequest = request with { UserId = Guid.Parse(User.Claims.First(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub).Value) };
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier) 
+                          ?? User.Claims.FirstOrDefault(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
+                          
+        if (userIdClaim == null) return Unauthorized();
+
+        var updatedRequest = request with { UserId = Guid.Parse(userIdClaim.Value) };
 
         var command = new RegisterSellerCommand(
             updatedRequest.UserId,
@@ -51,11 +58,23 @@ public class SellersController : ControllerBase
     [Microsoft.AspNetCore.Authorization.Authorize]
     public async Task<IActionResult> GetMe()
     {
-        var userId = Guid.Parse(User.Claims.First(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub).Value);
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier) 
+                          ?? User.Claims.FirstOrDefault(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
+                          
+        if (userIdClaim == null) return Unauthorized();
+
+        var userId = Guid.Parse(userIdClaim.Value);
         var query = new GetSellerByUserIdQuery(userId);
         var seller = await _sender.Send(query);
 
         if (seller == null) return NotFound();
+
+        // DEV FIX: Auto-approve seller if pending
+        if (!seller.IsApproved())
+        {
+            seller.Approve();
+            await _sellerRepo.UpdateAsync(seller);
+        }
 
         return Ok(SellerResponse.FromEntity(seller));
     }

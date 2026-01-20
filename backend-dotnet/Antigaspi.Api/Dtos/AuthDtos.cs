@@ -1,6 +1,8 @@
 namespace Antigaspi.Api.Dtos;
 
 public record RegisterRequest(
+    string FirstName,
+    string LastName,
     string Email,
     string Password,
     string Role = "CUSTOMER"
@@ -13,6 +15,8 @@ public record LoginRequest(
 
 public record AuthResponse(
     Guid Id,
+    string FirstName,
+    string LastName,
     string Email,
     string Token
 );

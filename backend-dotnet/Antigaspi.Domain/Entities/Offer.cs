@@ -31,7 +31,8 @@ public class Offer
     public Money Price { get; private set; }
     public Money OriginalPrice { get; private set; }
     public string PictureUrl { get; private set; }
-    public DateTime ExpirationDate { get; private set; }
+    public DateTime StartDate { get; private set; }
+    public DateTime? EndDate { get; private set; }
     public OfferStatus Status { get; private set; }
     
     // Encapsulate collection
@@ -47,7 +48,8 @@ public class Offer
         Money price,
         Money originalPrice,
         string pictureUrl,
-        DateTime expirationDate,
+        DateTime startDate,
+        DateTime? endDate,
         Guid? id = null,
         OfferStatus status = OfferStatus.DRAFT)
     {
@@ -58,7 +60,8 @@ public class Offer
         Price = price;
         OriginalPrice = originalPrice;
         PictureUrl = pictureUrl;
-        ExpirationDate = expirationDate;
+        StartDate = startDate;
+        EndDate = endDate;
         Status = status;
         
         ValidateState();
@@ -70,7 +73,8 @@ public class Offer
         string description,
         Money price,
         Money originalPrice,
-        DateTime expirationDate,
+        DateTime startDate,
+        DateTime? endDate,
         string pictureUrl)
     {
         if (sellerId == Guid.Empty) throw new ArgumentException("Offer requires a sellerId");
@@ -81,13 +85,10 @@ public class Offer
             throw new InvalidOperationException("Offer price must be lower than original price");
         }
 
-        // Invariant: Expiration date must be in the future
-        // Note: Using DateTime.UtcNow is safer for servers
-        if (expirationDate <= DateTime.UtcNow)
+        // Invariant: EndDate must be after StartDate
+        if (endDate.HasValue && endDate.Value <= startDate)
         {
-           // Allow close times or standard leniency? Strict check as per JS
-           // JS: new Date(expirationDate) <= new Date()
-           throw new InvalidOperationException("Expiration date must be in the future");
+           throw new InvalidOperationException("End date must be after start date");
         }
 
         return new Offer(
@@ -97,7 +98,8 @@ public class Offer
             price!,
             originalPrice!,
             pictureUrl,
-            expirationDate,
+            startDate,
+            endDate,
             null,
             OfferStatus.DRAFT
         );
@@ -198,7 +200,7 @@ public class Offer
             string.IsNullOrWhiteSpace(Description) || 
             Price == null || 
             OriginalPrice == null || 
-            ExpirationDate == default)
+            StartDate == default)
         {
             throw new InvalidOperationException("Offer incomplete: missing required fields for submission");
         }

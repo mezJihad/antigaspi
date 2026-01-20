@@ -32,7 +32,8 @@ public class OffersController : ControllerBase
             request.PriceCurrency,
             request.OriginalPriceAmount,
             request.OriginalPriceCurrency,
-            request.ExpirationDate,
+            request.StartDate,
+            request.EndDate,
             request.PictureUrl
         );
 

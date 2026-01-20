@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Antigaspi.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+96544ebed29cb5df9e2e74cda67bec7bdb3f61ff")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8b9541aa204dfd94f5c5c2eaa75d00908006dc9f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Antigaspi.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Antigaspi.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

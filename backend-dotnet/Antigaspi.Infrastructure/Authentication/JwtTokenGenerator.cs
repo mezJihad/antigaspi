@@ -27,6 +27,8 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Email, user.Email),
+            new(JwtRegisteredClaimNames.GivenName, user.FirstName ?? ""),
+            new(JwtRegisteredClaimNames.FamilyName, user.LastName ?? ""),
             new("role", user.Role.ToString()) // Custom claim for role
         };
 

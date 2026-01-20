@@ -75,6 +75,8 @@ app.MapGet("/", () => Results.Redirect("/swagger"));
 // Seed Database
 using (var scope = app.Services.CreateScope())
 {
+    var context = scope.ServiceProvider.GetRequiredService<Antigaspi.Infrastructure.Persistence.AntigaspiDbContext>();
+    await Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.MigrateAsync(context.Database); 
     await Antigaspi.Infrastructure.Persistence.AntigaspiSeeder.SeedAsync(scope.ServiceProvider);
 }
 

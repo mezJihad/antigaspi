@@ -23,8 +23,9 @@ public class AntigaspiSeeder
         logger.LogInformation("Seeding database...");
 
         // 1. Create Users
-        var sellerUser = User.Create("seller@antigaspi.test", "hash123", UserRole.SELLER);
-        var adminUser = User.Create("admin@antigaspi.test", "hash123", UserRole.ADMIN);
+        // 1. Create Users
+        var sellerUser = User.Create("Jean", "Dupont", "seller@antigaspi.test", "hash123", UserRole.SELLER);
+        var adminUser = User.Create("Admin", "System", "admin@antigaspi.test", "hash123", UserRole.ADMIN);
         
         await context.Users.AddRangeAsync(sellerUser, adminUser);
         
@@ -42,7 +43,8 @@ public class AntigaspiSeeder
             "Un panier contenant des viennoiseries et du pain de la veille.",
             Money.From(3.99m, "EUR"),
             Money.From(12.00m, "EUR"),
-            DateTime.UtcNow.AddDays(1),
+            DateTime.UtcNow,
+            null,
             "https://placehold.co/600x400/orange/white?text=Panier+Boulangerie"
         );
         offer1.SubmitForValidation();
@@ -54,7 +56,8 @@ public class AntigaspiSeeder
             "5 baguettes tradition invendues.",
             Money.From(2.50m, "EUR"),
             Money.From(5.00m, "EUR"),
-            DateTime.UtcNow.AddDays(1),
+            DateTime.UtcNow,
+            null,
             "https://placehold.co/600x400/brown/white?text=Baguettes"
         );
          offer2.SubmitForValidation();

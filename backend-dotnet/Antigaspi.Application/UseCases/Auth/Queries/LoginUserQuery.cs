@@ -48,8 +48,8 @@ public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, Authenticat
 
         return new AuthenticationResult(
             user.Id,
-            "User", // First name placeholder
-            "Name", // Last name placeholder
+            user.FirstName,
+            user.LastName,
             user.Email,
             token
         );

@@ -17,7 +17,8 @@ public record CreateOfferRequest(
     string PriceCurrency,
     decimal OriginalPriceAmount,
     string OriginalPriceCurrency,
-    DateTime ExpirationDate,
+    DateTime StartDate,
+    DateTime? EndDate,
     string PictureUrl
 );
 

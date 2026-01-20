@@ -20,7 +20,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        var command = new RegisterUserCommand(request.Email, request.Password, request.Role);
+        var command = new RegisterUserCommand(request.FirstName, request.LastName, request.Email, request.Password, request.Role);
         var userId = await _sender.Send(command);
 
         return Ok(new { UserId = userId });
@@ -32,6 +32,6 @@ public class AuthController : ControllerBase
         var query = new LoginUserQuery(request.Email, request.Password);
         var result = await _sender.Send(query);
 
-        return Ok(new AuthResponse(result.Id, result.Email, result.Token));
+        return Ok(new AuthResponse(result.Id, result.FirstName, result.LastName, result.Email, result.Token));
     }
 }

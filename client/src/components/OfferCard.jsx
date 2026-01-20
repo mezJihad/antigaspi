@@ -53,15 +53,19 @@ const OfferCard = ({ offer }) => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#666', marginBottom: '1rem' }}>
                     <MapPin size={14} /> {offer.city}
                     <span style={{ margin: '0 0.25rem' }}>•</span>
-                    <Clock size={14} /> {offer.expiresIn}
+                    <Clock size={14} />
+                    <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
+                        <span>Du {new Date(offer.startDate).toLocaleDateString()}</span>
+                        {offer.endDate && <span>au {new Date(offer.endDate).toLocaleDateString()}</span>}
+                    </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem' }}>
                     <span style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--color-primary)' }}>
-                        {offer.price.toFixed(2)}€
+                        {offer.price.toFixed(2)} Dhs
                     </span>
                     <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '0.9rem' }}>
-                        {offer.originalPrice.toFixed(2)}€
+                        {offer.originalPrice.toFixed(2)} Dhs
                     </span>
                 </div>
             </div>

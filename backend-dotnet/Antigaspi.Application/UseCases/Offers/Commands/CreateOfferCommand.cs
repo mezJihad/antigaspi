@@ -13,7 +13,8 @@ public record CreateOfferCommand(
     string PriceCurrency,
     decimal OriginalPriceAmount,
     string OriginalPriceCurrency,
-    DateTime ExpirationDate,
+    DateTime StartDate,
+    DateTime? EndDate,
     string PictureUrl
 ) : IRequest<Guid>;
 
@@ -52,7 +53,8 @@ public class CreateOfferCommandHandler : IRequestHandler<CreateOfferCommand, Gui
             request.Description,
             price,
             originalPrice,
-            request.ExpirationDate,
+            request.StartDate,
+            request.EndDate,
             request.PictureUrl
         );
 

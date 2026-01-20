@@ -25,8 +25,17 @@ public class RegisterSellerCommandHandler : IRequestHandler<RegisterSellerComman
 
     public async Task<Guid> Handle(RegisterSellerCommand request, CancellationToken cancellationToken)
     {
-        // 1. Check if user already has a seller account? (Optional logic)
-        // For now, assume User service handles auth/identity, here we just link.
+        // 1. Check if user already has a seller account
+        var existingSeller = await _sellerRepository.GetByUserIdAsync(request.UserId, cancellationToken);
+        if (existingSeller != null)
+        {
+            if (!existingSeller.IsApproved())
+            {
+                existingSeller.Approve();
+                await _sellerRepository.UpdateAsync(existingSeller, cancellationToken);
+            }
+            return existingSeller.Id;
+        }
 
         // 2. Create Address VO
         var address = new Address(request.Street, request.City, request.ZipCode);
@@ -38,6 +47,9 @@ public class RegisterSellerCommandHandler : IRequestHandler<RegisterSellerComman
             address,
             request.Description
         );
+
+        // Auto-approve for MVP
+        seller.Approve();
 
         // 4. Persist
         await _sellerRepository.AddAsync(seller, cancellationToken);

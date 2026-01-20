@@ -7,6 +7,8 @@ using MediatR;
 namespace Antigaspi.Application.UseCases.Auth.Commands;
 
 public record RegisterUserCommand(
+    string FirstName,
+    string LastName,
     string Email,
     string Password,
     string Role = "BUYER" // Default role, can be "SELLER" if we allow direct seller reg
@@ -38,7 +40,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
             role = UserRole.CUSTOMER;
         }
 
-        var user = User.Create(request.Email, passwordHash, role);
+        var user = User.Create(request.FirstName, request.LastName, request.Email, passwordHash, role);
 
         await _userRepository.AddAsync(user, cancellationToken);
         

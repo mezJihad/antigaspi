@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { login as loginApi } from '../services/auth';
 import { useNavigate, Link } from 'react-router-dom';
-import { Leaf } from 'lucide-react';
+import { Leaf, ArrowRight } from 'lucide-react';
+import heroImage from '../assets/auth-hero.png';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -10,88 +11,117 @@ export default function Login() {
     const { login } = useAuth();
     const navigate = useNavigate();
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setIsLoading(true);
         try {
             const data = await loginApi(email, password);
             login(data);
-            navigate('/');
+            navigate('/dashboard');
         } catch (error) {
             setError('Identifiants incorrects. Veuillez réessayer.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
-                <div className="text-center">
-                    <div className="mx-auto h-12 w-12 text-green-600 flex justify-center items-center">
-                        <Leaf size={48} />
+        <div className="min-h-screen flex text-gray-900 font-sans">
+            {/* Left Side - Hero Image */}
+            <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gray-900">
+                <div className="absolute inset-0 bg-black/40 z-10" />
+                <img
+                    src={heroImage}
+                    alt="Fresh produce"
+                    className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="relative z-20 flex flex-col justify-between h-full p-12 text-white">
+                    <div>
+                        <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-green-400 hover:text-green-300 transition-colors">
+                            <Leaf size={32} />
+                            <span>Antigaspi</span>
+                        </Link>
                     </div>
-                    <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-                        Connexion
-                    </h2>
-                    <p className="mt-2 text-sm text-gray-600">
-                        Accédez à votre espace Antigaspi
-                    </p>
+                    <div className="max-w-md">
+                        <h1 className="text-4xl font-bold mb-6 leading-tight">Bon retour parmi nous.</h1>
+                        <p className="text-lg text-gray-200 mb-8">Connectez-vous à votre espace vendeur pour gérer vos offres et suivre vos ventes.</p>
+                    </div>
+                    <div className="text-sm text-gray-400">© 2024 Antigaspi. Tous droits réservés.</div>
                 </div>
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="rounded-md shadow-sm -space-y-px">
-                        <div className="mb-4">
-                            <label htmlFor="email-address" className="sr-only">Adresse Email</label>
+            </div>
+
+            {/* Right Side - Form */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
+                <div className="max-w-md w-full bg-white p-10 rounded-2xl shadow-xl">
+                    <div className="text-center mb-8">
+                        <div className="lg:hidden mx-auto h-12 w-12 text-green-600 flex justify-center items-center mb-4">
+                            <Leaf size={48} />
+                        </div>
+                        <h2 className="text-3xl font-bold text-gray-900">Connexion Vendeur</h2>
+                        <p className="mt-2 text-gray-600">Accédez à votre dashboard</p>
+                    </div>
+
+                    {error && (
+                        <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm flex items-center gap-2">
+                            <span>⚠️</span> {error}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                             <input
-                                id="email-address"
-                                name="email"
                                 type="email"
-                                autoComplete="email"
                                 required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                                placeholder="Adresse Email"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                                placeholder="votre@email.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div>
-                            <label htmlFor="password" className="sr-only">Mot de passe</label>
+                            <div className="flex justify-between items-center mb-1">
+                                <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
+                                <a href="#" className="text-sm text-green-600 hover:text-green-500 font-medium">Mot de passe oublié ?</a>
+                            </div>
                             <input
-                                id="password"
-                                name="password"
                                 type="password"
-                                autoComplete="current-password"
                                 required
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                                placeholder="Mot de passe"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                                placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
-                    </div>
 
-                    {error && (
-                        <div className="text-red-500 text-sm text-center">
-                            {error}
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                        >
+                            {isLoading ? 'Connexion...' : (
+                                <>
+                                    Se connecter <ArrowRight size={18} />
+                                </>
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="mt-8 pt-6 border-t border-gray-100">
+                        <div className="text-center text-sm text-gray-600 mb-4">
+                            Pas encore de compte ? <Link to="/register" className="text-green-600 font-medium hover:underline">Créer un espace vendeur</Link>
                         </div>
-                    )}
-
-                    <div className="flex items-center justify-between">
-                        <div className="text-sm">
-                            <Link to="/register" className="font-medium text-green-600 hover:text-green-500">
-                                Pas encore de compte ? S'inscrire
+                        <div className="bg-gray-50 rounded-lg p-4 text-center">
+                            <p className="text-sm text-gray-600">Vous souhaitez simplement acheter des paniers ?</p>
+                            <Link to="/explore" className="inline-block mt-2 text-sm font-medium text-gray-900 border-b border-gray-900 hover:text-green-600 hover:border-green-600 transition-colors">
+                                Explorer les offres maintenant
                             </Link>
                         </div>
                     </div>
-
-                    <div>
-                        <button
-                            type="submit"
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out"
-                        >
-                            Se connecter
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     );
