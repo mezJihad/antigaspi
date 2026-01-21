@@ -90,14 +90,9 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center gap-3">
+
                 <Link
                   to="/login"
-                  className="text-gray-900 hover:text-green-600 font-medium text-sm transition-colors py-2 px-3"
-                >
-                  Se connecter
-                </Link>
-                <Link
-                  to="/register"
                   className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition font-medium text-sm shadow-sm hover:shadow-md"
                 >
                   Espace Vendeur

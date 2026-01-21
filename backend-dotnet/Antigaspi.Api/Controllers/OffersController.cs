@@ -11,18 +11,27 @@ namespace Antigaspi.Api.Controllers;
 public class OffersController : ControllerBase
 {
     private readonly ISender _sender;
+    private readonly Antigaspi.Application.Common.Interfaces.IFileStorageService _fileStorage;
 
-    public OffersController(ISender sender)
+    public OffersController(ISender sender, Antigaspi.Application.Common.Interfaces.IFileStorageService fileStorage)
     {
         _sender = sender;
+        _fileStorage = fileStorage;
     }
 
     [HttpPost]
     [Microsoft.AspNetCore.Authorization.Authorize]
-    public async Task<IActionResult> CreateOffer([FromBody] CreateOfferRequest request)
+    public async Task<IActionResult> CreateOffer([FromForm] CreateOfferRequest request)
     {
         // TODO: Validate that the logged in user is the owner of the SellerId provided
         // For now, we trust the request but we really should fetch Seller by UserId
+        
+        string pictureUrl = request.PictureUrl;
+
+        if (request.PictureFile != null && request.PictureFile.Length > 0)
+        {
+            pictureUrl = await _fileStorage.SaveFileAsync(request.PictureFile, "offers");
+        }
         
         var command = new CreateOfferCommand(
             request.SellerId,
@@ -34,7 +43,7 @@ public class OffersController : ControllerBase
             request.OriginalPriceCurrency,
             request.StartDate,
             request.EndDate,
-            request.PictureUrl
+            pictureUrl ?? "" // Ensure not null as Command expects string
         );
 
         var offerId = await _sender.Send(command);

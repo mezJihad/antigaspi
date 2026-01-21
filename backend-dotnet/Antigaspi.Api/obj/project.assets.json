@@ -1209,7 +1209,10 @@
         },
         "runtime": {
           "bin/placeholder/Antigaspi.Application.dll": {}
-        }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
       },
       "Antigaspi.Domain/1.0.0": {
         "type": "project",

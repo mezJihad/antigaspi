@@ -170,3 +170,4 @@ C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigas
 C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Api\obj\Debug\net10.0\Antigaspi.Api.pdb
 C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Api\obj\Debug\net10.0\Antigaspi.Api.genruntimeconfig.cache
 C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Api\obj\Debug\net10.0\ref\Antigaspi.Api.dll
+C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Api\bin\Debug\net10.0\Antigaspi.Api.staticwebassets.runtime.json

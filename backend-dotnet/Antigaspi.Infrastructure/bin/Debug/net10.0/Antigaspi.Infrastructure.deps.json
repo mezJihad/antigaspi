@@ -395,8 +395,7 @@
           "Microsoft.IdentityModel.JsonWebTokens": "8.15.0",
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "7.7.1",
           "Microsoft.SqlServer.Server": "1.0.0",
-          "System.Configuration.ConfigurationManager": "9.0.4",
-          "System.Security.Cryptography.Pkcs": "9.0.4"
+          "System.Configuration.ConfigurationManager": "9.0.4"
         },
         "runtime": {
           "lib/net9.0/Microsoft.Data.SqlClient.dll": {
@@ -908,33 +907,10 @@
       },
       "System.Configuration.ConfigurationManager/9.0.4": {
         "dependencies": {
-          "System.Diagnostics.EventLog": "9.0.4",
           "System.Security.Cryptography.ProtectedData": "9.0.4"
         },
         "runtime": {
           "lib/net9.0/System.Configuration.ConfigurationManager.dll": {
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.425.16305"
-          }
-        }
-      },
-      "System.Diagnostics.EventLog/9.0.4": {
-        "runtime": {
-          "lib/net9.0/System.Diagnostics.EventLog.dll": {
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.425.16305"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/win/lib/net9.0/System.Diagnostics.EventLog.Messages.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "0.0.0.0"
-          },
-          "runtimes/win/lib/net9.0/System.Diagnostics.EventLog.dll": {
-            "rid": "win",
-            "assetType": "runtime",
             "assemblyVersion": "9.0.0.0",
             "fileVersion": "9.0.425.16305"
           }
@@ -960,22 +936,6 @@
           }
         }
       },
-      "System.Security.Cryptography.Pkcs/9.0.4": {
-        "runtime": {
-          "lib/net9.0/System.Security.Cryptography.Pkcs.dll": {
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.425.16305"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/win/lib/net9.0/System.Security.Cryptography.Pkcs.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.425.16305"
-          }
-        }
-      },
       "System.Security.Cryptography.ProtectedData/9.0.4": {
         "runtime": {
           "lib/net9.0/System.Security.Cryptography.ProtectedData.dll": {
@@ -987,8 +947,7 @@
       "Antigaspi.Application/1.0.0": {
         "dependencies": {
           "Antigaspi.Domain": "1.0.0",
-          "MediatR": "14.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.2"
+          "MediatR": "14.0.0"
         },
         "runtime": {
           "Antigaspi.Application.dll": {
@@ -1405,13 +1364,6 @@
       "path": "system.configuration.configurationmanager/9.0.4",
       "hashPath": "system.configuration.configurationmanager.9.0.4.nupkg.sha512"
     },
-    "System.Diagnostics.EventLog/9.0.4": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-getRQEXD8idlpb1KW56XuxImMy0FKp2WJPDf3Qr0kI/QKxxJSftqfDFVo0DZ3HCJRLU73qHSruv5q2l5O47jQQ==",
-      "path": "system.diagnostics.eventlog/9.0.4",
-      "hashPath": "system.diagnostics.eventlog.9.0.4.nupkg.sha512"
-    },
     "System.IdentityModel.Tokens.Jwt/8.15.0": {
       "type": "package",
       "serviceable": true,
@@ -1425,13 +1377,6 @@
       "sha512": "sha512-BVYuec3jV23EMRDeR7Dr1/qhx7369dZzJ9IWy2xylvb4YfXsrUxspWc4UWYid/tj4zZK58uGZqn2WQiaDMhmAg==",
       "path": "system.memory.data/8.0.1",
       "hashPath": "system.memory.data.8.0.1.nupkg.sha512"
-    },
-    "System.Security.Cryptography.Pkcs/9.0.4": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-cUFTcMlz/Qw9s90b2wnWSCvHdjv51Bau9FQqhsr4TlwSe1OX+7SoXUqphis5G74MLOvMOCghxPPlEqOdCrVVGA==",
-      "path": "system.security.cryptography.pkcs/9.0.4",
-      "hashPath": "system.security.cryptography.pkcs.9.0.4.nupkg.sha512"
     },
     "System.Security.Cryptography.ProtectedData/9.0.4": {
       "type": "package",

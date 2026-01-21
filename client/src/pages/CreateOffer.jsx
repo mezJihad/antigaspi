@@ -20,6 +20,8 @@ export default function CreateOffer() {
         pictureUrl: ''
     });
 
+    const [imageMode, setImageMode] = useState('file'); // 'file' or 'url'
+    const [imageFile, setImageFile] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
@@ -27,7 +29,7 @@ export default function CreateOffer() {
         setLoading(true);
 
         try {
-            // Fetch Seller ID (Keep existing logic or improve context later)
+            // Fetch Seller ID
             const sellerRes = await fetch('http://localhost:5131/api/Sellers/me', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -42,20 +44,36 @@ export default function CreateOffer() {
                 return;
             }
 
+            // Build FormData
+            const body = new FormData();
+            body.append('sellerId', sellerId);
+            body.append('title', formData.title);
+            body.append('description', formData.description);
+            body.append('priceAmount', formData.priceAmount);
+            body.append('priceCurrency', 'MAD');
+            body.append('originalPriceAmount', formData.originalPriceAmount);
+            body.append('originalPriceCurrency', 'MAD');
+            body.append('startDate', formData.startDate);
+            if (formData.endDate) body.append('endDate', formData.endDate);
+
+            if (imageMode === 'url') {
+                body.append('pictureUrl', formData.pictureUrl);
+            } else if (imageFile) {
+                body.append('pictureFile', imageFile);
+                body.append('pictureUrl', ''); // Optional: Backend might need non-null string
+            } else {
+                // Determine what to do if neither is selected (e.g., default image or error)
+                // For now, let's assume one is required by frontend validation
+                body.append('pictureUrl', '');
+            }
+
             const response = await fetch('http://localhost:5131/api/Offers', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
+                    // Content-Type must strictly NOT be set to allow browser to set boundary
                 },
-                body: JSON.stringify({
-                    ...formData,
-                    sellerId: sellerId,
-                    priceCurrency: 'MAD',
-                    originalPriceCurrency: 'MAD',
-                    // Ensure endDate is null if empty string
-                    endDate: formData.endDate || null
-                })
+                body: body
             });
 
             if (response.ok) {
@@ -188,28 +206,79 @@ export default function CreateOffer() {
                             </div>
                         </div>
 
-                        {/* Picture URL */}
+                        {/* Picture Input (File or URL) */}
                         <div>
-                            <label className='block text-sm font-medium text-gray-700 mb-1'>Illustration (URL)</label>
-                            <div className='relative'>
-                                <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400'>
-                                    <ImageIcon size={18} />
-                                </div>
-                                <input
-                                    type='url'
-                                    placeholder='https://exemple.com/image.jpg'
-                                    className='block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition'
-                                    value={formData.pictureUrl}
-                                    onChange={e => setFormData({ ...formData, pictureUrl: e.target.value })}
-                                />
+                            <label className='block text-sm font-medium text-gray-700 mb-2'>Illustration</label>
+
+                            <div className="flex gap-4 mb-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setImageMode('file')}
+                                    className={`flex-1 py-2 text-sm font-medium rounded-lg border ${imageMode === 'file' ? 'bg-green-50 border-green-500 text-green-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'} transition-colors`}
+                                >
+                                    Téléverser une image
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setImageMode('url')}
+                                    className={`flex-1 py-2 text-sm font-medium rounded-lg border ${imageMode === 'url' ? 'bg-green-50 border-green-500 text-green-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'} transition-colors`}
+                                >
+                                    Lien URL
+                                </button>
                             </div>
+
+                            {imageMode === 'url' ? (
+                                <div className='relative'>
+                                    <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400'>
+                                        <ImageIcon size={18} />
+                                    </div>
+                                    <input
+                                        type='url'
+                                        required={imageMode === 'url'}
+                                        placeholder='https://exemple.com/image.jpg'
+                                        className='block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition'
+                                        value={formData.pictureUrl}
+                                        onChange={e => setFormData({ ...formData, pictureUrl: e.target.value })}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-green-500 transition-colors cursor-pointer bg-gray-50 hover:bg-white relative">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        required={imageMode === 'file'}
+                                        onChange={(e) => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                setImageFile(e.target.files[0]);
+                                            }
+                                        }}
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    />
+                                    <div className="space-y-1 text-center">
+                                        <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
+                                        <div className="flex text-sm text-gray-600 justify-center">
+                                            <span className="relative font-medium text-green-600 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500 truncate max-w-xs">
+                                                {imageFile ? imageFile.name : 'Cliquez pour choisir un fichier'}
+                                            </span>
+                                        </div>
+                                        <p className="text-xs text-gray-500">PNG, JPG, GIF jusqu'à 5MB</p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
-                        <div className='pt-4'>
+                        <div className='pt-4 flex gap-4'>
+                            <button
+                                type='button'
+                                onClick={() => navigate('/dashboard')}
+                                className='w-full sm:w-1/3 flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition'
+                            >
+                                Annuler
+                            </button>
                             <button
                                 type='submit'
                                 disabled={loading}
-                                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                className={`w-full sm:w-2/3 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                             >
                                 {loading ? 'Publication en cours...' : 'Publier mon annonce'}
                             </button>

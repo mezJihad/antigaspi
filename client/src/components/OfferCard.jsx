@@ -23,10 +23,17 @@ const OfferCard = ({ offer }) => {
             }}
         >
             <div style={{ position: 'relative', height: '160px', backgroundColor: '#eee' }}>
-                {/* Placeholder for image */}
-                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', background: '#e0e0e0' }}>
-                    Image Produit
-                </div>
+                {offer.pictureUrl ? (
+                    <img
+                        src={offer.pictureUrl}
+                        alt={offer.title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                ) : (
+                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', background: '#e0e0e0' }}>
+                        Image Produit
+                    </div>
+                )}
                 <div style={{
                     position: 'absolute',
                     top: '0.5rem',

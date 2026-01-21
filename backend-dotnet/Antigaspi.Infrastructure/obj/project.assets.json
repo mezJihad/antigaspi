@@ -1360,15 +1360,17 @@
         "framework": ".NETCoreApp,Version=v10.0",
         "dependencies": {
           "Antigaspi.Domain": "1.0.0",
-          "MediatR": "14.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.1"
+          "MediatR": "14.0.0"
         },
         "compile": {
           "bin/placeholder/Antigaspi.Application.dll": {}
         },
         "runtime": {
           "bin/placeholder/Antigaspi.Application.dll": {}
-        }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
       },
       "Antigaspi.Domain/1.0.0": {
         "type": "project",

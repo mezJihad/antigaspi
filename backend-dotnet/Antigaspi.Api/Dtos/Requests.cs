@@ -1,5 +1,7 @@
 namespace Antigaspi.Api.Dtos;
 
+using Microsoft.AspNetCore.Http;
+
 public record RegisterSellerRequest(
     Guid UserId,
     string StoreName,
@@ -19,7 +21,8 @@ public record CreateOfferRequest(
     string OriginalPriceCurrency,
     DateTime StartDate,
     DateTime? EndDate,
-    string PictureUrl
+    string? PictureUrl,
+    IFormFile? PictureFile
 );
 
 public record ReasonRequest(string Reason);

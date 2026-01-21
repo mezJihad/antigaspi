@@ -29,6 +29,10 @@ public static class DependencyInjection
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.Configure<Antigaspi.Infrastructure.Authentication.JwtSettings>(configuration.GetSection(Antigaspi.Infrastructure.Authentication.JwtSettings.SectionName));
 
+        // File Storage
+        services.AddHttpContextAccessor();
+        services.AddScoped<Antigaspi.Application.Common.Interfaces.IFileStorageService, Antigaspi.Infrastructure.Services.FileStorage.LocalFileStorageService>();
+
         return services;
     }
 }
