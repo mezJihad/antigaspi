@@ -39,4 +39,13 @@ public class SqlOfferRepository : IOfferRepository
             .Include(o => o.Seller)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<IEnumerable<Offer>> GetBySellerIdAsync(Guid sellerId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Offers
+           .Where(o => o.SellerId == sellerId)
+           .Include(o => o.StatusHistory)
+           .Include(o => o.Seller) // Optional if we already know the seller
+           .ToListAsync(cancellationToken);
+    }
 }

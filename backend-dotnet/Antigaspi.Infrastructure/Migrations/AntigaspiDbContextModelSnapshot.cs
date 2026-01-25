@@ -28,12 +28,18 @@ namespace Antigaspi.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
                     b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PictureUrl")
@@ -254,6 +260,14 @@ namespace Antigaspi.Infrastructure.Migrations
                                 .HasMaxLength(100)
                                 .HasColumnType("nvarchar(100)")
                                 .HasColumnName("Country");
+
+                            b1.Property<double?>("Latitude")
+                                .HasColumnType("float")
+                                .HasColumnName("Latitude");
+
+                            b1.Property<double?>("Longitude")
+                                .HasColumnType("float")
+                                .HasColumnName("Longitude");
 
                             b1.Property<string>("Street")
                                 .IsRequired()

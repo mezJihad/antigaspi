@@ -11,7 +11,9 @@ public record RegisterSellerCommand(
     string Street,
     string City,
     string ZipCode,
-    string Description
+    string Description,
+    double? Latitude,
+    double? Longitude
 ) : IRequest<Guid>;
 
 public class RegisterSellerCommandHandler : IRequestHandler<RegisterSellerCommand, Guid>
@@ -38,7 +40,7 @@ public class RegisterSellerCommandHandler : IRequestHandler<RegisterSellerComman
         }
 
         // 2. Create Address VO
-        var address = new Address(request.Street, request.City, request.ZipCode);
+        var address = new Address(request.Street, request.City, request.ZipCode, "France", request.Latitude, request.Longitude);
 
         // 3. Create Seller Entity
         var seller = Seller.Create(

@@ -15,6 +15,8 @@ public record CreateOfferCommand(
     string OriginalPriceCurrency,
     DateTime StartDate,
     DateTime? EndDate,
+    DateTime ExpirationDate,
+    Antigaspi.Domain.Enums.OfferCategory Category,
     string PictureUrl
 ) : IRequest<Guid>;
 
@@ -55,6 +57,8 @@ public class CreateOfferCommandHandler : IRequestHandler<CreateOfferCommand, Gui
             originalPrice,
             request.StartDate,
             request.EndDate,
+            request.ExpirationDate,
+            request.Category,
             request.PictureUrl
         );
 

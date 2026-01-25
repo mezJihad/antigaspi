@@ -36,7 +36,9 @@ public class SellersController : ControllerBase
             updatedRequest.Street,
             updatedRequest.City,
             updatedRequest.ZipCode,
-            updatedRequest.Description
+            updatedRequest.Description,
+            updatedRequest.Latitude,
+            updatedRequest.Longitude
         );
 
         var sellerId = await _sender.Send(command);
@@ -77,5 +79,29 @@ public class SellersController : ControllerBase
         }
 
         return Ok(SellerResponse.FromEntity(seller));
+    }
+
+    [HttpGet("me/offers")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public async Task<IActionResult> GetMeOffers()
+    {
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier) 
+                          ?? User.Claims.FirstOrDefault(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
+                          
+        if (userIdClaim == null) return Unauthorized();
+        
+        var userId = Guid.Parse(userIdClaim.Value);
+
+        // 1. Get Seller ID from User ID
+        var sellerQuery = new GetSellerByUserIdQuery(userId);
+        var seller = await _sender.Send(sellerQuery);
+        
+        if (seller == null) return NotFound("Seller profile not found");
+
+        // 2. Get Offers
+        var query = new GetSellerOffersQuery(seller.Id);
+        var offers = await _sender.Send(query);
+
+        return Ok(offers.Select(OfferResponse.FromEntity));
     }
 }

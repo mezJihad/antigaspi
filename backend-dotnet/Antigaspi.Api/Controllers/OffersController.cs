@@ -43,6 +43,8 @@ public class OffersController : ControllerBase
             request.OriginalPriceCurrency,
             request.StartDate,
             request.EndDate,
+            request.ExpirationDate,
+            request.Category,
             pictureUrl ?? "" // Ensure not null as Command expects string
         );
 
@@ -62,9 +64,9 @@ public class OffersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllOffers()
+    public async Task<IActionResult> GetAllOffers([FromQuery] Antigaspi.Domain.Enums.OfferCategory? category)
     {
-        var query = new GetAllOffersQuery();
+        var query = new GetAllOffersQuery(category);
         var offers = await _sender.Send(query);
         return Ok(offers.Select(OfferResponse.FromEntity));
     }

@@ -20,6 +20,8 @@ public class SellerConfiguration : IEntityTypeConfiguration<Seller>
             a.Property(aa => aa.City).HasColumnName("City").HasMaxLength(100);
             a.Property(aa => aa.ZipCode).HasColumnName("ZipCode").HasMaxLength(20);
             a.Property(aa => aa.Country).HasColumnName("Country").HasMaxLength(100);
+            a.Property(aa => aa.Latitude).HasColumnName("Latitude");
+            a.Property(aa => aa.Longitude).HasColumnName("Longitude");
         });
 
         builder.HasOne<User>()

@@ -25,9 +25,16 @@ export default function Dashboard() {
                 }
             } catch (e) { console.error("Error fetching seller:", e); }
 
-            // Fetch Offers
+        }
+        fetchData();
+    }, [token]);
+
+    // Fetch My Offers separately
+    useEffect(() => {
+        async function fetchMyOffers() {
+            if (!token || !mySellerId) return;
             try {
-                const offersRes = await fetch('http://localhost:5131/api/Offers', {
+                const offersRes = await fetch('http://localhost:5131/api/Sellers/me/offers', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (offersRes.ok) {
@@ -36,10 +43,10 @@ export default function Dashboard() {
                 }
             } catch (e) { console.error(e); }
         }
-        fetchData();
-    }, [token]);
+        fetchMyOffers();
+    }, [token, mySellerId]);
 
-    const myOffers = offers.filter(o => o.sellerId === mySellerId);
+    const myOffers = offers; // Already filtered by backend
 
     return (
         <div className='p-8 max-w-7xl mx-auto'>
@@ -103,13 +110,16 @@ export default function Dashboard() {
                                     </div>
                                     <div className='text-right'>
                                         <span className='text-xs text-gray-400 uppercase font-semibold'>Validité</span>
-                                        <div className="text-sm font-medium text-gray-700">
-                                            du {new Date(offer.startDate).toLocaleDateString()}
+                                        <div className="text-sm font-medium text-gray-700 flex flex-col items-end">
+                                            <span>du {new Date(offer.startDate).toLocaleDateString()}</span>
                                             {offer.endDate && (
-                                                <>
-                                                    <br />au {new Date(offer.endDate).toLocaleDateString()}
-                                                </>
+                                                <span>au {new Date(offer.endDate).toLocaleDateString()}</span>
                                             )}
+
+                                            {/* DLC Display */}
+                                            <div className="mt-1 text-xs font-bold text-red-500 flex items-center gap-1">
+                                                <span>⚠️ DLC: {new Date(offer.expirationDate).toLocaleDateString()}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

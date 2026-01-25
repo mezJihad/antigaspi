@@ -8,7 +8,9 @@ public record RegisterSellerRequest(
     string Street,
     string City,
     string ZipCode,
-    string Description
+    string Description,
+    double? Latitude,
+    double? Longitude
 );
 
 public record CreateOfferRequest(
@@ -21,6 +23,8 @@ public record CreateOfferRequest(
     string OriginalPriceCurrency,
     DateTime StartDate,
     DateTime? EndDate,
+    DateTime ExpirationDate,
+    Antigaspi.Domain.Enums.OfferCategory Category,
     string? PictureUrl,
     IFormFile? PictureFile
 );

@@ -3991,23 +3991,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\j.mezouari\\.nuget\\packages\\": {},
+    "C:\\Users\\HP\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\Antigaspi.Infrastructure.csproj",
+      "projectUniqueName": "C:\\Users\\HP\\source\\repos\\AntiGaspi\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\Antigaspi.Infrastructure.csproj",
       "projectName": "Antigaspi.Infrastructure",
-      "projectPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\Antigaspi.Infrastructure.csproj",
-      "packagesPath": "C:\\Users\\j.mezouari\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\obj\\",
+      "projectPath": "C:\\Users\\HP\\source\\repos\\AntiGaspi\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\Antigaspi.Infrastructure.csproj",
+      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\HP\\source\\repos\\AntiGaspi\\antigaspi\\backend-dotnet\\Antigaspi.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\j.mezouari\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4016,17 +4016,18 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj": {
-              "projectPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj"
+            "C:\\Users\\HP\\source\\repos\\AntiGaspi\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj": {
+              "projectPath": "C:\\Users\\HP\\source\\repos\\AntiGaspi\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj"
             },
-            "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Domain\\Antigaspi.Domain.csproj": {
-              "projectPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Domain\\Antigaspi.Domain.csproj"
+            "C:\\Users\\HP\\source\\repos\\AntiGaspi\\antigaspi\\backend-dotnet\\Antigaspi.Domain\\Antigaspi.Domain.csproj": {
+              "projectPath": "C:\\Users\\HP\\source\\repos\\AntiGaspi\\antigaspi\\backend-dotnet\\Antigaspi.Domain\\Antigaspi.Domain.csproj"
             }
           }
         }
@@ -4086,7 +4087,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",

@@ -4,6 +4,29 @@ import { MapPin, Clock } from 'lucide-react';
 const OfferCard = ({ offer }) => {
     const discount = Math.round(((offer.originalPrice - offer.price) / offer.originalPrice) * 100);
 
+    const getCategoryLabel = (cat) => {
+        const labels = [
+            '🥖 Boulangerie',
+            '🍎 Fruits & Légumes',
+            '🥩 Viandes & Poissons',
+            '🧀 Produits Laitiers',
+            '🍱 Plats Cuisinés',
+            '🥫 Épicerie',
+            '🎁 Panier Surprise',
+            'Autre'
+        ];
+        // Handle string enum or index
+        if (typeof cat === 'string') {
+            // If backend sends string enum name (e.g. "Bakery")
+            const map = {
+                'Bakery': 0, 'Produce': 1, 'MeatFish': 2, 'Dairy': 3,
+                'Prepared': 4, 'Grocery': 5, 'Surprise': 6, 'Other': 7
+            };
+            return labels[map[cat] ?? 7];
+        }
+        return labels[cat] || 'Produit';
+    };
+
     return (
         <div style={{
             backgroundColor: 'white',
@@ -47,6 +70,22 @@ const OfferCard = ({ offer }) => {
                 }}>
                     -{discount}%
                 </div>
+
+                {/* Category Badge */}
+                <div style={{
+                    position: 'absolute',
+                    top: '0.5rem',
+                    left: '0.5rem',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    color: '#333',
+                    padding: '0.25rem 0.5rem',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}>
+                    {getCategoryLabel(offer.category)}
+                </div>
             </div>
 
             <div style={{ padding: '1rem' }}>
@@ -62,8 +101,23 @@ const OfferCard = ({ offer }) => {
                     <span style={{ margin: '0 0.25rem' }}>•</span>
                     <Clock size={14} />
                     <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
-                        <span>Du {new Date(offer.startDate).toLocaleDateString()}</span>
-                        {offer.endDate && <span>au {new Date(offer.endDate).toLocaleDateString()}</span>}
+                        {/* Validity Period */}
+                        <span>Valide jusqu'au {offer.endDate
+                            ? new Date(offer.endDate).toLocaleDateString()
+                            : '...'}</span>
+
+                        {/* Expiration Date (DLC) - HIGHLIGHTED */}
+                        <div style={{
+                            marginTop: '0.25rem',
+                            color: '#ef4444',
+                            fontWeight: '600',
+                            fontSize: '0.8rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.25rem'
+                        }}>
+                            <span>⚠️ DLC : {new Date(offer.expirationDate).toLocaleDateString()}</span>
+                        </div>
                     </div>
                 </div>
 

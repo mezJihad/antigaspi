@@ -6,8 +6,10 @@ public class Address
     public string City { get; }
     public string ZipCode { get; }
     public string Country { get; }
+    public double? Latitude { get; }
+    public double? Longitude { get; }
 
-    public Address(string street, string city, string zipCode, string country = "France")
+    public Address(string street, string city, string zipCode, string country = "France", double? latitude = null, double? longitude = null)
     {
         if (string.IsNullOrWhiteSpace(street) || string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(zipCode))
         {
@@ -18,6 +20,8 @@ public class Address
         City = city;
         ZipCode = zipCode;
         Country = country;
+        Latitude = latitude;
+        Longitude = longitude;
     }
 
     public override string ToString()

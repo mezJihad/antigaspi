@@ -10,13 +10,26 @@ export default function CreateOffer() {
     // Default startDate to today YYYY-MM-DD
     const today = new Date().toISOString().split('T')[0];
 
+    const CAT_OPTIONS = [
+        { value: 0, label: '🥖 Boulangerie & Pâtisserie' },
+        { value: 1, label: '🍎 Fruits & Légumes' },
+        { value: 2, label: '🥩 Viandes & Poissons' },
+        { value: 3, label: '🧀 Produits Laitiers' },
+        { value: 4, label: '🍱 Plats Cuisinés' },
+        { value: 5, label: '🥫 Épicerie' },
+        { value: 6, label: '🎁 Panier Surprise' },
+        { value: 7, label: 'Autre' }
+    ];
+
     const [formData, setFormData] = useState({
         title: '',
         description: '',
+        category: 0, // Default to Bakery
         priceAmount: '',
         originalPriceAmount: '',
         startDate: today,
         endDate: '',
+        expirationDate: '',
         pictureUrl: ''
     });
 
@@ -49,12 +62,14 @@ export default function CreateOffer() {
             body.append('sellerId', sellerId);
             body.append('title', formData.title);
             body.append('description', formData.description);
+            body.append('category', formData.category);
             body.append('priceAmount', formData.priceAmount);
             body.append('priceCurrency', 'MAD');
             body.append('originalPriceAmount', formData.originalPriceAmount);
             body.append('originalPriceCurrency', 'MAD');
             body.append('startDate', formData.startDate);
             if (formData.endDate) body.append('endDate', formData.endDate);
+            body.append('expirationDate', formData.expirationDate);
 
             if (imageMode === 'url') {
                 body.append('pictureUrl', formData.pictureUrl);
@@ -135,6 +150,19 @@ export default function CreateOffer() {
                                     onChange={e => setFormData({ ...formData, description: e.target.value })}
                                 />
                             </div>
+
+                            <div>
+                                <label className='block text-sm font-medium text-gray-700 mb-1'>Catégorie</label>
+                                <select
+                                    className='block w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition bg-white'
+                                    value={formData.category}
+                                    onChange={e => setFormData({ ...formData, category: parseInt(e.target.value) })}
+                                >
+                                    {CAT_OPTIONS.map(opt => (
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
 
                         {/* Prices */}
@@ -202,6 +230,18 @@ export default function CreateOffer() {
                                         onChange={e => setFormData({ ...formData, endDate: e.target.value })}
                                     />
                                     <p className='text-xs text-gray-400 mt-1'>Laissez vide pour une durée indéterminée.</p>
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <label className='block text-xs font-medium text-red-500 uppercase mb-1'>Date limite de consommation (DLC) *</label>
+                                    <input
+                                        required
+                                        type='date'
+                                        min={formData.endDate || formData.startDate}
+                                        className='block w-full px-3 py-2 border border-red-200 bg-red-50 rounded-lg focus:ring-red-500 focus:border-red-500 transition'
+                                        value={formData.expirationDate}
+                                        onChange={e => setFormData({ ...formData, expirationDate: e.target.value })}
+                                    />
+                                    <p className='text-xs text-gray-500 mt-1'>Le produit ne doit pas être consommé après cette date.</p>
                                 </div>
                             </div>
                         </div>

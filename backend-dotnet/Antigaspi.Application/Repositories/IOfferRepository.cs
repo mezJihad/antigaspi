@@ -8,5 +8,5 @@ public interface IOfferRepository
     Task AddAsync(Offer offer, CancellationToken cancellationToken = default);
     Task UpdateAsync(Offer offer, CancellationToken cancellationToken = default);
     Task<IEnumerable<Offer>> GetAllAsync(CancellationToken cancellationToken = default);
-    // Add other query methods as needed, e.g. GetBySellerIdAsync
+    Task<IEnumerable<Offer>> GetBySellerIdAsync(Guid sellerId, CancellationToken cancellationToken = default);
 }

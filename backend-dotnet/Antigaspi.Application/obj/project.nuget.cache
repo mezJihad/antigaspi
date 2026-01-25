@@ -1,25 +1,25 @@
 {
   "version": 2,
-  "dgSpecHash": "3m6+vdsIgM0=",
+  "dgSpecHash": "T0DM4JXu6a4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj",
+  "projectFilePath": "C:\\Users\\HP\\source\\repos\\AntiGaspi\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\j.mezouari\\.nuget\\packages\\mediatr\\14.0.0\\mediatr.14.0.0.nupkg.sha512",
-    "C:\\Users\\j.mezouari\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
-    "C:\\Users\\j.mezouari\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.1\\microsoft.extensions.dependencyinjection.abstractions.10.0.1.nupkg.sha512",
-    "C:\\Users\\j.mezouari\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.14.0\\microsoft.identitymodel.abstractions.8.14.0.nupkg.sha512",
-    "C:\\Users\\j.mezouari\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.14.0\\microsoft.identitymodel.jsonwebtokens.8.14.0.nupkg.sha512",
-    "C:\\Users\\j.mezouari\\.nuget\\packages\\microsoft.identitymodel.logging\\8.14.0\\microsoft.identitymodel.logging.8.14.0.nupkg.sha512",
-    "C:\\Users\\j.mezouari\\.nuget\\packages\\microsoft.identitymodel.tokens\\8.14.0\\microsoft.identitymodel.tokens.8.14.0.nupkg.sha512"
+    "C:\\Users\\HP\\.nuget\\packages\\mediatr\\14.0.0\\mediatr.14.0.0.nupkg.sha512",
+    "C:\\Users\\HP\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
+    "C:\\Users\\HP\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.1\\microsoft.extensions.dependencyinjection.abstractions.10.0.1.nupkg.sha512",
+    "C:\\Users\\HP\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.14.0\\microsoft.identitymodel.abstractions.8.14.0.nupkg.sha512",
+    "C:\\Users\\HP\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.14.0\\microsoft.identitymodel.jsonwebtokens.8.14.0.nupkg.sha512",
+    "C:\\Users\\HP\\.nuget\\packages\\microsoft.identitymodel.logging\\8.14.0\\microsoft.identitymodel.logging.8.14.0.nupkg.sha512",
+    "C:\\Users\\HP\\.nuget\\packages\\microsoft.identitymodel.tokens\\8.14.0\\microsoft.identitymodel.tokens.8.14.0.nupkg.sha512"
   ],
   "logs": [
     {
       "code": "NU1510",
       "level": "Warning",
-      "message": "Le PackageReference Microsoft.Extensions.DependencyInjection.Abstractions ne sera pas supprimé. Envisagez de retirer ce package de vos dépendances, car il est probablement inutile.",
-      "projectPath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj",
+      "message": "PackageReference Microsoft.Extensions.DependencyInjection.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "projectPath": "C:\\Users\\HP\\source\\repos\\AntiGaspi\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\j.mezouari\\.gemini\\antigravity\\scratch\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj",
+      "filePath": "C:\\Users\\HP\\source\\repos\\AntiGaspi\\antigaspi\\backend-dotnet\\Antigaspi.Application\\Antigaspi.Application.csproj",
       "libraryId": "Microsoft.Extensions.DependencyInjection.Abstractions",
       "targetGraphs": [
         "net10.0"

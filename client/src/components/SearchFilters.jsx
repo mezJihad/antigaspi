@@ -3,7 +3,19 @@ import { Search } from 'lucide-react';
 
 const SearchFilters = ({ filters, setFilters }) => {
     const cities = ['Toutes', 'Paris', 'Lyon', 'Marseille', 'Bordeaux'];
-    const categories = ['Toutes', 'Boulangerie', 'Primeur', 'Produits Laitiers', 'Viande', 'Épicerie'];
+
+    // Match backend enum values
+    const categories = [
+        { value: 'Toutes', label: 'Toutes' },
+        { value: 0, label: '🥖 Boulangerie' },
+        { value: 1, label: '🍎 Fruits & Légumes' },
+        { value: 2, label: '🥩 Viandes & Poissons' },
+        { value: 3, label: '🧀 Produits Laitiers' },
+        { value: 4, label: '🍱 Plats Cuisinés' },
+        { value: 5, label: '🥫 Épicerie' },
+        { value: 6, label: '🎁 Panier Surprise' },
+        { value: 7, label: 'Autre' }
+    ];
 
     return (
         <div style={{
@@ -61,7 +73,7 @@ const SearchFilters = ({ filters, setFilters }) => {
                         cursor: 'pointer'
                     }}
                 >
-                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                    {categories.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                 </select>
             </div>
         </div>

@@ -45,6 +45,8 @@ public class AntigaspiSeeder
             Money.From(12.00m, "EUR"),
             DateTime.UtcNow,
             null,
+            DateTime.UtcNow.AddDays(2),
+            OfferCategory.Bakery,
             "https://placehold.co/600x400/orange/white?text=Panier+Boulangerie"
         );
         offer1.SubmitForValidation();
@@ -58,6 +60,8 @@ public class AntigaspiSeeder
             Money.From(5.00m, "EUR"),
             DateTime.UtcNow,
             null,
+            DateTime.UtcNow.AddDays(1),
+            OfferCategory.Bakery,
             "https://placehold.co/600x400/brown/white?text=Baguettes"
         );
          offer2.SubmitForValidation();

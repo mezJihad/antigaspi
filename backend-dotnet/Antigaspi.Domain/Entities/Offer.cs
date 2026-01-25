@@ -33,6 +33,8 @@ public class Offer
     public string PictureUrl { get; private set; }
     public DateTime StartDate { get; private set; }
     public DateTime? EndDate { get; private set; }
+    public DateTime ExpirationDate { get; private set; }
+    public OfferCategory Category { get; private set; }
     public OfferStatus Status { get; private set; }
     
     // Encapsulate collection
@@ -50,6 +52,8 @@ public class Offer
         string pictureUrl,
         DateTime startDate,
         DateTime? endDate,
+        DateTime expirationDate,
+        OfferCategory category,
         Guid? id = null,
         OfferStatus status = OfferStatus.DRAFT)
     {
@@ -62,6 +66,8 @@ public class Offer
         PictureUrl = pictureUrl;
         StartDate = startDate;
         EndDate = endDate;
+        ExpirationDate = expirationDate;
+        Category = category;
         Status = status;
         
         ValidateState();
@@ -75,6 +81,8 @@ public class Offer
         Money originalPrice,
         DateTime startDate,
         DateTime? endDate,
+        DateTime expirationDate,
+        OfferCategory category,
         string pictureUrl)
     {
         if (sellerId == Guid.Empty) throw new ArgumentException("Offer requires a sellerId");
@@ -91,6 +99,16 @@ public class Offer
            throw new InvalidOperationException("End date must be after start date");
         }
 
+        // Invariant: ExpirationDate must be after or equal to EndDate (if set) or StartDate
+        if (endDate.HasValue && expirationDate < endDate.Value)
+        {
+            throw new InvalidOperationException("Expiration date must be after or equal to end date");
+        }
+        if (expirationDate <= startDate)
+        {
+            throw new InvalidOperationException("Expiration date must be after start date");
+        }
+
         return new Offer(
             sellerId,
             title,
@@ -100,6 +118,8 @@ public class Offer
             pictureUrl,
             startDate,
             endDate,
+            expirationDate,
+            category,
             null,
             OfferStatus.DRAFT
         );
@@ -145,7 +165,7 @@ public class Offer
         TransitionTo(OfferStatus.CANCELED, userId);
     }
 
-    public void UpdateDetails(string? title, string? description, Money? price, Money? originalPrice)
+    public void UpdateDetails(string? title, string? description, Money? price, Money? originalPrice, DateTime? expirationDate, OfferCategory? category)
     {
         if (Status == OfferStatus.PENDING_VALIDATION)
         {
@@ -177,6 +197,24 @@ public class Offer
             OriginalPrice = originalPrice;
         }
 
+        if (expirationDate.HasValue)
+        {
+            if (EndDate.HasValue && expirationDate.Value < EndDate.Value)
+            {
+                throw new InvalidOperationException("Expiration date must be after or equal to end date");
+            }
+            if (expirationDate.Value <= StartDate)
+            {
+                 throw new InvalidOperationException("Expiration date must be after start date");
+            }
+            ExpirationDate = expirationDate.Value;
+        }
+        
+        if (category.HasValue)
+        {
+            Category = category.Value;
+        }
+
         if (wasPublished)
         {
             TransitionTo(OfferStatus.DRAFT, null, "Reset to draft after modification");
@@ -200,7 +238,8 @@ public class Offer
             string.IsNullOrWhiteSpace(Description) || 
             Price == null || 
             OriginalPrice == null || 
-            StartDate == default)
+            StartDate == default ||
+            ExpirationDate == default)
         {
             throw new InvalidOperationException("Offer incomplete: missing required fields for submission");
         }
