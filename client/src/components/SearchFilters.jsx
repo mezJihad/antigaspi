@@ -2,7 +2,22 @@ import React from 'react';
 import { Search } from 'lucide-react';
 
 const SearchFilters = ({ filters, setFilters }) => {
-    const cities = ['Toutes', 'Paris', 'Lyon', 'Marseille', 'Bordeaux'];
+    const [cities, setCities] = React.useState(['Toutes']);
+
+    React.useEffect(() => {
+        const fetchCities = async () => {
+            try {
+                const response = await fetch('/api/sellers/cities');
+                if (response.ok) {
+                    const data = await response.json();
+                    setCities(['Toutes', ...data]);
+                }
+            } catch (error) {
+                console.error("Error fetching cities", error);
+            }
+        };
+        fetchCities();
+    }, []);
 
     // Match backend enum values
     const categories = [

@@ -104,4 +104,12 @@ public class SellersController : ControllerBase
 
         return Ok(offers.Select(OfferResponse.FromEntity));
     }
+    [HttpGet("cities")]
+    public async Task<IActionResult> GetCities()
+    {
+        // Direct repo access for simple lookup lists is acceptable in CQRS for performance/simplicity
+        // or we could create a GetCitiesQuery. For MVP, direct repo is fine.
+        var cities = await _sellerRepo.GetDistinctCitiesAsync();
+        return Ok(cities);
+    }
 }

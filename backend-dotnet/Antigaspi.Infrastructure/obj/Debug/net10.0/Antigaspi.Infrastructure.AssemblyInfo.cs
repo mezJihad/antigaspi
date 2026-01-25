@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Antigaspi.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc036320abe54dff1eeec620169d1b07438db67e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19e0e79249eef99c7872cfc340e4fa491b7ac3d7")]
 [assembly: System.Reflection.AssemblyProductAttribute("Antigaspi.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Antigaspi.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

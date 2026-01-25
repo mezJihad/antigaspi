@@ -64,9 +64,13 @@ public class OffersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllOffers([FromQuery] Antigaspi.Domain.Enums.OfferCategory? category)
+    public async Task<IActionResult> GetAllOffers(
+        [FromQuery] Antigaspi.Domain.Enums.OfferCategory? category,
+        [FromQuery] double? lat,
+        [FromQuery] double? lon,
+        [FromQuery] string? city)
     {
-        var query = new GetAllOffersQuery(category);
+        var query = new GetAllOffersQuery(category, lat, lon, city);
         var offers = await _sender.Send(query);
         return Ok(offers.Select(OfferResponse.FromEntity));
     }

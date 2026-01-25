@@ -37,6 +37,7 @@ public class SqlOfferRepository : IOfferRepository
          return await _context.Offers
             .Include(o => o.StatusHistory)
             .Include(o => o.Seller)
+                .ThenInclude(s => s.Address)
             .ToListAsync(cancellationToken);
     }
 

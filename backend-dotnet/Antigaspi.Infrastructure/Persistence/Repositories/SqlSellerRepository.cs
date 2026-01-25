@@ -36,4 +36,15 @@ public class SqlSellerRepository : ISellerRepository
         _context.Sellers.Update(seller);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<IEnumerable<string>> GetDistinctCitiesAsync(CancellationToken cancellationToken = default)
+    {
+        // Only return cities where there are offers!
+        return await _context.Offers
+            .Include(o => o.Seller)
+            .Select(o => o.Seller.Address.City)
+            .Distinct()
+            .OrderBy(c => c)
+            .ToListAsync(cancellationToken);
+    }
 }

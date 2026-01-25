@@ -8,4 +8,5 @@ public interface ISellerRepository
     Task<Seller?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
     Task AddAsync(Seller seller, CancellationToken cancellationToken = default);
     Task UpdateAsync(Seller seller, CancellationToken cancellationToken = default);
+    Task<IEnumerable<string>> GetDistinctCitiesAsync(CancellationToken cancellationToken = default);
 }
