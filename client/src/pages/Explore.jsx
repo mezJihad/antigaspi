@@ -6,7 +6,7 @@ const Explore = () => {
     const [offers, setOffers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [filters, setFilters] = useState({ query: '', city: 'Toutes', category: 'Toutes' });
+    const [filters, setFilters] = useState({ query: '', city: 'Toutes', category: 'Toutes', sortBy: '' });
     const [userLocation, setUserLocation] = useState(null); // { lat: number, lon: number }
     const [isLocating, setIsLocating] = useState(false);
 
@@ -14,33 +14,36 @@ const Explore = () => {
         const fetchOffers = async () => {
             setLoading(true);
             try {
-                const queryParams = new URLSearchParams();
-                if (filters.city !== 'Toutes') queryParams.append('city', filters.city);
-                if (filters.category !== 'Toutes') queryParams.append('category', filters.category);
+                // Build query params
+                const params = new URLSearchParams();
+                if (filters.category && filters.category !== 'Toutes') params.append('category', filters.category);
+                if (filters.city && filters.city !== 'Toutes') params.append('city', filters.city);
+                if (filters.query) params.append('search', filters.query);
+                if (filters.sortBy) params.append('sortBy', filters.sortBy);
 
-                // Add location to query if available for backend sorting
+                // Add location if available
                 if (userLocation) {
-                    queryParams.append('lat', userLocation.lat);
-                    queryParams.append('lon', userLocation.lon);
+                    params.append('lat', userLocation.lat);
+                    params.append('lon', userLocation.lon);
                 }
 
-                const response = await fetch(`/api/offers?${queryParams.toString()}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch offers');
+                const response = await fetch(`/api/offers?${params.toString()}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setOffers(data);
+                } else {
+                    setError('Failed to fetch offers');
                 }
-                const data = await response.json();
-                setOffers(data);
-                setError(null);
             } catch (err) {
-                console.error('Error fetching offers:', err);
-                setError('Impossible de charger les offres. Veuillez réessayer plus tard.');
+                setError('Error fetching data');
+                console.error(err);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchOffers();
-    }, [filters.city, filters.category, userLocation]);
+    }, [filters, userLocation]);
 
     // Handle "Use My Location"
     const handleUseMyLocation = () => {
@@ -91,93 +94,42 @@ const Explore = () => {
         return deg * (Math.PI / 180);
     };
 
-    const filteredOffers = offers.filter(offer => {
-        return offer.title.toLowerCase().includes(filters.query.toLowerCase());
-    });
-
     return (
         <div className="explore-page" style={{ padding: '2rem 1rem', backgroundColor: 'var(--color-bg)', minHeight: '100vh' }}>
             <div className="container">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-                    <h1 style={{ fontSize: '2rem', margin: 0 }}>Découvrez les offres</h1>
+                <SearchFilters
+                    filters={filters}
+                    setFilters={setFilters}
+                    onRequestLocation={handleUseMyLocation}
+                />
 
-                    <div className="flex items-center">
-                        <button
-                            type="button"
-                            onClick={handleUseMyLocation}
-                            disabled={isLocating}
-                            className={`
-                                relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2
-                                ${userLocation ? 'bg-blue-600' : 'bg-gray-200'}
-                            `}
-                            role="switch"
-                            aria-checked={!!userLocation}
-                        >
-                            <span
-                                aria-hidden="true"
-                                className={`
-                                    pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out
-                                    ${userLocation ? 'translate-x-5' : 'translate-x-0'}
-                                `}
-                            />
-                        </button>
-                        <span className="ml-3 text-sm font-medium text-gray-900" onClick={handleUseMyLocation} style={{ cursor: 'pointer' }}>
-                            {isLocating ? 'Localisation...' : userLocation ? 'Trié par proximité' : 'Autour de moi'}
-                        </span>
+                {isLocating && <p>Obtention de la localisation...</p>}
+
+                {loading ? (
+                    <div style={{ textAlign: 'center', padding: '2rem' }}>Chargement des offres...</div>
+                ) : error ? (
+                    <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>
+                ) : (
+                    <div className="offers-grid">
+                        {offers.length === 0 ? (
+                            <p style={{ textAlign: 'center', gridColumn: '1/-1', color: '#666' }}>Aucune offre trouvée pour ces critères.</p>
+                        ) : (
+                            offers.map((offer) => {
+                                const distance = userLocation
+                                    ? getDistanceFromLatLonInKm(userLocation.lat, userLocation.lon, offer.sellerAddress?.latitude, offer.sellerAddress?.longitude)
+                                    : null;
+
+                                return (
+                                    <OfferCard
+                                        key={offer.id}
+                                        offer={offer}
+                                        distance={distance}
+                                    />
+                                );
+                            })
+                        )}
                     </div>
-                </div>
-
-                <SearchFilters filters={filters} setFilters={setFilters} />
-
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                    gap: '2rem'
-                }}>
-                    {loading ? (
-                        <p style={{ gridColumn: '1/-1', textAlign: 'center', fontSize: '1.2rem', marginTop: '2rem' }}>
-                            Chargement des offres...
-                        </p>
-                    ) : error ? (
-                        <p style={{ gridColumn: '1/-1', textAlign: 'center', color: 'red', fontSize: '1.2rem', marginTop: '2rem' }}>
-                            {error}
-                        </p>
-                    ) : filteredOffers.length > 0 ? (
-                        filteredOffers.map(offer => {
-                            // Calculate distance if user location is known
-                            const distance = userLocation
-                                ? getDistanceFromLatLonInKm(userLocation.lat, userLocation.lon, offer.seller?.address?.latitude, offer.seller?.address?.longitude)
-                                : null;
-
-                            return (
-                                <div key={offer._id || offer.id} style={{ position: 'relative' }}>
-                                    <OfferCard offer={offer} />
-                                    {distance && (
-                                        <div style={{
-                                            position: 'absolute',
-                                            top: '10px',
-                                            right: '10px',
-                                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                            padding: '4px 8px',
-                                            borderRadius: '12px',
-                                            fontSize: '0.8rem',
-                                            fontWeight: 'bold',
-                                            color: '#059669',
-                                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                                            zIndex: 10
-                                        }}>
-                                            📍 {distance} km
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })
-                    ) : (
-                        <p style={{ gridColumn: '1/-1', textAlign: 'center', color: '#666', fontSize: '1.2rem', marginTop: '2rem' }}>
-                            Aucune offre trouvée correspondant à vos critères.
-                        </p>
-                    )}
-                </div>
+                )}
             </div>
         </div>
     );

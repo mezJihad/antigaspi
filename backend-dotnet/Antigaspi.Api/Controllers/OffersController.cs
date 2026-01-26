@@ -68,9 +68,11 @@ public class OffersController : ControllerBase
         [FromQuery] Antigaspi.Domain.Enums.OfferCategory? category,
         [FromQuery] double? lat,
         [FromQuery] double? lon,
-        [FromQuery] string? city)
+        [FromQuery] string? city,
+        [FromQuery] string? search,
+        [FromQuery] string? sortBy)
     {
-        var query = new GetAllOffersQuery(category, lat, lon, city);
+        var query = new GetAllOffersQuery(category, lat, lon, city, search, sortBy);
         var offers = await _sender.Send(query);
         return Ok(offers.Select(OfferResponse.FromEntity));
     }
