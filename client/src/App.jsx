@@ -10,6 +10,8 @@ import Dashboard from './pages/Dashboard';
 import SellerRegister from './pages/SellerRegister';
 import CreateOffer from './pages/CreateOffer';
 
+import OfferDetails from './pages/OfferDetails'; // Import
+
 function App() {
   return (
     <Router>
@@ -23,6 +25,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/seller-register" element={<SellerRegister />} />
             <Route path="/create-offer" element={<CreateOffer />} />
+            <Route path="/offers/:id" element={<OfferDetails />} /> {/* New Route */}
           </Routes>
         </div>
       </AuthProvider>

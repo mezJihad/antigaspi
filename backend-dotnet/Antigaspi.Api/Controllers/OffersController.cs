@@ -70,11 +70,22 @@ public class OffersController : ControllerBase
         [FromQuery] double? lon,
         [FromQuery] string? city,
         [FromQuery] string? search,
-        [FromQuery] string? sortBy)
+        [FromQuery] string? sortBy,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 12)
     {
-        var query = new GetAllOffersQuery(category, lat, lon, city, search, sortBy);
-        var offers = await _sender.Send(query);
-        return Ok(offers.Select(OfferResponse.FromEntity));
+        var query = new GetAllOffersQuery(category, lat, lon, city, search, sortBy, page, pageSize);
+        var result = await _sender.Send(query);
+        
+        return Ok(new 
+        {
+            Items = result.Items.Select(OfferResponse.FromEntity),
+            result.TotalCount,
+            result.PageIndex,
+            result.TotalPages,
+            result.HasNextPage,
+            result.HasPreviousPage
+        });
     }
 
     [HttpPost("{id}/submit")]

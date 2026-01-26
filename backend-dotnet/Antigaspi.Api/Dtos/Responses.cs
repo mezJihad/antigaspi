@@ -23,6 +23,7 @@ public record OfferResponse(
     string ShopName,
     string City,
     List<OfferStatusEntryResponse> StatusHistory
+    SellerAddressResponse? SellerAddress
 )
 {
     public static OfferResponse FromEntity(Offer offer) => new(
@@ -42,9 +43,18 @@ public record OfferResponse(
         offer.Status.ToString(),
         offer.Seller?.StoreName ?? "Inconnu",
         offer.Seller?.Address?.City ?? "Inconnu",
-        offer.StatusHistory.Select(h => new OfferStatusEntryResponse(h.Status.ToString(), h.ChangedBy, h.ChangedAt, h.Reason)).ToList()
+        offer.StatusHistory.Select(h => new OfferStatusEntryResponse(h.Status.ToString(), h.ChangedBy, h.ChangedAt, h.Reason)).ToList(),
+        offer.Seller?.Address != null ? new SellerAddressResponse(
+            offer.Seller.Address.Street,
+            offer.Seller.Address.City,
+            offer.Seller.Address.ZipCode,
+            offer.Seller.Address.Latitude,
+            offer.Seller.Address.Longitude
+        ) : null
     );
 }
+
+public record SellerAddressResponse(string Street, string City, string ZipCode, double? Latitude, double? Longitude);
 
 public record OfferStatusEntryResponse(string Status, Guid? ChangedBy, DateTime ChangedAt, string? Reason);
 
