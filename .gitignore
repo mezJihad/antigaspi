@@ -34,3 +34,15 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# .NET / Visual Studio
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+*.dll
+*.exe
+*.pdb
+*.cache
+*.xml
