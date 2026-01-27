@@ -44,7 +44,7 @@ public class SqlOfferRepository : IOfferRepository
     public async Task<IEnumerable<Offer>> GetBySellerIdAsync(Guid sellerId, CancellationToken cancellationToken = default)
     {
         return await _context.Offers
-           .Where(o => o.SellerId == sellerId)
+           .Where(o => o.SellerId == sellerId && o.Status != Domain.Enums.OfferStatus.CANCELED)
            .Include(o => o.StatusHistory)
            .Include(o => o.Seller) // Optional if we already know the seller
            .ToListAsync(cancellationToken);
