@@ -22,7 +22,7 @@ public record OfferResponse(
     string Status,
     string ShopName,
     string City,
-    List<OfferStatusEntryResponse> StatusHistory
+    List<OfferStatusEntryResponse> StatusHistory,
     SellerAddressResponse? SellerAddress
 )
 {

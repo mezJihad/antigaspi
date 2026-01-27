@@ -1,9 +1,11 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { Edit, Trash2 } from 'lucide-react';
 
 export default function Dashboard() {
     const { token } = useAuth();
+    const navigate = useNavigate();
     const [offers, setOffers] = useState([]);
     const [mySellerId, setMySellerId] = useState(null);
     const [sellerProfile, setSellerProfile] = useState(null);
@@ -45,6 +47,35 @@ export default function Dashboard() {
         }
         fetchMyOffers();
     }, [token, mySellerId]);
+
+    const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, offerId: null });
+
+    const openDeleteModal = (offerId) => {
+        setDeleteConfirmation({ show: true, offerId });
+    };
+
+    const confirmDelete = async () => {
+        const { offerId } = deleteConfirmation;
+        if (!offerId) return;
+
+        try {
+            const res = await fetch(`http://localhost:5131/api/Offers/${offerId}/cancel?userId=${sellerProfile.userId}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                setOffers(prev => prev.filter(o => o.id !== offerId));
+                setDeleteConfirmation({ show: false, offerId: null });
+                // Optional: Toast notification here custom
+            } else {
+                alert("Erreur lors de la suppression.");
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Erreur réseau.");
+        }
+    };
 
     const myOffers = offers; // Already filtered by backend
 
@@ -123,6 +154,22 @@ export default function Dashboard() {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end gap-2">
+                                    <button
+                                        onClick={() => navigate(`/edit-offer/${offer.id}`)}
+                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                                        title="Modifier l'offre"
+                                    >
+                                        <Edit size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => openDeleteModal(offer.id)}
+                                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                                        title="Supprimer l'offre"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
                             </div>
                         ))
                     ) : (
@@ -132,11 +179,47 @@ export default function Dashboard() {
                                 Publier ma première offre
                             </Link>
                         </div>
-                    )}
-                </div>
+                    )
+                    }
+                </div >
             ) : (
                 <p className='text-gray-500 italic'>Enregistrez votre boutique pour voir vos offres ici.</p>
             )}
-        </div>
+
+            {/* Delete Confirmation Modal */}
+            {deleteConfirmation.show && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+                        <div className="flex items-center gap-4 mb-4 text-red-600">
+                            <div className="bg-red-100 p-3 rounded-full">
+                                <Trash2 size={24} />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900">Confirmer la suppression</h3>
+                        </div>
+
+                        <p className="text-gray-600 mb-6">
+                            Êtes-vous sûr de vouloir supprimer cette offre ? <br />
+                            <span className="text-sm text-gray-500">Cette action est irréversible et retirera l'offre de la vente immédiatement.</span>
+                        </p>
+
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setDeleteConfirmation({ show: false, offerId: null })}
+                                className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition"
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium shadow-sm transition flex items-center gap-2"
+                            >
+                                <Trash2 size={16} />
+                                Supprimer définitivement
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div >
     );
 }

@@ -26,20 +26,23 @@ public class OffersController : ControllerBase
         // TODO: Validate that the logged in user is the owner of the SellerId provided
         // For now, we trust the request but we really should fetch Seller by UserId
         
-        string pictureUrl = request.PictureUrl;
+        string? pictureUrl = request.PictureUrl;
 
         if (request.PictureFile != null && request.PictureFile.Length > 0)
         {
             pictureUrl = await _fileStorage.SaveFileAsync(request.PictureFile, "offers");
         }
         
+        // Ensure SellerId is present for creation
+        if (!request.SellerId.HasValue) return BadRequest("SellerId is required for creating an offer.");
+
         var command = new CreateOfferCommand(
-            request.SellerId,
+            request.SellerId.Value,
             request.Title,
             request.Description,
             request.PriceAmount,
             request.PriceCurrency,
-            request.OriginalPriceAmount,
+            request.OriginalPriceAmount.GetValueOrDefault(),
             request.OriginalPriceCurrency,
             request.StartDate,
             request.EndDate,
@@ -50,6 +53,36 @@ public class OffersController : ControllerBase
 
         var offerId = await _sender.Send(command);
         return CreatedAtAction(nameof(GetOfferById), new { id = offerId }, new { id = offerId });
+    }
+
+    [HttpPut("{id}")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public async Task<IActionResult> UpdateOffer(Guid id, [FromForm] CreateOfferRequest request)
+    {
+        string? pictureUrl = request.PictureUrl; // Keep existing if not changed, relying on frontend sending it.
+        // Or if uploaded new file:
+        if (request.PictureFile != null && request.PictureFile.Length > 0)
+        {
+            pictureUrl = await _fileStorage.SaveFileAsync(request.PictureFile, "offers");
+        }
+
+        var command = new UpdateOfferCommand(
+            id,
+            request.Title,
+            request.Description,
+            request.PriceAmount,
+            request.PriceCurrency,
+            request.OriginalPriceAmount,
+            request.OriginalPriceCurrency,
+            request.StartDate,
+            request.EndDate,
+            request.ExpirationDate,
+            request.Category,
+            pictureUrl
+        );
+
+        await _sender.Send(command);
+        return NoContent();
     }
 
     [HttpGet("{id}")]

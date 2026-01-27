@@ -40,7 +40,7 @@ public record GetAllOffersQuery(
                 // 2. Is Published
                 (o.Status == Domain.Enums.OfferStatus.PUBLISHED || true) &&
                 // 3. Filter by City
-                (string.IsNullOrEmpty(request.City) || o.Seller.Address.City == request.City) &&
+                (string.IsNullOrEmpty(request.City) || o.Seller?.Address?.City == request.City) &&
                 // 4. Search functionality
                 (string.IsNullOrEmpty(request.SearchTerm) || 
                  (o.Title != null && o.Title.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase)) ||
@@ -58,8 +58,8 @@ public record GetAllOffersQuery(
                         GetDistance(
                             request.UserLatitude.Value, 
                             request.UserLongitude.Value, 
-                            o.Seller.Address.Latitude ?? 0, 
-                            o.Seller.Address.Longitude ?? 0
+                            o.Seller?.Address?.Latitude ?? 0, 
+                            o.Seller?.Address?.Longitude ?? 0
                         )
                     ).ToList();
                  }
@@ -81,8 +81,8 @@ public record GetAllOffersQuery(
                                 GetDistance(
                                     request.UserLatitude.Value, 
                                     request.UserLongitude.Value, 
-                                    o.Seller.Address.Latitude ?? 0, 
-                                    o.Seller.Address.Longitude ?? 0
+                                    o.Seller?.Address?.Latitude ?? 0, 
+                                    o.Seller?.Address?.Longitude ?? 0
                                 )
                             );
                         }

@@ -201,62 +201,65 @@ public class AntigaspiSeeder
         
         // 6. Extensive Seeding for Other Cities (Agadir, Tanger, Rabat, Marrakech)
         // Check if we already have data for these cities to avoid duplication
-        var rabatUser = await context.Users.FirstOrDefaultAsync(u => u.Email == "seller.rabat@antigaspi.test");
-        if (rabatUser == null)
+        // 6. Extensive Seeding for Other Cities (Agadir, Tanger, Rabat, Marrakech)
+        var cities = new[]
         {
-            var cities = new[]
-            {
-                new { Name = "Rabat", Zip = "10000", Lat = 34.0209, Lon = -6.8416 },
-                new { Name = "Tanger", Zip = "90000", Lat = 35.7595, Lon = -5.8340 },
-                new { Name = "Marrakech", Zip = "40000", Lat = 31.6295, Lon = -7.9811 },
-                new { Name = "Agadir", Zip = "80000", Lat = 30.4278, Lon = -9.5981 }
-            };
+            new { Name = "Rabat", Zip = "10000", Lat = 34.0209, Lon = -6.8416 },
+            new { Name = "Tanger", Zip = "90000", Lat = 35.7595, Lon = -5.8340 },
+            new { Name = "Marrakech", Zip = "40000", Lat = 31.6295, Lon = -7.9811 },
+            new { Name = "Agadir", Zip = "80000", Lat = 30.4278, Lon = -9.5981 }
+        };
 
-            var categories = Enum.GetValues<OfferCategory>();
-            var random = new Random();
+        var categories = Enum.GetValues<OfferCategory>();
+        var random = new Random();
 
-            foreach (var city in cities)
+        foreach (var city in cities)
+        {
+            // Create 2 sellers per city
+            for (int s = 1; s <= 2; s++)
             {
-                // Create 2 sellers per city
-                for (int s = 1; s <= 2; s++)
+                var email = $"seller.{city.Name.ToLower()}{s}@antigaspi.test";
+                // Check if user already exists
+                if (await context.Users.AnyAsync(u => u.Email == email))
                 {
-                    var email = $"seller.{city.Name.ToLower()}{s}@antigaspi.test";
-                    var user = User.Create($"Seller{s}", city.Name, email, "hash123", UserRole.SELLER);
-                    await context.Users.AddAsync(user);
-                    
-                    // Address with slight random offset for realism (approx 500m-1km)
-                    var latOffset = (random.NextDouble() - 0.5) * 0.02; 
-                    var lonOffset = (random.NextDouble() - 0.5) * 0.02;
-                    
-                    var address = new Address($"Quartier {city.Name} {s}", city.Name, city.Zip, "Maroc", city.Lat + latOffset, city.Lon + lonOffset);
-                    var newSeller = Seller.Create(user.Id, $"Supermarché {city.Name} {s}", address, $"Le meilleur de l'anti-gaspi à {city.Name}");
-                    newSeller.Approve();
-                    await context.Sellers.AddAsync(newSeller);
+                    continue;
+                }
 
-                    // Create 6-7 offers per seller (Total 4 cities * 2 sellers * ~6 offers = ~48 offers)
-                    int offerCount = random.Next(6, 8); 
-                    for (int i = 0; i < offerCount; i++)
-                    {
-                        var cat = categories[random.Next(categories.Length)];
-                        var price = random.Next(15, 80);
-                        var originalPrice = price * (1.2 + random.NextDouble()); // 20-100% markup
+                var user = User.Create($"Seller{s}", city.Name, email, "hash123", UserRole.SELLER);
+                await context.Users.AddAsync(user);
+                
+                // Address with slight random offset for realism (approx 500m-1km)
+                var latOffset = (random.NextDouble() - 0.5) * 0.02; 
+                var lonOffset = (random.NextDouble() - 0.5) * 0.02;
+                
+                var address = new Address($"Quartier {city.Name} {s}", city.Name, city.Zip, "Maroc", city.Lat + latOffset, city.Lon + lonOffset);
+                var newSeller = Seller.Create(user.Id, $"Supermarché {city.Name} {s}", address, $"Le meilleur de l'anti-gaspi à {city.Name}");
+                newSeller.Approve();
+                await context.Sellers.AddAsync(newSeller);
 
-                        var offer = Offer.Create(
-                            newSeller.Id,
-                            $"Panier {cat} Surprise #{i+1}",
-                            $"Un délicieux panier surprise contenant des produits de la catégorie {cat}. Sauvez la planète !",
-                            Money.From((decimal)price, "MAD"),
-                            Money.From((decimal)originalPrice, "MAD"),
-                            DateTime.UtcNow,
-                            null,
-                            DateTime.UtcNow.AddDays(random.Next(1, 5)),
-                            cat,
-                             $"https://placehold.co/600x400/{GetColorForCategory(cat)}/white?text={cat}+{city.Name}"
-                        );
-                        offer.SubmitForValidation();
-                        offer.Validate(adminUser.Id);
-                        await context.Offers.AddAsync(offer);
-                    }
+                // Create 6-7 offers per seller (Total 4 cities * 2 sellers * ~6 offers = ~48 offers)
+                int offerCount = random.Next(6, 8); 
+                for (int i = 0; i < offerCount; i++)
+                {
+                    var cat = categories[random.Next(categories.Length)];
+                    var price = random.Next(15, 80);
+                    var originalPrice = price * (1.2 + random.NextDouble()); // 20-100% markup
+
+                    var offer = Offer.Create(
+                        newSeller.Id,
+                        $"Panier {cat} Surprise #{i+1}",
+                        $"Un délicieux panier surprise contenant des produits de la catégorie {cat}. Sauvez la planète !",
+                        Money.From((decimal)price, "MAD"),
+                        Money.From((decimal)originalPrice, "MAD"),
+                        DateTime.UtcNow,
+                        null,
+                        DateTime.UtcNow.AddDays(random.Next(1, 5)),
+                        cat,
+                            $"https://placehold.co/600x400/{GetColorForCategory(cat)}/white?text={cat}+{city.Name}"
+                    );
+                    offer.SubmitForValidation();
+                    offer.Validate(adminUser.Id);
+                    await context.Offers.AddAsync(offer);
                 }
             }
         }

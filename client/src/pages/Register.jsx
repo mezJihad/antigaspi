@@ -80,22 +80,13 @@ export default function Register() {
                     alt="Fresh produce"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="relative z-20 flex flex-col justify-between h-full p-12 text-white">
-                    <div>
-                        <div className="flex items-center gap-2 text-2xl font-bold text-green-400">
-                            <Leaf size={32} />
-                            <span>Antigaspi</span>
-                        </div>
-                    </div>
-                    <div className="max-w-md">
+                <div className="relative z-20 flex flex-col h-full p-12 text-white">
+                    <div className="max-w-md my-auto">
                         <h1 className="text-4xl font-bold mb-6 leading-tight">Valorisez vos invendus, touchez de nouveaux clients.</h1>
                         <p className="text-lg text-gray-200 mb-8">Rejoignez la communauté de commerçants qui s'engagent contre le gaspillage alimentaire tout en augmentant leurs revenus.</p>
 
                         <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-green-500/20 rounded-full text-green-400"><CheckCircle2 size={20} /></div>
-                                <span>Installation rapide et gratuite</span>
-                            </div>
+
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-green-500/20 rounded-full text-green-400"><CheckCircle2 size={20} /></div>
                                 <span>Gérez vos offres simplement</span>
@@ -106,7 +97,7 @@ export default function Register() {
                             </div>
                         </div>
                     </div>
-                    <div className="text-sm text-gray-400">© 2024 Antigaspi. Tous droits réservés.</div>
+                    <div className="text-sm text-gray-400 mt-auto">© 2024 Antigaspi. Tous droits réservés.</div>
                 </div>
             </div>
 
@@ -128,11 +119,11 @@ export default function Register() {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
-                                <input name="firstName" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" placeholder="Jean" onChange={handleChange} />
+                                <input name="firstName" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-                                <input name="lastName" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" placeholder="Dupont" onChange={handleChange} />
+                                <input name="lastName" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
                             </div>
                         </div>
 
@@ -140,17 +131,17 @@ export default function Register() {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Email professionnel</label>
-                            <input type="email" name="email" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" placeholder="contact@maboutique.com" onChange={handleChange} />
+                            <input type="email" name="email" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-                            <input type="password" name="password" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" placeholder="••••••••" onChange={handleChange} />
+                            <input type="password" name="password" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
                         </div>
 
                         <div className="flex items-center gap-2">
                             <input type="checkbox" name="termsAccepted" required id="terms" className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer" onChange={handleChange} />
-                            <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">J'accepte les conditions générales de vente</label>
+                            <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">J'accepte les <Link to="/terms" className="text-green-600 hover:underline" target="_blank">conditions générales d'utilisation</Link></label>
                         </div>
 
                         <button

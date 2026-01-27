@@ -14,12 +14,12 @@ public record RegisterSellerRequest(
 );
 
 public record CreateOfferRequest(
-    Guid SellerId,
+    Guid? SellerId,
     string Title,
     string Description,
     decimal PriceAmount,
     string PriceCurrency,
-    decimal OriginalPriceAmount,
+    decimal? OriginalPriceAmount,
     string OriginalPriceCurrency,
     DateTime StartDate,
     DateTime? EndDate,

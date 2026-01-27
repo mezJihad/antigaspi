@@ -38,18 +38,12 @@ export default function Login() {
                     alt="Fresh produce"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="relative z-20 flex flex-col justify-between h-full p-12 text-white">
-                    <div>
-                        <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-green-400 hover:text-green-300 transition-colors">
-                            <Leaf size={32} />
-                            <span>Antigaspi</span>
-                        </Link>
-                    </div>
-                    <div className="max-w-md">
+                <div className="relative z-20 flex flex-col h-full p-12 text-white">
+                    <div className="max-w-md my-auto">
                         <h1 className="text-4xl font-bold mb-6 leading-tight">Bon retour parmi nous.</h1>
-                        <p className="text-lg text-gray-200 mb-8">Connectez-vous à votre espace vendeur pour gérer vos offres et suivre vos ventes.</p>
+                        <p className="text-lg text-gray-200 mb-8">Connectez-vous à votre espace vendeur pour publier et gérer vos offres.</p>
                     </div>
-                    <div className="text-sm text-gray-400">© 2024 Antigaspi. Tous droits réservés.</div>
+                    <div className="text-sm text-gray-400 mt-auto">© 2024 Antigaspi. Tous droits réservés.</div>
                 </div>
             </div>
 
@@ -77,7 +71,6 @@ export default function Login() {
                                 type="email"
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
-                                placeholder="votre@email.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
@@ -91,7 +84,6 @@ export default function Login() {
                                 type="password"
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
-                                placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />

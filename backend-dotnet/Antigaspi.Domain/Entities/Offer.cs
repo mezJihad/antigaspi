@@ -158,14 +158,23 @@ public class Offer
 
     public void Cancel(Guid userId)
     {
-        if (Status != OfferStatus.PUBLISHED)
+        if (Status == OfferStatus.CANCELED || Status == OfferStatus.EXPIRED)
         {
-            throw new InvalidOperationException("Only published offers can be canceled");
+            throw new InvalidOperationException("Offer is already canceled or expired");
         }
         TransitionTo(OfferStatus.CANCELED, userId);
     }
 
-    public void UpdateDetails(string? title, string? description, Money? price, Money? originalPrice, DateTime? expirationDate, OfferCategory? category)
+    public void UpdateDetails(
+        string? title, 
+        string? description, 
+        Money? price, 
+        Money? originalPrice, 
+        DateTime? startDate,
+        DateTime? endDate,
+        DateTime? expirationDate, 
+        OfferCategory? category,
+        string? pictureUrl)
     {
         if (Status == OfferStatus.PENDING_VALIDATION)
         {
@@ -176,7 +185,35 @@ public class Offer
 
         if (!string.IsNullOrWhiteSpace(title)) Title = title;
         if (!string.IsNullOrWhiteSpace(description)) Description = description;
+        if (!string.IsNullOrWhiteSpace(pictureUrl)) PictureUrl = pictureUrl;
 
+        // Date Logic Checks
+        // We need to validate the new combination of dates.
+        // If a date is null (not updated), we use the current value.
+        var newStartDate = startDate ?? StartDate;
+        var newEndDate = endDate ?? EndDate; // can remain null
+        var newExpirationDate = expirationDate ?? ExpirationDate;
+
+        if (newEndDate.HasValue && newEndDate.Value <= newStartDate)
+        {
+            throw new InvalidOperationException("End date must be after start date");
+        }
+        if (newEndDate.HasValue && newExpirationDate < newEndDate.Value)
+        {
+            throw new InvalidOperationException("Expiration date must be after or equal to end date");
+        }
+        if (newExpirationDate <= newStartDate)
+        {
+             throw new InvalidOperationException("Expiration date must be after start date");
+        }
+
+        // Apply Date Changes
+        StartDate = newStartDate;
+        EndDate = newEndDate;
+        ExpirationDate = newExpirationDate;
+
+
+        // Price Logic
         if (price != null && originalPrice != null)
         {
              if (!price.IsLessThan(originalPrice))
@@ -187,27 +224,12 @@ public class Offer
              OriginalPrice = originalPrice;
         }
         else if (price != null) {
-            // Check against current original
             if (!price.IsLessThan(OriginalPrice)) throw new InvalidOperationException("Offer price must be lower than original price");
             Price = price;
         }
         else if (originalPrice != null) {
-            // Check against current price
             if (!Price.IsLessThan(originalPrice)) throw new InvalidOperationException("Offer price must be lower than original price");
             OriginalPrice = originalPrice;
-        }
-
-        if (expirationDate.HasValue)
-        {
-            if (EndDate.HasValue && expirationDate.Value < EndDate.Value)
-            {
-                throw new InvalidOperationException("Expiration date must be after or equal to end date");
-            }
-            if (expirationDate.Value <= StartDate)
-            {
-                 throw new InvalidOperationException("Expiration date must be after start date");
-            }
-            ExpirationDate = expirationDate.Value;
         }
         
         if (category.HasValue)
@@ -215,9 +237,15 @@ public class Offer
             Category = category.Value;
         }
 
+        // If it was published, we might want to keep it published IF only minor edits? 
+        // For safety, let's keep the logic: modify = draft. 
+        // OR if the user expects "live edit", we should allow it.
+        // Let's decide: Text/Price updates reset to DRAFT for re-validation? 
+        // For MVP speed, let's say updates are trusted for now (Antigaspi trust model), OR reset to draft.
+        // The previous code reset to DRAFT. I will keep it for safety.
         if (wasPublished)
         {
-            TransitionTo(OfferStatus.DRAFT, null, "Reset to draft after modification");
+             TransitionTo(OfferStatus.DRAFT, null, "Reset to draft after modification");
         }
     }
 
