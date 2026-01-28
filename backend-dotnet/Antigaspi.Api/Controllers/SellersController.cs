@@ -104,6 +104,64 @@ public class SellersController : ControllerBase
 
         return Ok(offers.Select(OfferResponse.FromEntity));
     }
+    [HttpPut("{id}")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public async Task<IActionResult> UpdateSeller(Guid id, [FromBody] UpdateSellerRequest request)
+    {
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier) 
+                          ?? User.Claims.FirstOrDefault(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
+
+        if (userIdClaim == null) return Unauthorized();
+        var userId = Guid.Parse(userIdClaim.Value);
+
+        // Security Check: Ensure the user owns this seller profile (or is admin)
+        var sellerQuery = new GetSellerByUserIdQuery(userId);
+        var seller = await _sender.Send(sellerQuery);
+
+        if (seller == null || seller.Id != id)
+        {
+            return Forbid();
+        }
+
+        var command = new UpdateSellerCommand(
+            id,
+            request.StoreName,
+            request.Street,
+            request.City,
+            request.ZipCode,
+            request.Description,
+            request.Latitude,
+            request.Longitude
+        );
+
+        await _sender.Send(command);
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public async Task<IActionResult> DeleteSeller(Guid id)
+    {
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier) 
+                          ?? User.Claims.FirstOrDefault(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
+
+        if (userIdClaim == null) return Unauthorized();
+        var userId = Guid.Parse(userIdClaim.Value);
+
+        // Security Check: Ensure the user owns this seller profile (or is admin)
+        var sellerQuery = new GetSellerByUserIdQuery(userId);
+        var seller = await _sender.Send(sellerQuery);
+
+        if (seller == null || seller.Id != id)
+        {
+            return Forbid();
+        }
+
+        var command = new DeleteSellerCommand(id);
+        await _sender.Send(command);
+        return NoContent();
+    }
+
     [HttpGet("cities")]
     public async Task<IActionResult> GetCities()
     {

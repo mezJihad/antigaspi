@@ -35,6 +35,16 @@ public class Seller
         return new Seller(userId, storeName, address, description);
     }
 
+    public void UpdateDetails(string storeName, string description, Address address)
+    {
+        if (string.IsNullOrWhiteSpace(storeName)) throw new ArgumentException("Store name is required");
+        if (address is null) throw new ArgumentNullException(nameof(address), "Address is required");
+
+        StoreName = storeName;
+        Description = description;
+        Address = address;
+    }
+
     public void Approve()
     {
         Status = SellerStatus.APPROVED;

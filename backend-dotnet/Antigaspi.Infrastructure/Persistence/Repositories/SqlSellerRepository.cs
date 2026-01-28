@@ -37,6 +37,12 @@ public class SqlSellerRepository : ISellerRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task DeleteAsync(Seller seller, CancellationToken cancellationToken = default)
+    {
+        _context.Sellers.Remove(seller);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task<IEnumerable<string>> GetDistinctCitiesAsync(CancellationToken cancellationToken = default)
     {
         // Only return cities where there are offers!

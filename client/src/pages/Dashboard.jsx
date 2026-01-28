@@ -1,14 +1,25 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Edit, Trash2 } from 'lucide-react';
+import Notification from '../components/Notification';
 
 export default function Dashboard() {
     const { token } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [offers, setOffers] = useState([]);
     const [mySellerId, setMySellerId] = useState(null);
     const [sellerProfile, setSellerProfile] = useState(null);
+    const [notification, setNotification] = useState(null);
+
+    useEffect(() => {
+        if (location.state?.successMessage) {
+            setNotification({ type: 'success', message: location.state.successMessage });
+            // Clear location state to prevent showing again on refresh
+            window.history.replaceState({}, document.title);
+        }
+    }, [location]);
 
     useEffect(() => {
         async function fetchData() {
@@ -67,13 +78,40 @@ export default function Dashboard() {
             if (res.ok) {
                 setOffers(prev => prev.filter(o => o.id !== offerId));
                 setDeleteConfirmation({ show: false, offerId: null });
-                // Optional: Toast notification here custom
+                setNotification({ type: 'success', message: 'Offre supprimée avec succès' });
             } else {
-                alert("Erreur lors de la suppression.");
+                setNotification({ type: 'error', message: 'Erreur lors de la suppression.' });
             }
         } catch (e) {
             console.error(e);
-            alert("Erreur réseau.");
+            setNotification({ type: 'error', message: 'Erreur réseau.' });
+        }
+    };
+
+    const [shopDeleteConfirmation, setShopDeleteConfirmation] = useState({ show: false, sellerId: null });
+
+    const confirmShopDelete = async () => {
+        const { sellerId } = shopDeleteConfirmation;
+        if (!sellerId) return;
+
+        try {
+            const res = await fetch(`http://localhost:5131/api/Sellers/${sellerId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                setShopDeleteConfirmation({ show: false, sellerId: null });
+                setMySellerId(null);
+                setSellerProfile(null);
+                setOffers([]);
+                setNotification({ type: 'success', message: 'Boutique supprimée avec succès.' });
+            } else {
+                setNotification({ type: 'error', message: 'Erreur lors de la suppression de la boutique.' });
+            }
+        } catch (e) {
+            console.error(e);
+            setNotification({ type: 'error', message: 'Erreur réseau.' });
         }
     };
 
@@ -81,6 +119,13 @@ export default function Dashboard() {
 
     return (
         <div className='p-8 max-w-7xl mx-auto'>
+            {notification && (
+                <Notification
+                    message={notification.message}
+                    type={notification.type}
+                    onClose={() => setNotification(null)}
+                />
+            )}
             <div className="flex justify-between items-center mb-8">
                 <h1 className='text-3xl font-bold text-gray-900'>Mon Tableau de Bord</h1>
                 {mySellerId && (
@@ -104,10 +149,30 @@ export default function Dashboard() {
                 ) : (
                     sellerProfile && (
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-2">{sellerProfile.storeName}</h2>
-                            <p className="text-gray-600 mb-4">{sellerProfile.description}</p>
-                            <div className="flex gap-4 text-sm text-gray-500">
-                                <span>📍 {sellerProfile.street}, {sellerProfile.zipCode} {sellerProfile.city}</span>
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <h2 className="text-2xl font-bold text-gray-900 mb-2">{sellerProfile.storeName}</h2>
+                                    <p className="text-gray-600 mb-4">{sellerProfile.description}</p>
+                                    <div className="flex gap-4 text-sm text-gray-500">
+                                        <span>📍 {sellerProfile.street}, {sellerProfile.zipCode} {sellerProfile.city}</span>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => navigate(`/edit-shop/${sellerProfile.id}`)}
+                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition border border-transparent hover:border-blue-100"
+                                        title="Modifier la boutique"
+                                    >
+                                        <Edit size={20} />
+                                    </button>
+                                    <button
+                                        onClick={() => setShopDeleteConfirmation({ show: true, sellerId: sellerProfile.id })}
+                                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition border border-transparent hover:border-red-100"
+                                        title="Supprimer la boutique"
+                                    >
+                                        <Trash2 size={20} />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )
@@ -215,6 +280,40 @@ export default function Dashboard() {
                             >
                                 <Trash2 size={16} />
                                 Supprimer définitivement
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* Shop Delete Confirmation Modal */}
+            {shopDeleteConfirmation.show && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+                        <div className="flex items-center gap-4 mb-4 text-red-600">
+                            <div className="bg-red-100 p-3 rounded-full">
+                                <Trash2 size={24} />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900">Supprimer votre Boutique ?</h3>
+                        </div>
+
+                        <p className="text-gray-600 mb-6">
+                            Êtes-vous sûr de vouloir supprimer votre boutique <strong>{sellerProfile?.storeName}</strong> ? <br />
+                            <span className="text-sm text-red-500 font-bold">ATTENTION : Cela supprimera également TOUTES vos offres en cours. Cette action est irréversible.</span>
+                        </p>
+
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setShopDeleteConfirmation({ show: false, sellerId: null })}
+                                className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition"
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                onClick={confirmShopDelete}
+                                className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium shadow-sm transition flex items-center gap-2"
+                            >
+                                <Trash2 size={16} />
+                                Tout supprimer
                             </button>
                         </div>
                     </div>

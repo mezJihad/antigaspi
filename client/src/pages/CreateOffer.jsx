@@ -92,7 +92,7 @@ export default function CreateOffer() {
             });
 
             if (response.ok) {
-                navigate('/dashboard');
+                navigate('/dashboard', { state: { successMessage: 'Offre créée avec succès !' } });
             } else {
                 const errorData = await response.json();
                 console.error("Publication failed", errorData);

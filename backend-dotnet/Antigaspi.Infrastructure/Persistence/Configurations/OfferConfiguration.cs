@@ -31,7 +31,7 @@ public class OfferConfiguration : IEntityTypeConfiguration<Offer>
         builder.HasOne(x => x.Seller)
             .WithMany()
             .HasForeignKey(x => x.SellerId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Value Object Collection for StatusHistory
         builder.OwnsMany(x => x.StatusHistory, history =>

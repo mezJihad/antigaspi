@@ -13,6 +13,16 @@ public record RegisterSellerRequest(
     double? Longitude
 );
 
+public record UpdateSellerRequest(
+    string StoreName,
+    string Street,
+    string City,
+    string ZipCode,
+    string Description,
+    double? Latitude,
+    double? Longitude
+);
+
 public record CreateOfferRequest(
     Guid? SellerId,
     string Title,

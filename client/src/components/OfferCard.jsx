@@ -33,10 +33,10 @@ const OfferCard = ({ offer, distance }) => {
                     {/* Badges on Image */}
                     <div className="absolute top-3 right-3 flex flex-col gap-2 items-end">
                         {/* Distance Badge */}
-                        {distance !== null && distance !== undefined && (
+                        {distance !== null && distance !== undefined && !isNaN(Number(distance)) && (
                             <div className="backdrop-blur-md bg-black/30 text-white px-2 py-1 rounded-lg text-xs font-medium flex items-center gap-1">
                                 <MapPin size={12} />
-                                {distance.toFixed(1)} km
+                                {Number(distance).toFixed(1)} km
                             </div>
                         )}
                     </div>
