@@ -32,40 +32,49 @@ export default function Register() {
         }));
     };
 
+    const [passwordCriteria, setPasswordCriteria] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        digit: false,
+        special: false
+    });
+
+    const handlePasswordChange = (e) => {
+        const password = e.target.value;
+        handleChange(e);
+        setPasswordCriteria({
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            digit: /\d/.test(password),
+            special: /[@$!%*?&]/.test(password)
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setIsLoading(true);
 
+        // Client-side validation
+        const isValidPassword = Object.values(passwordCriteria).every(Boolean);
+        if (!isValidPassword) {
+            setError('Le mot de passe ne respecte pas les critères de sécurité.');
+            setIsLoading(false);
+            return;
+        }
+
         try {
             // 1. Create User Account
-            try {
-                await registerUser(formData.firstName, formData.lastName, formData.email, formData.password, 'SELLER');
-            } catch (err) {
-                // If registration fails, it might be because the user already exists. 
-                // We'll process to login to verify this. 
-                // If login fails too, then we throw the original registration error.
-                console.log("Registration failed, trying login...", err);
-            }
+            await registerUser(formData.firstName, formData.lastName, formData.email, formData.password, 'SELLER');
 
-            // 2. Login to get token (This validates if the user exists and creds are correct)
-            let loginData;
-            try {
-                loginData = await loginUser(formData.email, formData.password);
-            } catch (loginErr) {
-                // If Login fails, it means the registration validation failed effectively (or wrong password if retrying)
-                // We can assume the first error was the blocker if we couldn't register OR login
-                throw new Error("Impossible de créer le compte ou de se connecter. Vérifiez vos identifiants ou si l'email est déjà utilisé.");
-            }
-
-            // 3. Update Context & Redirect
-            login(loginData);
-            navigate('/dashboard');
+            // 2. Redirect to Verify Email (Do not login yet)
+            navigate('/verify-email', { state: { email: formData.email } });
 
         } catch (err) {
             console.error(err);
             setError(err.message || 'Une erreur est survenue.');
-        } finally {
             setIsLoading(false);
         }
     };
@@ -127,8 +136,6 @@ export default function Register() {
                             </div>
                         </div>
 
-
-
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Email professionnel</label>
                             <input type="email" name="email" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
@@ -136,7 +143,31 @@ export default function Register() {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-                            <input type="password" name="password" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
+                            <input
+                                type="password"
+                                name="password"
+                                required
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                                onChange={handlePasswordChange}
+                            />
+                            {/* Password Strength Indicators */}
+                            <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-500">
+                                <div className={`flex items-center gap-1 ${passwordCriteria.length ? 'text-green-600' : ''}`}>
+                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.length ? 'bg-green-500' : 'bg-gray-300'}`} /> 8+ caractères
+                                </div>
+                                <div className={`flex items-center gap-1 ${passwordCriteria.uppercase ? 'text-green-600' : ''}`}>
+                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.uppercase ? 'bg-green-500' : 'bg-gray-300'}`} /> Majuscule
+                                </div>
+                                <div className={`flex items-center gap-1 ${passwordCriteria.lowercase ? 'text-green-600' : ''}`}>
+                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.lowercase ? 'bg-green-500' : 'bg-gray-300'}`} /> Minuscule
+                                </div>
+                                <div className={`flex items-center gap-1 ${passwordCriteria.digit ? 'text-green-600' : ''}`}>
+                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.digit ? 'bg-green-500' : 'bg-gray-300'}`} /> Chiffre
+                                </div>
+                                <div className={`flex items-center gap-1 ${passwordCriteria.special ? 'text-green-600' : ''}`}>
+                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.special ? 'bg-green-500' : 'bg-gray-300'}`} /> Spécial (@$!%*?&)
+                                </div>
+                            </div>
                         </div>
 
                         <div className="flex items-center gap-2">

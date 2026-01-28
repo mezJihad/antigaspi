@@ -12,8 +12,11 @@ import CreateOffer from './pages/CreateOffer';
 import EditOffer from './pages/EditOffer';
 import EditShop from './pages/EditShop';
 import Terms from './pages/Terms'; // Import Terms
+import VerifyEmail from './pages/VerifyEmail'; // Import VerifyEmail
 
 import OfferDetails from './pages/OfferDetails'; // Import
+
+import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
 
 function App() {
   return (
@@ -25,13 +28,37 @@ function App() {
             <Route path="/" element={<Explore />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/verify-email" element={<VerifyEmail />} /> {/* New Route */}
             <Route path="/terms" element={<Terms />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/seller-register" element={<SellerRegister />} />
-            <Route path="/create-offer" element={<CreateOffer />} />
-            <Route path="/edit-offer/:id" element={<EditOffer />} />
-            <Route path="/edit-shop/:id" element={<EditShop />} />
-            <Route path="/offers/:id" element={<OfferDetails />} /> {/* New Route */}
+
+            {/* Protected Seller Routes */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/seller-register" element={
+              <ProtectedRoute>
+                <SellerRegister />
+              </ProtectedRoute>
+            } />
+            <Route path="/create-offer" element={
+              <ProtectedRoute>
+                <CreateOffer />
+              </ProtectedRoute>
+            } />
+            <Route path="/edit-offer/:id" element={
+              <ProtectedRoute>
+                <EditOffer />
+              </ProtectedRoute>
+            } />
+            <Route path="/edit-shop/:id" element={
+              <ProtectedRoute>
+                <EditShop />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/offers/:id" element={<OfferDetails />} />
           </Routes>
         </div>
       </AuthProvider>

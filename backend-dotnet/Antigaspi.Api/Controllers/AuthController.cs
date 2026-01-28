@@ -34,4 +34,12 @@ public class AuthController : ControllerBase
 
         return Ok(new AuthResponse(result.Id, result.FirstName, result.LastName, result.Email, result.Token));
     }
+
+    [HttpPost("verify")]
+    public async Task<IActionResult> Verify([FromBody] VerifyEmailRequest request)
+    {
+        var command = new VerifyEmailCommand(request.Email, request.Otp);
+        await _sender.Send(command);
+        return NoContent();
+    }
 }

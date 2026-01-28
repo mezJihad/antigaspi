@@ -13,6 +13,11 @@ public record LoginRequest(
     string Password
 );
 
+public record VerifyEmailRequest(
+    string Email,
+    string Otp
+);
+
 public record AuthResponse(
     Guid Id,
     string FirstName,

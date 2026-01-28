@@ -33,6 +33,8 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
         services.AddScoped<Antigaspi.Application.Common.Interfaces.IFileStorageService, Antigaspi.Infrastructure.Services.FileStorage.LocalFileStorageService>();
 
+        services.AddScoped<Antigaspi.Application.Common.Interfaces.IEmailService, Antigaspi.Infrastructure.Services.SmtpEmailService>();
+
         return services;
     }
 }

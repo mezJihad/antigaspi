@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Leaf, User, LogOut, LayoutDashboard, ChevronDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate(); // Add hook
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -30,7 +31,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-2 text-xl font-bold text-green-600 hover:text-green-700 transition">
               <Leaf size={24} />
-              <span>Antigaspi</span>
+              <span>NoGaspi</span>
             </Link>
           </div>
 
@@ -78,6 +79,7 @@ const Navbar = () => {
                         onClick={() => {
                           logout();
                           setIsDropdownOpen(false);
+                          navigate('/');
                         }}
                         className="group flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       >
@@ -102,7 +104,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </nav>
+    </nav >
   );
 };
 

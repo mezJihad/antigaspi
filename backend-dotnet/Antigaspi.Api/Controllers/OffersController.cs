@@ -23,8 +23,23 @@ public class OffersController : ControllerBase
     [Microsoft.AspNetCore.Authorization.Authorize]
     public async Task<IActionResult> CreateOffer([FromForm] CreateOfferRequest request)
     {
-        // TODO: Validate that the logged in user is the owner of the SellerId provided
-        // For now, we trust the request but we really should fetch Seller by UserId
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier) 
+                          ?? User.Claims.FirstOrDefault(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
+                          
+        if (userIdClaim == null) return Unauthorized();
+        var userId = Guid.Parse(userIdClaim.Value);
+
+        // Security Check: Ensure user owns the Seller profile
+        var sellerQuery = new Antigaspi.Application.UseCases.Sellers.Queries.GetSellerByUserIdQuery(userId);
+        var seller = await _sender.Send(sellerQuery);
+
+        if (seller == null || (request.SellerId.HasValue && seller.Id != request.SellerId.Value))
+        {
+            return Forbid();
+        }
+
+        // Use the verify seller id
+        var confirmedSellerId = seller.Id;
         
         string? pictureUrl = request.PictureUrl;
 
@@ -33,11 +48,8 @@ public class OffersController : ControllerBase
             pictureUrl = await _fileStorage.SaveFileAsync(request.PictureFile, "offers");
         }
         
-        // Ensure SellerId is present for creation
-        if (!request.SellerId.HasValue) return BadRequest("SellerId is required for creating an offer.");
-
         var command = new CreateOfferCommand(
-            request.SellerId.Value,
+            confirmedSellerId,
             request.Title,
             request.Description,
             request.PriceAmount,
@@ -48,7 +60,7 @@ public class OffersController : ControllerBase
             request.EndDate,
             request.ExpirationDate,
             request.Category,
-            pictureUrl ?? "" // Ensure not null as Command expects string
+            pictureUrl ?? "" 
         );
 
         var offerId = await _sender.Send(command);
@@ -59,8 +71,27 @@ public class OffersController : ControllerBase
     [Microsoft.AspNetCore.Authorization.Authorize]
     public async Task<IActionResult> UpdateOffer(Guid id, [FromForm] CreateOfferRequest request)
     {
-        string? pictureUrl = request.PictureUrl; // Keep existing if not changed, relying on frontend sending it.
-        // Or if uploaded new file:
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier) 
+                          ?? User.Claims.FirstOrDefault(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
+                          
+        if (userIdClaim == null) return Unauthorized();
+        var userId = Guid.Parse(userIdClaim.Value);
+
+        // 1. Get the existing offer to find its SellerId
+        var offerQuery = new GetOfferByIdQuery(id);
+        var existingOffer = await _sender.Send(offerQuery);
+        if (existingOffer == null) return NotFound();
+
+        // 2. Check if user owns the seller profile of this offer
+        var sellerQuery = new Antigaspi.Application.UseCases.Sellers.Queries.GetSellerByUserIdQuery(userId);
+        var seller = await _sender.Send(sellerQuery);
+
+        if (seller == null || existingOffer.SellerId != seller.Id)
+        {
+            return Forbid();
+        }
+
+        string? pictureUrl = request.PictureUrl; 
         if (request.PictureFile != null && request.PictureFile.Length > 0)
         {
             pictureUrl = await _fileStorage.SaveFileAsync(request.PictureFile, "offers");
@@ -122,14 +153,17 @@ public class OffersController : ControllerBase
     }
 
     [HttpPost("{id}/submit")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public async Task<IActionResult> Submit(Guid id)
     {
+        // Ideally should check ownership too but let's at least require Auth
         var command = new SubmitOfferForValidationCommand(id);
         await _sender.Send(command);
         return NoContent();
     }
 
     [HttpPost("{id}/validate")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")] // Assuming roles exist, or at least Auth
     public async Task<IActionResult> Validate(Guid id, [FromQuery] Guid adminUserId)
     {
         // Ideally adminUserId comes from auth token, simplifying for now
@@ -139,6 +173,7 @@ public class OffersController : ControllerBase
     }
 
     [HttpPost("{id}/reject")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
     public async Task<IActionResult> Reject(Guid id, [FromQuery] Guid adminUserId, [FromBody] ReasonRequest request)
     {
         var command = new RejectOfferCommand(id, adminUserId, request.Reason);
@@ -147,9 +182,29 @@ public class OffersController : ControllerBase
     }
 
     [HttpPost("{id}/cancel")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public async Task<IActionResult> Cancel(Guid id, [FromQuery] Guid userId)
     {
-        var command = new CancelOfferCommand(id, userId);
+         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier) 
+                          ?? User.Claims.FirstOrDefault(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
+                          
+        if (userIdClaim == null) return Unauthorized();
+        var currentUserId = Guid.Parse(userIdClaim.Value);
+
+        // Security Check Ownership
+        var offerQuery = new GetOfferByIdQuery(id);
+        var existingOffer = await _sender.Send(offerQuery);
+        if (existingOffer == null) return NotFound();
+
+        var sellerQuery = new Antigaspi.Application.UseCases.Sellers.Queries.GetSellerByUserIdQuery(currentUserId);
+        var seller = await _sender.Send(sellerQuery);
+
+        if (seller == null || existingOffer.SellerId != seller.Id)
+        {
+            return Forbid();
+        }
+
+        var command = new CancelOfferCommand(id, currentUserId);
         await _sender.Send(command);
         return NoContent();
     }

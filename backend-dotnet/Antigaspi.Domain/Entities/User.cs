@@ -10,6 +10,9 @@ public class User
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public UserRole Role { get; private set; }
+    public bool IsEmailVerified { get; private set; }
+    public string? OtpCode { get; private set; }
+    public DateTime? OtpExpiration { get; private set; }
     public bool IsActive { get; private set; }
 
     // Constructor for EF Core / Persistence
@@ -27,6 +30,7 @@ public class User
         PasswordHash = passwordHash;
         Role = role;
         IsActive = isActive;
+        IsEmailVerified = false; // Default false
     }
 
     public static User Create(string firstName, string lastName, string email, string passwordHash, UserRole role)
@@ -38,5 +42,23 @@ public class User
     {
         if (string.IsNullOrWhiteSpace(newPasswordHash)) throw new ArgumentException("New password hash is required");
         PasswordHash = newPasswordHash;
+    }
+
+    public void SetOtp(string otpCode, int expirationMinutes = 15)
+    {
+        OtpCode = otpCode;
+        OtpExpiration = DateTime.UtcNow.AddMinutes(expirationMinutes);
+    }
+
+    public bool VerifyOtp(string otpCode)
+    {
+        if (string.IsNullOrEmpty(OtpCode) || OtpExpiration == null) return false;
+        if (DateTime.UtcNow > OtpExpiration) return false;
+        if (OtpCode != otpCode) return false;
+
+        IsEmailVerified = true;
+        OtpCode = null; // Clear OTP after success
+        OtpExpiration = null;
+        return true;
     }
 }
