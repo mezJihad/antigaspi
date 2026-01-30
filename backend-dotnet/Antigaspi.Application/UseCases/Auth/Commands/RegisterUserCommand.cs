@@ -52,18 +52,26 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
 
         var user = User.Create(request.FirstName, request.LastName, request.Email, passwordHash, role);
 
-        // 2. Generate and Set OTP
-        var otp = new Random().Next(100000, 999999).ToString();
-        user.SetOtp(otp);
+        // 2. Generate and Set OTP OR Auto-verify if Seller
+        if (role == UserRole.SELLER)
+        {
+            user.MarkEmailVerified();
+            await _userRepository.AddAsync(user, cancellationToken);
+            // No email sent for now, or send a "Welcome" email without OTP
+        }
+        else
+        {
+            var otp = new Random().Next(100000, 999999).ToString();
+            user.SetOtp(otp);
 
-        await _userRepository.AddAsync(user, cancellationToken);
-        
-        // 3. Send Email
-        var subject = "AntiGaspi - Vérifiez votre email";
-        var body = $"<h1>Bienvenue sur AntiGaspi !</h1><p>Votre code de vérification est : <strong>{otp}</strong></p><p>Ce code est valable pour 15 minutes.</p>";
-        
-        // Fire and forget email to not block response? Or await? Better await for reliability in this flow.
-        await _emailService.SendEmailAsync(user.Email, subject, body);
+            await _userRepository.AddAsync(user, cancellationToken);
+            
+            // 3. Send Email
+            var subject = "AntiGaspi - Vérifiez votre email";
+            var body = $"<h1>Bienvenue sur AntiGaspi !</h1><p>Votre code de vérification est : <strong>{otp}</strong></p><p>Ce code est valable pour 15 minutes.</p>";
+            
+            await _emailService.SendEmailAsync(user.Email, subject, body);
+        }
 
         return user.Id;
     }

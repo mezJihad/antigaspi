@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { login as loginApi } from '../services/auth';
-import { useNavigate, Link } from 'react-router-dom';
-import { Leaf, ArrowRight } from 'lucide-react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { Leaf, ArrowRight, CheckCircle2 } from 'lucide-react';
 import heroImage from '../assets/auth-hero.png';
 
 export default function Login() {
@@ -10,12 +10,23 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (location.state?.successMessage) {
+            setSuccess(location.state.successMessage);
+            // Clear state so it doesn't persist on refresh/back accidentally
+            window.history.replaceState({}, document.title);
+        }
+    }, [location]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setSuccess('');
         setIsLoading(true);
         try {
             const data = await loginApi(email, password);
@@ -57,6 +68,12 @@ export default function Login() {
                         <h2 className="text-3xl font-bold text-gray-900">Connexion Vendeur</h2>
                         <p className="mt-2 text-gray-600">Accédez à votre dashboard</p>
                     </div>
+
+                    {success && (
+                        <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-lg border border-green-100 text-sm flex items-center gap-2">
+                            <CheckCircle2 size={18} /> {success}
+                        </div>
+                    )}
 
                     {error && (
                         <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm flex items-center gap-2">

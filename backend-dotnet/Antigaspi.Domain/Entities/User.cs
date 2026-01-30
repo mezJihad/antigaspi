@@ -61,4 +61,11 @@ public class User
         OtpExpiration = null;
         return true;
     }
+
+    public void MarkEmailVerified()
+    {
+        IsEmailVerified = true;
+        OtpCode = null;
+        OtpExpiration = null;
+    }
 }
