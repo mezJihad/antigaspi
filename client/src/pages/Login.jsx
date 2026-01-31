@@ -31,9 +31,21 @@ export default function Login() {
         try {
             const data = await loginApi(email, password);
             login(data);
-            navigate('/dashboard');
+            if (data.role === 'ADMIN') {
+                navigate('/admin');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (error) {
-            setError('Identifiants incorrects. Veuillez réessayer.');
+            console.error("Login error:", error);
+            if (error.message && error.message.includes("ACCOUNT_SUSPENDED")) {
+                setError('Votre compte a été suspendu. Veuillez contacter l\'administrateur.');
+            } else if (error.response && error.response.status === 400 && error.response.data && error.response.data.includes("ACCOUNT_SUSPENDED")) {
+                // Fallback if the backend returns validation problem details or similar
+                setError('Votre compte a été suspendu. Veuillez contacter l\'administrateur.');
+            } else {
+                setError('Identifiants incorrects. Veuillez réessayer.');
+            }
         } finally {
             setIsLoading(false);
         }

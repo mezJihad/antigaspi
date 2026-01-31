@@ -62,4 +62,15 @@ public class Seller
     {
         return Status == SellerStatus.APPROVED;
     }
+
+    public void Suspend()
+    {
+        Status = SellerStatus.SUSPENDED;
+    }
+
+    public void Activate()
+    {
+        Status = SellerStatus.APPROVED;
+        RejectionReason = null;
+    }
 }

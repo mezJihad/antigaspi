@@ -6,6 +6,8 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 // Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -66,7 +68,7 @@ export default function EditShop() {
         if (!id || !token) return;
         async function fetchShop() {
             try {
-                const res = await fetch(`http://localhost:5131/api/Sellers/${id}`, {
+                const res = await fetch(`${API_URL}/Sellers/${id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -192,7 +194,7 @@ export default function EditShop() {
                 longitude: position.lng
             };
 
-            const response = await fetch(`http://localhost:5131/api/Sellers/${id}`, {
+            const response = await fetch(`${API_URL}/Sellers/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { Edit, Trash2 } from 'lucide-react';
 import Notification from '../components/Notification';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function Dashboard() {
     const { token } = useAuth();
     const navigate = useNavigate();
@@ -27,7 +29,7 @@ export default function Dashboard() {
 
             // Fetch My Seller ID
             try {
-                const sellerRes = await fetch('http://localhost:5131/api/Sellers/me', {
+                const sellerRes = await fetch(`${API_URL}/Sellers/me`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (sellerRes.ok) {
@@ -47,7 +49,7 @@ export default function Dashboard() {
         async function fetchMyOffers() {
             if (!token || !mySellerId) return;
             try {
-                const offersRes = await fetch('http://localhost:5131/api/Sellers/me/offers', {
+                const offersRes = await fetch(`${API_URL}/Sellers/me/offers`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (offersRes.ok) {
@@ -70,7 +72,7 @@ export default function Dashboard() {
         if (!offerId) return;
 
         try {
-            const res = await fetch(`http://localhost:5131/api/Offers/${offerId}/cancel?userId=${sellerProfile.userId}`, {
+            const res = await fetch(`${API_URL}/Offers/${offerId}/cancel?userId=${sellerProfile.userId}`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -95,7 +97,7 @@ export default function Dashboard() {
         if (!sellerId) return;
 
         try {
-            const res = await fetch(`http://localhost:5131/api/Sellers/${sellerId}`, {
+            const res = await fetch(`${API_URL}/Sellers/${sellerId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

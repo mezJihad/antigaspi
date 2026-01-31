@@ -13,6 +13,7 @@ import EditOffer from './pages/EditOffer';
 import EditShop from './pages/EditShop';
 import Terms from './pages/Terms'; // Import Terms
 import VerifyEmail from './pages/VerifyEmail'; // Import VerifyEmail
+import AdminDashboard from './pages/AdminDashboard'; // Import AdminDashboard
 
 import OfferDetails from './pages/OfferDetails'; // Import
 
@@ -55,6 +56,12 @@ function App() {
             <Route path="/edit-shop/:id" element={
               <ProtectedRoute>
                 <EditShop />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/admin" element={
+              <ProtectedRoute>
+                <AdminDashboard />
               </ProtectedRoute>
             } />
 

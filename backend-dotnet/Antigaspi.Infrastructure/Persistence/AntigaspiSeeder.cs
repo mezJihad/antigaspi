@@ -24,7 +24,7 @@ public class AntigaspiSeeder
         // 1. Create Users
         // 1. Create Users
         var sellerUser = await context.Users.FirstOrDefaultAsync(u => u.Email == "seller@antigaspi.test");
-        var adminUser = await context.Users.FirstOrDefaultAsync(u => u.Email == "admin@antigaspi.test");
+        var adminUser = await context.Users.FirstOrDefaultAsync(u => u.Email == "admin@nogaspi.test");
 
         if (sellerUser == null)
         {
@@ -34,8 +34,17 @@ public class AntigaspiSeeder
 
         if (adminUser == null)
         {
-            adminUser = User.Create("Admin", "System", "admin@antigaspi.test", "hash123", UserRole.ADMIN);
+            // Password: Password123!
+            string adminHash = BCrypt.Net.BCrypt.HashPassword("Password123!");
+            adminUser = User.Create("Admin", "System", "admin@nogaspi.test", adminHash, UserRole.ADMIN);
             await context.Users.AddAsync(adminUser);
+        }
+        else 
+        {
+             // Ensure password is updated even if user exists (to fix previous bad hash)
+             string adminHash = BCrypt.Net.BCrypt.HashPassword("Password123!");
+             adminUser.ChangePassword(adminHash);
+             context.Users.Update(adminUser);
         }
 
         await context.SaveChangesAsync(); // Ensure IDs are generated/saved

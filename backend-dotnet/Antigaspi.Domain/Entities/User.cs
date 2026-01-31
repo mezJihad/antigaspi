@@ -68,4 +68,14 @@ public class User
         OtpCode = null;
         OtpExpiration = null;
     }
+
+    public void Deactivate()
+    {
+        IsActive = false;
+    }
+
+    public void Activate()
+    {
+        IsActive = true;
+    }
 }

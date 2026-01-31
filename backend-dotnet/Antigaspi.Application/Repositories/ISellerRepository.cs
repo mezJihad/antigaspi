@@ -9,5 +9,6 @@ public interface ISellerRepository
     Task AddAsync(Seller seller, CancellationToken cancellationToken = default);
     Task UpdateAsync(Seller seller, CancellationToken cancellationToken = default);
     Task DeleteAsync(Seller seller, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Seller>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<IEnumerable<string>> GetDistinctCitiesAsync(CancellationToken cancellationToken = default);
 }

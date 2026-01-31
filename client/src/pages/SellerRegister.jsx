@@ -6,6 +6,8 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 // Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -157,7 +159,7 @@ export default function SellerRegister() {
                 longitude: position.lng
             };
 
-            const response = await fetch('http://localhost:5131/api/Sellers', {
+            const response = await fetch(`${API_URL}/Sellers`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

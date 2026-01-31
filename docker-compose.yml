@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgrespassword
-      POSTGRES_DB: Antigaspi
+      POSTGRES_DB: nogaspi
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -18,7 +18,7 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=antigaspi-db;Database=Antigaspi;Username=postgres;Password=postgrespassword
+      - ConnectionStrings__DefaultConnection=Host=antigaspi-db;Database=nogaspi;Username=postgres;Password=postgrespassword
       # IMPORTANT: Change this in production!
       - JwtSettings__Secret=super-secret-key-that-is-at-least-256-bits-long
     ports:

@@ -29,10 +29,20 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var query = new LoginUserQuery(request.Email, request.Password);
-        var result = await _sender.Send(query);
-
-        return Ok(new AuthResponse(result.Id, result.FirstName, result.LastName, result.Email, result.Token));
+        try
+        {
+            var query = new LoginUserQuery(request.Email, request.Password);
+            var result = await _sender.Send(query);
+            return Ok(new AuthResponse(result.Id, result.FirstName, result.LastName, result.Email, result.Role, result.Token));
+        }
+        catch (Exception ex) when (ex.Message == "ACCOUNT_SUSPENDED")
+        {
+            return StatusCode(403, new { message = "ACCOUNT_SUSPENDED" });
+        }
+        catch (Exception)
+        {
+            return Unauthorized(new { message = "Invalid credentials" });
+        }
     }
 
     [HttpPost("verify")]

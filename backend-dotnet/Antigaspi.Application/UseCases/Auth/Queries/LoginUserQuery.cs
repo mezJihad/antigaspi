@@ -14,6 +14,7 @@ public record AuthenticationResult(
     string FirstName, 
     string LastName,
     string Email,
+    string Role,
     string Token
 );
 
@@ -44,6 +45,11 @@ public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, Authenticat
              throw new Exception("Invalid credentials");
         }
 
+        if (!user.IsActive)
+        {
+            throw new Exception("ACCOUNT_SUSPENDED");
+        }
+
         var token = _jwtTokenGenerator.GenerateToken(user);
 
         return new AuthenticationResult(
@@ -51,6 +57,7 @@ public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, Authenticat
             user.FirstName,
             user.LastName,
             user.Email,
+            user.Role.ToString(),
             token
         );
     }

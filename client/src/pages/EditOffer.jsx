@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Calendar, Euro, Tag, Type, Image as ImageIcon, ArrowLeft, Edit } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function EditOffer() {
     const { id } = useParams();
     const { token } = useAuth();
@@ -39,7 +41,7 @@ export default function EditOffer() {
     useEffect(() => {
         async function fetchOffer() {
             try {
-                const res = await fetch(`http://localhost:5131/api/Offers/${id}`);
+                const res = await fetch(`${API_URL}/Offers/${id}`);
                 if (res.ok) {
                     const data = await res.json();
 
@@ -121,7 +123,7 @@ export default function EditOffer() {
                 body.append('pictureUrl', '');
             }
 
-            const response = await fetch(`http://localhost:5131/api/Offers/${id}`, {
+            const response = await fetch(`${API_URL}/Offers/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`

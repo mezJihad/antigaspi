@@ -34,4 +34,38 @@ public class SqlUserRepository : IUserRepository
         _context.Users.Update(user);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task DeleteAsync(User user, CancellationToken cancellationToken = default)
+    {
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+    public async Task<IEnumerable<Antigaspi.Application.Dtos.AdminUserSummaryDto>> GetUsersWithDetailsAsync(CancellationToken cancellationToken = default)
+    {
+        var query = from u in _context.Users
+                    join s in _context.Sellers on u.Id equals s.UserId into userSellers
+                    from seller in userSellers.DefaultIfEmpty()
+                    select new
+                    {
+                        User = u,
+                        Seller = seller,
+                        OfferCount = seller != null ? _context.Offers.Count(o => o.SellerId == seller.Id) : 0
+                    };
+
+        var result = await query.ToListAsync(cancellationToken);
+
+        return result.Select(x => new Antigaspi.Application.Dtos.AdminUserSummaryDto(
+            x.User.Id,
+            x.User.FirstName,
+            x.User.LastName,
+            x.User.Email,
+            x.User.Role.ToString(),
+            x.User.IsActive,
+            x.Seller?.Id,
+            x.Seller?.StoreName,
+            x.Seller?.Address.City,
+            x.Seller?.Status,
+            x.OfferCount
+        ));
+    }
 }

@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Euro, Tag, Type, Image as ImageIcon } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function CreateOffer() {
     const { token } = useAuth();
     const navigate = useNavigate();
@@ -43,7 +45,7 @@ export default function CreateOffer() {
 
         try {
             // Fetch Seller ID
-            const sellerRes = await fetch('http://localhost:5131/api/Sellers/me', {
+            const sellerRes = await fetch(`${API_URL}/Sellers/me`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -82,7 +84,7 @@ export default function CreateOffer() {
                 body.append('pictureUrl', '');
             }
 
-            const response = await fetch('http://localhost:5131/api/Offers', {
+            const response = await fetch(`${API_URL}/Offers`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
