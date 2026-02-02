@@ -109,8 +109,19 @@ export default function Login() {
                     )}
 
                     {error && (
-                        <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm flex items-center gap-2">
-                            <span>⚠️</span> {error}
+                        <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span>⚠️</span> {error}
+                            </div>
+                            {showResend && (
+                                <button
+                                    onClick={handleResend}
+                                    disabled={isResending}
+                                    className="ml-6 text-xs font-semibold bg-white border border-red-200 px-3 py-1 rounded hover:bg-red-50 hover:border-red-300 transition-colors disabled:opacity-50"
+                                >
+                                    {isResending ? 'Envoi en cours...' : 'Renvoyer email de vérification'}
+                                </button>
+                            )}
                         </div>
                     )}
 
@@ -151,19 +162,6 @@ export default function Login() {
                             )}
                         </button>
                     </form>
-
-                    {showResend && (
-                        <div className="mt-4 text-center">
-                            <p className="text-sm text-gray-600 mb-2">Email non vérifié ou lien expiré ?</p>
-                            <button
-                                onClick={handleResend}
-                                disabled={isResending}
-                                className="text-sm font-semibold text-green-600 hover:text-green-700 underline disabled:opacity-50"
-                            >
-                                {isResending ? 'Envoi...' : 'Renvoyer email de vérification'}
-                            </button>
-                        </div>
-                    )}
 
                     <div className="mt-8 pt-6 border-t border-gray-100">
                         <div className="text-center text-sm text-gray-600 mb-4">
