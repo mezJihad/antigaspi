@@ -51,3 +51,15 @@ export const verifyEmail = async (email, otp) => {
     // Returns 204 typically
     return true;
 };
+
+export const resendVerification = async (email) => {
+    const response = await fetch(`${API_URL}/Auth/resend-verification`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+    });
+    if (!response.ok) {
+        throw new Error('Resend failed');
+    }
+    return response.json();
+};

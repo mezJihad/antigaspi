@@ -50,6 +50,11 @@ public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, Authenticat
             throw new Exception("ACCOUNT_SUSPENDED");
         }
 
+        if (!user.IsEmailVerified)
+        {
+            throw new Exception("EMAIL_NOT_VERIFIED");
+        }
+
         var token = _jwtTokenGenerator.GenerateToken(user);
 
         return new AuthenticationResult(

@@ -3,16 +3,16 @@ using System;
 using Antigaspi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Antigaspi.Infrastructure.Migrations
 {
     [DbContext(typeof(AntigaspiDbContext))]
-    [Migration("20260130100746_InitialCreate")]
+    [Migration("20260202093014_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,49 +20,49 @@ namespace Antigaspi.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Antigaspi.Domain.Entities.Offer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Category")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<DateTime?>("EndDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PictureUrl")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<Guid>("SellerId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
@@ -75,27 +75,27 @@ namespace Antigaspi.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("RejectionReason")
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("Status")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("StoreName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -109,39 +109,40 @@ namespace Antigaspi.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsEmailVerified")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("OtpCode")
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("OtpExpiration")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Role")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -162,7 +163,7 @@ namespace Antigaspi.Infrastructure.Migrations
                     b.OwnsOne("Antigaspi.Domain.ValueObjects.Money", "OriginalPrice", b1 =>
                         {
                             b1.Property<Guid>("OfferId")
-                                .HasColumnType("uuid");
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<decimal>("Amount")
                                 .HasColumnType("decimal(18,2)")
@@ -171,7 +172,7 @@ namespace Antigaspi.Infrastructure.Migrations
                             b1.Property<string>("Currency")
                                 .IsRequired()
                                 .HasMaxLength(3)
-                                .HasColumnType("character varying(3)")
+                                .HasColumnType("nvarchar(3)")
                                 .HasColumnName("OriginalPriceCurrency");
 
                             b1.HasKey("OfferId");
@@ -185,7 +186,7 @@ namespace Antigaspi.Infrastructure.Migrations
                     b.OwnsOne("Antigaspi.Domain.ValueObjects.Money", "Price", b1 =>
                         {
                             b1.Property<Guid>("OfferId")
-                                .HasColumnType("uuid");
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<decimal>("Amount")
                                 .HasColumnType("decimal(18,2)")
@@ -194,7 +195,7 @@ namespace Antigaspi.Infrastructure.Migrations
                             b1.Property<string>("Currency")
                                 .IsRequired()
                                 .HasMaxLength(3)
-                                .HasColumnType("character varying(3)")
+                                .HasColumnType("nvarchar(3)")
                                 .HasColumnName("PriceCurrency");
 
                             b1.HasKey("OfferId");
@@ -208,26 +209,26 @@ namespace Antigaspi.Infrastructure.Migrations
                     b.OwnsMany("Antigaspi.Domain.Entities.OfferStatusEntry", "StatusHistory", b1 =>
                         {
                             b1.Property<Guid>("OfferId")
-                                .HasColumnType("uuid");
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("integer");
+                                .HasColumnType("int");
 
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
 
                             b1.Property<DateTime>("ChangedAt")
-                                .HasColumnType("timestamp with time zone");
+                                .HasColumnType("datetime2");
 
                             b1.Property<Guid?>("ChangedBy")
-                                .HasColumnType("uuid");
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("Reason")
                                 .HasMaxLength(500)
-                                .HasColumnType("character varying(500)");
+                                .HasColumnType("nvarchar(500)");
 
                             b1.Property<int>("Status")
-                                .HasColumnType("integer");
+                                .HasColumnType("int");
 
                             b1.HasKey("OfferId", "Id");
 
@@ -259,38 +260,38 @@ namespace Antigaspi.Infrastructure.Migrations
                     b.OwnsOne("Antigaspi.Domain.ValueObjects.Address", "Address", b1 =>
                         {
                             b1.Property<Guid>("SellerId")
-                                .HasColumnType("uuid");
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("City")
                                 .IsRequired()
                                 .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
+                                .HasColumnType("nvarchar(100)")
                                 .HasColumnName("City");
 
                             b1.Property<string>("Country")
                                 .IsRequired()
                                 .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
+                                .HasColumnType("nvarchar(100)")
                                 .HasColumnName("Country");
 
                             b1.Property<double?>("Latitude")
-                                .HasColumnType("double precision")
+                                .HasColumnType("float")
                                 .HasColumnName("Latitude");
 
                             b1.Property<double?>("Longitude")
-                                .HasColumnType("double precision")
+                                .HasColumnType("float")
                                 .HasColumnName("Longitude");
 
                             b1.Property<string>("Street")
                                 .IsRequired()
                                 .HasMaxLength(200)
-                                .HasColumnType("character varying(200)")
+                                .HasColumnType("nvarchar(200)")
                                 .HasColumnName("Street");
 
                             b1.Property<string>("ZipCode")
                                 .IsRequired()
                                 .HasMaxLength(20)
-                                .HasColumnType("character varying(20)")
+                                .HasColumnType("nvarchar(20)")
                                 .HasColumnName("ZipCode");
 
                             b1.HasKey("SellerId");

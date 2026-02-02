@@ -39,6 +39,10 @@ public class AuthController : ControllerBase
         {
             return StatusCode(403, new { message = "ACCOUNT_SUSPENDED" });
         }
+        catch (Exception ex) when (ex.Message == "EMAIL_NOT_VERIFIED")
+        {
+            return StatusCode(403, new { message = "EMAIL_NOT_VERIFIED" });
+        }
         catch (Exception)
         {
             return Unauthorized(new { message = "Invalid credentials" });
@@ -52,4 +56,14 @@ public class AuthController : ControllerBase
         await _sender.Send(command);
         return NoContent();
     }
+
+    [HttpPost("resend-verification")]
+    public async Task<IActionResult> ResendVerification([FromBody] ResendVerificationRequest request)
+    {
+        var command = new ResendVerificationEmailCommand(request.Email);
+        await _sender.Send(command);
+        return Ok(new { message = "Verification email sent if account exists" });
+    }
 }
+
+public record ResendVerificationRequest(string Email);

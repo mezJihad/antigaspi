@@ -14,8 +14,9 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         // DB Context
+        // DB Context
         services.AddDbContext<AntigaspiDbContext>(options =>
-            options.UseNpgsql(
+            options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection"),
                 b => b.MigrationsAssembly(typeof(AntigaspiDbContext).Assembly.FullName)));
 
@@ -33,7 +34,8 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
         services.AddScoped<Antigaspi.Application.Common.Interfaces.IFileStorageService, Antigaspi.Infrastructure.Services.FileStorage.LocalFileStorageService>();
 
-        services.AddScoped<Antigaspi.Application.Common.Interfaces.IEmailService, Antigaspi.Infrastructure.Services.SmtpEmailService>();
+        services.AddHttpClient<Antigaspi.Infrastructure.Services.BrevoApiEmailService>();
+        services.AddScoped<Antigaspi.Application.Common.Interfaces.IEmailService, Antigaspi.Infrastructure.Services.BrevoApiEmailService>();
 
         return services;
     }

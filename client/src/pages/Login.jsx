@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { login as loginApi } from '../services/auth';
+import { login as loginApi, resendVerification } from '../services/auth';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Leaf, ArrowRight, CheckCircle2 } from 'lucide-react';
 import heroImage from '../assets/auth-hero.png';
@@ -14,11 +14,12 @@ export default function Login() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showResend, setShowResend] = useState(false);
+    const [isResending, setIsResending] = useState(false);
 
     useEffect(() => {
         if (location.state?.successMessage) {
             setSuccess(location.state.successMessage);
-            // Clear state so it doesn't persist on refresh/back accidentally
             window.history.replaceState({}, document.title);
         }
     }, [location]);
@@ -28,6 +29,8 @@ export default function Login() {
         setError('');
         setSuccess('');
         setIsLoading(true);
+        setShowResend(false); // Reset on new attempt
+
         try {
             const data = await loginApi(email, password);
             login(data);
@@ -40,14 +43,32 @@ export default function Login() {
             console.error("Login error:", error);
             if (error.message && error.message.includes("ACCOUNT_SUSPENDED")) {
                 setError('Votre compte a été suspendu. Veuillez contacter l\'administrateur.');
-            } else if (error.response && error.response.status === 400 && error.response.data && error.response.data.includes("ACCOUNT_SUSPENDED")) {
-                // Fallback if the backend returns validation problem details or similar
+            } else if (error.message && error.message.includes("EMAIL_NOT_VERIFIED")) {
+                setError('Veuillez vérifier votre adresse email avant de vous connecter.');
+                setShowResend(true);
+            } else if (error.response && error.response.status === 403 && error.response.data && error.response.data.message == "EMAIL_NOT_VERIFIED") {
+                setError('Veuillez vérifier votre adresse email avant de vous connecter.');
+                setShowResend(true);
+            } else if (error.response && error.response.status === 403 && error.response.data && error.response.data.message == "ACCOUNT_SUSPENDED") {
                 setError('Votre compte a été suspendu. Veuillez contacter l\'administrateur.');
             } else {
                 setError('Identifiants incorrects. Veuillez réessayer.');
             }
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleResend = async () => {
+        setIsResending(true);
+        try {
+            await resendVerification(email);
+            setSuccess('Un nouveau lien de vérification a été envoyé.');
+            setShowResend(false);
+        } catch (err) {
+            setError('Impossible de renvoyer l\'email. Veuillez réessayer plus tard.');
+        } finally {
+            setIsResending(false);
         }
     };
 
@@ -130,6 +151,19 @@ export default function Login() {
                             )}
                         </button>
                     </form>
+
+                    {showResend && (
+                        <div className="mt-4 text-center">
+                            <p className="text-sm text-gray-600 mb-2">Email non vérifié ou lien expiré ?</p>
+                            <button
+                                onClick={handleResend}
+                                disabled={isResending}
+                                className="text-sm font-semibold text-green-600 hover:text-green-700 underline disabled:opacity-50"
+                            >
+                                {isResending ? 'Envoi...' : 'Renvoyer email de vérification'}
+                            </button>
+                        </div>
+                    )}
 
                     <div className="mt-8 pt-6 border-t border-gray-100">
                         <div className="text-center text-sm text-gray-600 mb-4">

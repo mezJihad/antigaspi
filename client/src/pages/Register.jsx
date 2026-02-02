@@ -69,8 +69,14 @@ export default function Register() {
             // 1. Create User Account
             await registerUser(formData.firstName, formData.lastName, formData.email, formData.password, 'SELLER');
 
-            // 2. Redirect to Login (Skip Verify Email for Sellers)
-            navigate('/login', { state: { successMessage: 'Compte créé avec succès. Veuillez vous connecter.' } });
+            // 2. Redirect to Verify Page
+            // Passing email and status to show correct message
+            navigate('/verify-email', {
+                state: {
+                    email: formData.email,
+                    message: "Un lien de vérification a été envoyé à votre adresse email."
+                }
+            });
 
         } catch (err) {
             console.error(err);
