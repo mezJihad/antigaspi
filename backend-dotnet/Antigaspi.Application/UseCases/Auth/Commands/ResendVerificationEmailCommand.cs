@@ -42,7 +42,7 @@ public class ResendVerificationEmailCommandHandler : IRequestHandler<ResendVerif
         await _userRepository.UpdateAsync(user, cancellationToken);
 
         // Send Email
-        varclientUrl = _configuration["ClientAppUrl"];
+        var clientUrl = _configuration["ClientAppUrl"];
         var verificationLink = $"{clientUrl}/verify-email?email={System.Web.HttpUtility.UrlEncode(user.Email)}&token={System.Web.HttpUtility.UrlEncode(token)}";
         
         var subject = "AntiGaspi - Nouveau lien de vérification";
