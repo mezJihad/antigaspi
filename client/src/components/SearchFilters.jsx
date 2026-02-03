@@ -1,8 +1,11 @@
 import React from 'react';
 import { Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { cityService } from '../services/cityService';
 
 const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
-    const [cities, setCities] = React.useState(['Toutes']);
+    const { t, i18n } = useTranslation();
+    const [cities, setCities] = React.useState([]); // Store full city objects
     const [localQuery, setLocalQuery] = React.useState(filters.query || '');
     const [isSortMenuOpen, setIsSortMenuOpen] = React.useState(false);
     const sortMenuRef = React.useRef(null);
@@ -10,17 +13,22 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
     React.useEffect(() => {
         const fetchCities = async () => {
             try {
-                const response = await fetch('/api/sellers/cities');
-                if (response.ok) {
-                    const data = await response.json();
-                    setCities(['Toutes', ...data]);
-                }
+                // Fetch all reference cities to get translations
+                const data = await cityService.getAll();
+                setCities(data);
             } catch (error) {
                 console.error("Error fetching cities", error);
             }
         };
         fetchCities();
     }, []);
+
+    const getCityName = (city) => {
+        if (!city) return '';
+        if (i18n.language === 'ar') return city.nameAr || city.nameFr;
+        if (i18n.language === 'en') return city.nameEn || city.nameFr;
+        return city.nameFr;
+    };
 
     // Debounce search query
     React.useEffect(() => {
@@ -57,27 +65,26 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
 
     // Match backend enum values
     const categories = [
-        { value: 'Toutes', label: 'Toutes' },
-        { value: 0, label: '🥖 Boulangerie' },
-        { value: 1, label: '🍎 Fruits & Légumes' },
-        { value: 2, label: '🥩 Viandes & Poissons' },
-        { value: 3, label: '🧀 Produits Laitiers' },
-        { value: 4, label: '🍱 Plats Cuisinés' },
-        { value: 5, label: '🥫 Épicerie' },
-        { value: 6, label: '🎁 Panier Surprise' },
-        { value: 7, label: 'Autre' }
+        { value: 'Toutes', label: t('search.all_categories') },
+        { value: 0, label: t('search.cat_bakery') },
+        { value: 1, label: t('search.cat_fruits') },
+        { value: 2, label: t('search.cat_meat') },
+        { value: 3, label: t('search.cat_dairy') },
+        { value: 4, label: t('search.cat_prepared') },
+        { value: 5, label: t('search.cat_grocery') },
+        { value: 6, label: t('search.cat_surprise') },
+        { value: 7, label: t('search.cat_other') }
     ];
 
     const sortOptions = [
-        { value: '', label: 'Pertinence' },
-        { value: 'distance', label: '📍 Proximité' },
-        { value: 'expiration_asc', label: '⏳ Finit bientôt' },
-        { value: 'expiration_desc', label: '📅 Longue conservation' },
-        { value: 'price_asc', label: '💶 Prix croissant' },
-        { value: 'price_desc', label: '💎 Prix décroissant' },
+        { value: 'distance', label: t('search.sort_distance') },
+        { value: 'expiration_asc', label: t('search.sort_exp_soon') },
+        { value: 'expiration_desc', label: t('search.sort_long_shelf') },
+        { value: 'price_asc', label: t('search.sort_price_asc') },
+        { value: 'price_desc', label: t('search.sort_price_desc') },
     ];
 
-    const currentSortLabel = sortOptions.find(o => o.value === filters.sortBy)?.label || 'Pertinence';
+    const currentSortLabel = sortOptions.find(o => o.value === filters.sortBy)?.label || t('search.sort_relevance');
 
     return (
         <div style={{
@@ -90,17 +97,19 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
                 {/* Search Bar */}
                 <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>Recherche</label>
+                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>{t('search.label')}</label>
                     <div style={{ position: 'relative' }}>
-                        <Search size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#999' }} />
+                        <Search size={20} className='rtl:right-4 ltr:left-4' style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', color: '#999' }} />
                         <input
                             type="text"
-                            placeholder="Mots-clés..."
+                            placeholder={t('search.placeholder')}
                             value={localQuery}
                             onChange={(e) => setLocalQuery(e.target.value)}
+                            className='rtl:pr-12 ltr:pl-12'
                             style={{
                                 width: '100%',
-                                padding: '0.75rem 1rem 0.75rem 3rem',
+                                paddingTop: '0.75rem',
+                                paddingBottom: '0.75rem',
                                 border: '1px solid var(--color-border)',
                                 borderRadius: 'var(--radius-full)',
                                 fontSize: '1rem'
@@ -111,7 +120,7 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
 
                 {/* City Filter */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>Ville</label>
+                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>{t('search.city')}</label>
                     <select
                         value={filters.city}
                         onChange={(e) => setFilters({ ...filters, city: e.target.value })}
@@ -126,13 +135,18 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
                             minWidth: '150px'
                         }}
                     >
-                        {cities.map(c => <option key={c} value={c}>{c}</option>)}
+                        <option value="Toutes">{t('search.all_cities')}</option>
+                        {cities.map(c => (
+                            <option key={c.id} value={c.nameFr}>
+                                {getCityName(c)}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
                 {/* Category Filter */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>Catégorie</label>
+                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>{t('search.category')}</label>
                     <select
                         value={filters.category}
                         onChange={(e) => setFilters({ ...filters, category: e.target.value })}
@@ -152,7 +166,7 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
 
                 {/* Sort Icon Button */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', position: 'relative' }} ref={sortMenuRef}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>Trier</label>
+                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>{t('search.sort')}</label>
                     <button
                         onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
                         className="btn"
@@ -168,11 +182,6 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
                             justifyContent: 'center'
                         }}
                     >
-                        {/* Using a simple SVG icon for Sort if Lucide ArrowUpDown isn't imported, let's stick to generic or import it if we can. 
-                            Since I cannot easily add imports at top without replacing whole file, I will use an SVG here directly or assume styling is enough.
-                            Wait, I can replace the whole file content to get the import.
-                            Actually the user file has `import { Search } from 'lucide-react';` at top. I should use that.
-                        */}
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="m21 16-4 4-4-4" /><path d="M17 20V4" /><path d="m3 8 4-4 4 4" /><path d="M7 4v16" />
                         </svg>
@@ -222,5 +231,3 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
 };
 
 export default SearchFilters;
-
-

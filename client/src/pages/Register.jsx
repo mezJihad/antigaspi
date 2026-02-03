@@ -5,8 +5,10 @@ import { register as registerUser, login as loginUser } from '../services/auth';
 import { registerSeller } from '../services/sellers';
 import { Leaf, Store, ArrowRight, CheckCircle2 } from 'lucide-react';
 import heroImage from '../assets/auth-hero.png';
+import { useTranslation } from 'react-i18next';
 
 export default function Register() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { login } = useAuth();
 
@@ -60,7 +62,7 @@ export default function Register() {
         // Client-side validation
         const isValidPassword = Object.values(passwordCriteria).every(Boolean);
         if (!isValidPassword) {
-            setError('Le mot de passe ne respecte pas les critères de sécurité.');
+            setError(t('auth.password_security'));
             setIsLoading(false);
             return;
         }
@@ -74,13 +76,13 @@ export default function Register() {
             navigate('/verify-email', {
                 state: {
                     email: formData.email,
-                    message: "Un lien de vérification a été envoyé à votre adresse email."
+                    message: t('auth.verification_sent')
                 }
             });
 
         } catch (err) {
             console.error(err);
-            setError(err.message || 'Une erreur est survenue.');
+            setError(err.message || t('common.error'));
             setIsLoading(false);
         }
     };
@@ -97,22 +99,22 @@ export default function Register() {
                 />
                 <div className="relative z-20 flex flex-col h-full p-12 text-white">
                     <div className="max-w-md my-auto">
-                        <h1 className="text-4xl font-bold mb-6 leading-tight">Valorisez vos invendus, touchez de nouveaux clients.</h1>
-                        <p className="text-lg text-gray-200 mb-8">Rejoignez la communauté de commerçants qui s'engagent contre le gaspillage alimentaire tout en augmentant leurs revenus.</p>
+                        <h1 className="text-4xl font-bold mb-6 leading-tight rtl:leading-normal">{t('auth.hero_title')}</h1>
+                        <p className="text-lg text-gray-200 mb-8">{t('auth.hero_description')}</p>
 
                         <div className="space-y-4">
 
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-green-500/20 rounded-full text-green-400"><CheckCircle2 size={20} /></div>
-                                <span>Gérez vos offres simplement</span>
+                                <span>{t('auth.hero_benefit_1')}</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-green-500/20 rounded-full text-green-400"><CheckCircle2 size={20} /></div>
-                                <span>Touchez des clients locaux</span>
+                                <span>{t('auth.hero_benefit_2')}</span>
                             </div>
                         </div>
                     </div>
-                    <div className="text-sm text-gray-400 mt-auto">© 2024 Antigaspi. Tous droits réservés.</div>
+                    <div className="text-sm text-gray-400 mt-auto">{t('auth.copyright')}</div>
                 </div>
             </div>
 
@@ -120,8 +122,8 @@ export default function Register() {
             <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
                 <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl">
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-gray-900">Créez votre Espace Vendeur</h2>
-                        <p className="mt-2 text-gray-600">Commencez à vendre en quelques minutes</p>
+                        <h2 className="text-3xl font-bold text-gray-900">{t('auth.create_title')}</h2>
+                        <p className="mt-2 text-gray-600">{t('auth.create_subtitle')}</p>
                     </div>
 
                     {error && (
@@ -133,22 +135,22 @@ export default function Register() {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.first_name')}</label>
                                 <input name="firstName" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.last_name')}</label>
                                 <input name="lastName" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Email professionnel</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.professional_email')}</label>
                             <input type="email" name="email" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.password')}</label>
                             <input
                                 type="password"
                                 name="password"
@@ -159,26 +161,26 @@ export default function Register() {
                             {/* Password Strength Indicators */}
                             <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-500">
                                 <div className={`flex items-center gap-1 ${passwordCriteria.length ? 'text-green-600' : ''}`}>
-                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.length ? 'bg-green-500' : 'bg-gray-300'}`} /> 8+ caractères
+                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.length ? 'bg-green-500' : 'bg-gray-300'}`} /> {t('auth.char_8')}
                                 </div>
                                 <div className={`flex items-center gap-1 ${passwordCriteria.uppercase ? 'text-green-600' : ''}`}>
-                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.uppercase ? 'bg-green-500' : 'bg-gray-300'}`} /> Majuscule
+                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.uppercase ? 'bg-green-500' : 'bg-gray-300'}`} /> {t('auth.uppercase')}
                                 </div>
                                 <div className={`flex items-center gap-1 ${passwordCriteria.lowercase ? 'text-green-600' : ''}`}>
-                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.lowercase ? 'bg-green-500' : 'bg-gray-300'}`} /> Minuscule
+                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.lowercase ? 'bg-green-500' : 'bg-gray-300'}`} /> {t('auth.lowercase')}
                                 </div>
                                 <div className={`flex items-center gap-1 ${passwordCriteria.digit ? 'text-green-600' : ''}`}>
-                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.digit ? 'bg-green-500' : 'bg-gray-300'}`} /> Chiffre
+                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.digit ? 'bg-green-500' : 'bg-gray-300'}`} /> {t('auth.digit')}
                                 </div>
                                 <div className={`flex items-center gap-1 ${passwordCriteria.special ? 'text-green-600' : ''}`}>
-                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.special ? 'bg-green-500' : 'bg-gray-300'}`} /> Spécial (@$!%*?&)
+                                    <div className={`w-1.5 h-1.5 rounded-full ${passwordCriteria.special ? 'bg-green-500' : 'bg-gray-300'}`} /> {t('auth.special_char')}
                                 </div>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-2">
                             <input type="checkbox" name="termsAccepted" required id="terms" className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer" onChange={handleChange} />
-                            <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">J'accepte les <Link to="/terms" className="text-green-600 hover:underline" target="_blank">conditions générales d'utilisation</Link></label>
+                            <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">{t('auth.terms_accept')} <Link to="/terms" className="text-green-600 hover:underline" target="_blank">{t('auth.terms_link')}</Link></label>
                         </div>
 
                         <button
@@ -186,9 +188,9 @@ export default function Register() {
                             disabled={isLoading}
                             className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            {isLoading ? 'Création en cours...' : (
+                            {isLoading ? t('auth.creating_account') : (
                                 <>
-                                    Créer mon compte vendeur <ArrowRight size={18} />
+                                    {t('auth.create_btn')} <ArrowRight size={18} className="rtl:rotate-180" />
                                 </>
                             )}
                         </button>
@@ -196,12 +198,12 @@ export default function Register() {
 
                     <div className="mt-8 pt-6 border-t border-gray-100">
                         <div className="text-center text-sm text-gray-600 mb-4">
-                            Déjà partenaire ? <Link to="/login" className="text-green-600 font-medium hover:underline">Connectez-vous</Link>
+                            {t('auth.already_partner')} <Link to="/login" className="text-green-600 font-medium hover:underline">{t('auth.login_link')}</Link>
                         </div>
                         <div className="bg-gray-50 rounded-lg p-4 text-center">
-                            <p className="text-sm text-gray-600">Vous souhaitez simplement acheter des paniers ?</p>
+                            <p className="text-sm text-gray-600">{t('auth.buyer_prompt')}</p>
                             <Link to="/explore" className="inline-block mt-2 text-sm font-medium text-gray-900 border-b border-gray-900 hover:text-green-600 hover:border-green-600 transition-colors">
-                                Explorer les offres maintenant
+                                {t('auth.explore_link')}
                             </Link>
                         </div>
                     </div>

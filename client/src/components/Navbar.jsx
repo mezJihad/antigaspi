@@ -2,8 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Leaf, User, LogOut, LayoutDashboard, ChevronDown, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const navigate = useNavigate(); // Add hook
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -27,7 +30,7 @@ const Navbar = () => {
   return (
     <nav className="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between h-16 rtl:flex-row-reverse">
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-2 text-xl font-bold text-green-600 hover:text-green-700 transition">
               <Leaf size={24} />
@@ -35,9 +38,11 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Link to="/" className="text-gray-600 hover:text-green-600 font-medium transition-colors text-sm">
-              Explorer les Offres
+          <div className="flex items-center gap-4 rtl:flex-row-reverse">
+            <LanguageSwitcher />
+
+            <Link to="/" className="text-green-700 font-medium transition-all text-sm hidden md:flex items-center gap-1 bg-green-50 hover:bg-green-100 px-3 py-1 rounded-full">
+              <span>{t('home.subtitle')}</span>
             </Link>
 
             {user ? (
@@ -56,9 +61,9 @@ const Navbar = () => {
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 transform origin-top-right transition-all">
+                  <div className="absolute ltr:right-0 rtl:left-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 transform origin-top-right transition-all z-50">
                     <div className="px-4 py-3">
-                      <p className="text-xs text-gray-500 uppercase font-semibold">Connecté en tant que</p>
+                      <p className="text-xs text-gray-500 uppercase font-semibold">{t('nav.login')}</p>
                       <p className="text-sm font-bold text-gray-900 truncate">
                         {user.firstName} {user.lastName}
                       </p>
@@ -71,8 +76,8 @@ const Navbar = () => {
                           onClick={() => setIsDropdownOpen(false)}
                           className="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700"
                         >
-                          <Shield size={16} className="mr-3 text-gray-400 group-hover:text-green-600" />
-                          Admin Dashboard
+                          <Shield size={16} className="ltr:mr-3 rtl:ml-3 text-gray-400 group-hover:text-green-600" />
+                          {t('nav.dashboard')}
                         </Link>
                       ) : (
                         <Link
@@ -80,8 +85,8 @@ const Navbar = () => {
                           onClick={() => setIsDropdownOpen(false)}
                           className="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700"
                         >
-                          <LayoutDashboard size={16} className="mr-3 text-gray-400 group-hover:text-green-600" />
-                          Mon Dashboard
+                          <LayoutDashboard size={16} className="ltr:mr-3 rtl:ml-3 text-gray-400 group-hover:text-green-600" />
+                          {t('nav.dashboard')}
                         </Link>
                       )}
                     </div>
@@ -94,8 +99,8 @@ const Navbar = () => {
                         }}
                         className="group flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       >
-                        <LogOut size={16} className="mr-3 text-red-400 group-hover:text-red-600" />
-                        Déconnexion
+                        <LogOut size={16} className="ltr:mr-3 rtl:ml-3 text-red-400 group-hover:text-red-600" />
+                        {t('nav.logout')}
                       </button>
                     </div>
                   </div>
@@ -108,7 +113,7 @@ const Navbar = () => {
                   to="/login"
                   className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition font-medium text-sm shadow-sm hover:shadow-md"
                 >
-                  Espace Vendeur
+                  {t('nav.seller_space')}
                 </Link>
               </div>
             )}

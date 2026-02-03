@@ -5,6 +5,8 @@ import { Store, MapPin, Search } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { cityService } from '../services/cityService';
+import { useTranslation } from 'react-i18next';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -38,9 +40,17 @@ function MapRecenter({ lat, lng }) {
 }
 
 export default function EditShop() {
+    const { t, i18n } = useTranslation();
     const { token } = useAuth();
     const navigate = useNavigate();
     const { id } = useParams();
+
+    const getCityName = (city) => {
+        if (!city) return '';
+        if (i18n.language === 'ar') return city.nameAr || city.nameFr;
+        if (i18n.language === 'en') return city.nameEn || city.nameFr;
+        return city.nameFr;
+    };
 
     // Form Data
     const [formData, setFormData] = useState({
@@ -63,6 +73,34 @@ export default function EditShop() {
     const [geoLoading, setGeoLoading] = useState(false);
     const searchTimeout = useRef(null);
 
+    // IP Detection State
+    const [isMorocco, setIsMorocco] = useState(true); // Default to true to show dropdown initially
+
+    // Cities State
+    const [cities, setCities] = useState([]);
+
+    useEffect(() => {
+        // Fetch Cities
+        async function fetchCities() {
+            const data = await cityService.getAll();
+            setCities(data);
+        }
+        fetchCities();
+
+        // Detect Country
+        fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(data => {
+                if (data.country_code && data.country_code !== 'MA') {
+                    setIsMorocco(false);
+                }
+            })
+            .catch(() => {
+                // On error, default to Morocco 
+                setIsMorocco(true);
+            });
+    }, []);
+
     // Fetch existing data
     useEffect(() => {
         if (!id || !token) return;
@@ -84,11 +122,11 @@ export default function EditShop() {
                         setPosition({ lat: data.latitude, lng: data.longitude });
                     }
                 } else {
-                    setError("Impossible de charger la boutique");
+                    setError(t('edit_shop.error_load'));
                 }
             } catch (err) {
                 console.error(err);
-                setError("Erreur de chargement");
+                setError(t('edit_shop.error_load_generic'));
             } finally {
                 setLoading(false);
             }
@@ -135,10 +173,43 @@ export default function EditShop() {
     const updateFormFromLocation = (lat, lng, addressObj, displayName) => {
         setPosition({ lat, lng });
 
+        // Helper to normalize strings (remove accents, lowercase)
+        const normalize = (str) => {
+            return str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim() : "";
+        };
+
         const road = addressObj.road || addressObj.pedestrian || addressObj.suburb || "";
         const houseNumber = addressObj.house_number ? `${addressObj.house_number}, ` : "";
-        const city = addressObj.city || addressObj.town || addressObj.village || addressObj.state || "Inconnu";
+
+        // Extended city detection for OpenStreetMap
+        let city = addressObj.city ||
+            addressObj.town ||
+            addressObj.village ||
+            addressObj.municipality ||
+            addressObj.county ||
+            addressObj.state ||
+            "";
+
         const postcode = addressObj.postcode || "";
+
+        console.log("OSM Address:", addressObj); // Debug logic
+        console.log("Detected City:", city);
+
+        // Normalize city name for dropdown matching if in Morocco mode
+        if (isMorocco && cities.length > 0) {
+            const normalizedInput = normalize(city);
+
+            const matchedCity = cities.find(c =>
+                normalize(c.nameFr) === normalizedInput ||
+                normalize(c.nameEn) === normalizedInput ||
+                (c.nameAr && c.nameAr === city)
+            );
+
+            if (matchedCity) {
+                console.log("Matched City:", matchedCity.nameFr);
+                city = matchedCity.nameFr;
+            }
+        }
 
         setFormData(prev => ({
             ...prev,
@@ -153,7 +224,7 @@ export default function EditShop() {
     // Handle "My Current Location"
     const handleCurrentLocation = () => {
         if (!navigator.geolocation) {
-            alert("La géolocalisation n'est pas supportée par votre navigateur.");
+            alert(t('edit_shop.error_geo_support'));
             return;
         }
 
@@ -170,7 +241,7 @@ export default function EditShop() {
                 } else {
                     // Fallback if address not found but coords are good
                     setPosition({ lat: latitude, lng: longitude });
-                    alert("Position trouvée, mais adresse exacte inconnue.");
+                    alert(t('edit_shop.geo_found_no_address'));
                 }
             } catch (err) {
                 console.error("Reverse geocoding error", err);
@@ -180,7 +251,7 @@ export default function EditShop() {
             }
         }, (err) => {
             console.error(err);
-            alert("Impossible de récupérer votre position.");
+            alert(t('edit_shop.error_geo_fetch'));
             setGeoLoading(false);
         });
     };
@@ -203,29 +274,29 @@ export default function EditShop() {
                 body: JSON.stringify(body)
             });
             if (response.ok) {
-                navigate('/dashboard', { state: { successMessage: 'Boutique mise à jour avec succès !' } });
+                navigate('/dashboard', { state: { successMessage: t('edit_shop.success_update') } });
             } else {
-                setError('Erreur lors de la modification de la boutique.');
+                setError(t('edit_shop.error_update'));
             }
         } catch (error) {
-            setError('Une erreur est survenue.');
+            setError(t('edit_shop.error_generic'));
         }
     };
 
-    if (loading) return <div className="p-10 text-center">Chargement...</div>;
+    if (loading) return <div className="p-10 text-center">{t('common.loading')}</div>;
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
                 <div className="text-center">
                     <div className="mx-auto h-12 w-12 text-blue-600 flex justify-center items-center">
-                        <Store size={48} />
+                        <Store size={48} className="rtl:flip" />
                     </div>
                     <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-                        Modifier votre Boutique
+                        {t('edit_shop.title')}
                     </h2>
                     <p className="mt-2 text-sm text-gray-600">
-                        Mettez à jour les informations de votre commerce
+                        {t('edit_shop.subtitle')}
                     </p>
                 </div>
 
@@ -234,7 +305,7 @@ export default function EditShop() {
 
                         {/* Store Name - Always First */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Nom de la boutique</label>
+                            <label className="block text-sm font-medium text-gray-700">{t('edit_shop.store_name')}</label>
                             <input
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 value={formData.storeName}
@@ -245,16 +316,16 @@ export default function EditShop() {
 
                         {/* Autocomplete Search Bar */}
                         <div className="relative">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Rechercher une nouvelle adresse</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('edit_shop.search_address_label')}</label>
                             <div className="flex gap-2">
                                 <div className="relative flex-grow">
-                                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                                    <span className="absolute inset-y-0 left-0 rtl:right-0 rtl:left-auto pl-3 rtl:pr-3 flex items-center pointer-events-none text-gray-500">
                                         <Search size={16} />
                                     </span>
                                     <input
                                         type="text"
-                                        className="block w-full pl-10 pr-3 py-2 border border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-blue-50"
-                                        placeholder="Commencez à taper votre adresse..."
+                                        className="block w-full pl-10 pr-3 rtl:pr-10 rtl:pl-3 py-2 border border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-blue-50"
+                                        placeholder={t('edit_shop.search_placeholder')}
                                         value={query}
                                         onChange={handleSearchChange}
                                         onFocus={() => setShowSuggestions(true)}
@@ -266,10 +337,10 @@ export default function EditShop() {
                                     onClick={handleCurrentLocation}
                                     disabled={geoLoading}
                                     className="px-4 py-2 bg-blue-100 text-blue-700 rounded-md border border-blue-200 hover:bg-blue-200 flex items-center gap-2 text-sm font-medium transition whitespace-nowrap"
-                                    title="Utiliser ma position actuelle"
+                                    title={t('edit_shop.use_current_location')}
                                 >
                                     {geoLoading ? <div className="animate-spin h-4 w-4 border-2 border-blue-600 rounded-full border-t-transparent"></div> : <MapPin size={18} />}
-                                    Ma position
+                                    {t('edit_shop.my_position')}
                                 </button>
                             </div>
 
@@ -292,16 +363,30 @@ export default function EditShop() {
                         {/* Auto-filled Fields (Read-Only or Editable) */}
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">Ville</label>
-                                <input
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    value={formData.city}
-                                    onChange={e => setFormData({ ...formData, city: e.target.value })}
-                                    required
-                                />
+                                <label className="block text-sm font-medium text-gray-700">{t('edit_shop.city')}</label>
+                                {isMorocco ? (
+                                    <select
+                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
+                                        value={formData.city}
+                                        onChange={e => setFormData({ ...formData, city: e.target.value })}
+                                        required
+                                    >
+                                        <option value="">{t('edit_shop.select_city')}</option>
+                                        {cities.map(city => (
+                                            <option key={city.id} value={city.nameFr}>{getCityName(city)}</option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <input
+                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-500 focus:ring-blue-500 focus:border-blue-500 sm:text-sm cursor-not-allowed"
+                                        value={formData.city}
+                                        readOnly
+                                        title={t('edit_shop.city_hint')}
+                                    />
+                                )}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">Code Postal</label>
+                                <label className="block text-sm font-medium text-gray-700">{t('edit_shop.zip_code')}</label>
                                 <input
                                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                     value={formData.zipCode}
@@ -312,7 +397,7 @@ export default function EditShop() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Rue</label>
+                            <label className="block text-sm font-medium text-gray-700">{t('edit_shop.street')}</label>
                             <input
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 value={formData.street}
@@ -324,7 +409,7 @@ export default function EditShop() {
                         {/* Map Section */}
                         <div className="col-span-1">
                             <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                                <MapPin size={16} /> Ajuster la position si nécessaire
+                                <MapPin size={16} /> {t('edit_shop.adjust_position')}
                             </label>
                             <div className="h-64 w-full rounded-lg overflow-hidden border border-gray-300 shadow-sm relative z-0">
                                 <MapContainer center={position} zoom={13} style={{ height: '100%', width: '100%' }}>
@@ -340,7 +425,7 @@ export default function EditShop() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Description</label>
+                            <label className="block text-sm font-medium text-gray-700">{t('edit_shop.description')}</label>
                             <textarea
                                 rows={3}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -357,10 +442,10 @@ export default function EditShop() {
                     )}
 
                     <button type='submit' className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Enregistrer les modifications
+                        {t('edit_shop.save_btn')}
                     </button>
                     <button type='button' onClick={() => navigate('/dashboard')} className="w-full flex justify-center py-2 px-4 mt-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                        Annuler
+                        {t('edit_shop.cancel')}
                     </button>
                 </form>
             </div>

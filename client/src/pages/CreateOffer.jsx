@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Euro, Tag, Type, Image as ImageIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function CreateOffer() {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const navigate = useNavigate();
 
@@ -13,14 +15,14 @@ export default function CreateOffer() {
     const today = new Date().toISOString().split('T')[0];
 
     const CAT_OPTIONS = [
-        { value: 0, label: '🥖 Boulangerie & Pâtisserie' },
-        { value: 1, label: '🍎 Fruits & Légumes' },
-        { value: 2, label: '🥩 Viandes & Poissons' },
-        { value: 3, label: '🧀 Produits Laitiers' },
-        { value: 4, label: '🍱 Plats Cuisinés' },
-        { value: 5, label: '🥫 Épicerie' },
-        { value: 6, label: '🎁 Panier Surprise' },
-        { value: 7, label: 'Autre' }
+        { value: 0, label_key: 'search.cat_bakery' },
+        { value: 1, label_key: 'search.cat_fruits' },
+        { value: 2, label_key: 'search.cat_meat' },
+        { value: 3, label_key: 'search.cat_dairy' },
+        { value: 4, label_key: 'search.cat_prepared' },
+        { value: 5, label_key: 'search.cat_grocery' },
+        { value: 6, label_key: 'search.cat_surprise' },
+        { value: 7, label_key: 'search.cat_other' }
     ];
 
     const [formData, setFormData] = useState({
@@ -54,7 +56,7 @@ export default function CreateOffer() {
                 const seller = await sellerRes.json();
                 sellerId = seller.id || seller.Id;
             } else {
-                alert('Vous devez avoir une boutique pour publier une offre.');
+                alert(t('create_offer.error_no_shop'));
                 setLoading(false);
                 return;
             }
@@ -94,15 +96,15 @@ export default function CreateOffer() {
             });
 
             if (response.ok) {
-                navigate('/dashboard', { state: { successMessage: 'Offre créée avec succès !' } });
+                navigate('/dashboard', { state: { successMessage: t('create_offer.success_msg') } });
             } else {
                 const errorData = await response.json();
                 console.error("Publication failed", errorData);
-                alert('Erreur lors de la publication: ' + (errorData.detail || 'Vérifiez les champs'));
+                alert(`${t('create_offer.error_publish')}: ${errorData.detail || ''}`);
             }
         } catch (error) {
             console.error("Error creating offer", error);
-            alert('Erreur lors de la communication avec le serveur');
+            alert(t('create_offer.error_server'));
         } finally {
             setLoading(false);
         }
@@ -114,10 +116,10 @@ export default function CreateOffer() {
                 <div className='bg-white rounded-2xl shadow-xl overflow-hidden'>
                     <div className='bg-green-600 px-8 py-6'>
                         <h1 className='text-3xl font-bold text-white flex items-center gap-3'>
-                            <Tag className='w-8 h-8' />
-                            Publier une Offre
+                            <Tag className='w-8 h-8 rtl:flip' />
+                            {t('create_offer.title')}
                         </h1>
-                        <p className='text-green-100 mt-2'>Rendez visible vos produits anti-gaspi en quelques clics.</p>
+                        <p className='text-green-100 mt-2'>{t('create_offer.subtitle')}</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className='p-8 space-y-6'>
@@ -125,16 +127,16 @@ export default function CreateOffer() {
                         {/* Title & Description */}
                         <div className='space-y-4'>
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-1'>Titre de l'offre</label>
+                                <label className='block text-sm font-medium text-gray-700 mb-1'>{t('create_offer.offer_title')}</label>
                                 <div className='relative'>
-                                    <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400'>
+                                    <div className='absolute inset-y-0 left-0 rtl:right-0 rtl:left-auto pl-3 rtl:pr-3 flex items-center pointer-events-none text-gray-400'>
                                         <Type size={18} />
                                     </div>
                                     <input
                                         required
                                         type="text"
-                                        placeholder="Ex: Panier de légumes Bio"
-                                        className='block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition'
+                                        placeholder={t('create_offer.title_placeholder')}
+                                        className='block w-full pl-10 pr-3 rtl:pr-10 rtl:pl-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition'
                                         value={formData.title}
                                         onChange={e => setFormData({ ...formData, title: e.target.value })}
                                     />
@@ -142,11 +144,11 @@ export default function CreateOffer() {
                             </div>
 
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-1'>Description</label>
+                                <label className='block text-sm font-medium text-gray-700 mb-1'>{t('create_offer.description')}</label>
                                 <textarea
                                     required
                                     rows={4}
-                                    placeholder="Décrivez le contenu, la quantité, la raison (DLC courte, etc.)"
+                                    placeholder={t('create_offer.desc_placeholder')}
                                     className='block w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition'
                                     value={formData.description}
                                     onChange={e => setFormData({ ...formData, description: e.target.value })}
@@ -154,14 +156,14 @@ export default function CreateOffer() {
                             </div>
 
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-1'>Catégorie</label>
+                                <label className='block text-sm font-medium text-gray-700 mb-1'>{t('create_offer.category')}</label>
                                 <select
                                     className='block w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition bg-white'
                                     value={formData.category}
                                     onChange={e => setFormData({ ...formData, category: parseInt(e.target.value) })}
                                 >
                                     {CAT_OPTIONS.map(opt => (
-                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                        <option key={opt.value} value={opt.value}>{t(opt.label_key)}</option>
                                     ))}
                                 </select>
                             </div>
@@ -170,9 +172,9 @@ export default function CreateOffer() {
                         {/* Prices */}
                         <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-1'>Prix Anti-gaspi (Dhs)</label>
+                                <label className='block text-sm font-medium text-gray-700 mb-1'>{t('create_offer.price_antigaspi')}</label>
                                 <div className='relative'>
-                                    <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400'>
+                                    <div className='absolute inset-y-0 left-0 rtl:right-0 rtl:left-auto pl-3 rtl:pr-3 flex items-center pointer-events-none text-gray-400'>
                                         <span className="text-sm font-bold">Dhs</span>
                                     </div>
                                     <input
@@ -180,16 +182,16 @@ export default function CreateOffer() {
                                         type='number'
                                         step="0.01"
                                         placeholder='0.00'
-                                        className='block w-full pl-12 pr-3 py-2 border border-blue-200 bg-blue-50 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition font-bold text-blue-900'
+                                        className='block w-full pl-12 pr-3 rtl:pr-12 rtl:pl-3 py-2 border border-blue-200 bg-blue-50 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition font-bold text-blue-900'
                                         value={formData.priceAmount}
                                         onChange={e => setFormData({ ...formData, priceAmount: e.target.value })}
                                     />
                                 </div>
                             </div>
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-1'>Prix d'origine (Dhs)</label>
+                                <label className='block text-sm font-medium text-gray-700 mb-1'>{t('create_offer.price_original')}</label>
                                 <div className='relative'>
-                                    <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400'>
+                                    <div className='absolute inset-y-0 left-0 rtl:right-0 rtl:left-auto pl-3 rtl:pr-3 flex items-center pointer-events-none text-gray-400'>
                                         <span className="text-sm font-bold">Dhs</span>
                                     </div>
                                     <input
@@ -197,7 +199,7 @@ export default function CreateOffer() {
                                         type='number'
                                         step="0.01"
                                         placeholder='0.00'
-                                        className='block w-full pl-12 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition text-gray-500 line-through'
+                                        className='block w-full pl-12 pr-3 rtl:pr-12 rtl:pl-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition text-gray-500 line-through'
                                         value={formData.originalPriceAmount}
                                         onChange={e => setFormData({ ...formData, originalPriceAmount: e.target.value })}
                                     />
@@ -208,12 +210,12 @@ export default function CreateOffer() {
                         {/* Date Validity */}
                         <div className='bg-gray-50 p-4 rounded-lg border border-gray-200'>
                             <h3 className='text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2'>
-                                <Calendar size={16} />
-                                Validité de l'offre
+                                <Calendar size={16} className="rtl:ml-2" />
+                                {t('create_offer.validity_title')}
                             </h3>
                             <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
                                 <div>
-                                    <label className='block text-xs font-medium text-gray-500 uppercase mb-1'>Date de début (requis)</label>
+                                    <label className='block text-xs font-medium text-gray-500 uppercase mb-1'>{t('create_offer.start_date')}</label>
                                     <input
                                         required
                                         type='date'
@@ -223,7 +225,7 @@ export default function CreateOffer() {
                                     />
                                 </div>
                                 <div>
-                                    <label className='block text-xs font-medium text-gray-500 uppercase mb-1'>Date de fin (optionnel)</label>
+                                    <label className='block text-xs font-medium text-gray-500 uppercase mb-1'>{t('create_offer.end_date')}</label>
                                     <input
                                         type='date'
                                         min={formData.startDate}
@@ -231,10 +233,10 @@ export default function CreateOffer() {
                                         value={formData.endDate}
                                         onChange={e => setFormData({ ...formData, endDate: e.target.value })}
                                     />
-                                    <p className='text-xs text-gray-400 mt-1'>Laissez vide pour une durée indéterminée.</p>
+                                    <p className='text-xs text-gray-400 mt-1'>{t('create_offer.end_date_hint')}</p>
                                 </div>
                                 <div className="sm:col-span-2">
-                                    <label className='block text-xs font-medium text-red-500 uppercase mb-1'>Date limite de consommation (DLC) *</label>
+                                    <label className='block text-xs font-medium text-red-500 uppercase mb-1'>{t('create_offer.dlc')}</label>
                                     <input
                                         required
                                         type='date'
@@ -243,14 +245,14 @@ export default function CreateOffer() {
                                         value={formData.expirationDate}
                                         onChange={e => setFormData({ ...formData, expirationDate: e.target.value })}
                                     />
-                                    <p className='text-xs text-gray-500 mt-1'>Le produit ne doit pas être consommé après cette date.</p>
+                                    <p className='text-xs text-gray-500 mt-1'>{t('create_offer.dlc_hint')}</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Picture Input (File or URL) */}
                         <div>
-                            <label className='block text-sm font-medium text-gray-700 mb-2'>Illustration</label>
+                            <label className='block text-sm font-medium text-gray-700 mb-2'>{t('create_offer.illustration')}</label>
 
                             <div className="flex gap-4 mb-4">
                                 <button
@@ -258,27 +260,27 @@ export default function CreateOffer() {
                                     onClick={() => setImageMode('file')}
                                     className={`flex-1 py-2 text-sm font-medium rounded-lg border ${imageMode === 'file' ? 'bg-green-50 border-green-500 text-green-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'} transition-colors`}
                                 >
-                                    Téléverser une image
+                                    {t('create_offer.upload_image')}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setImageMode('url')}
                                     className={`flex-1 py-2 text-sm font-medium rounded-lg border ${imageMode === 'url' ? 'bg-green-50 border-green-500 text-green-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'} transition-colors`}
                                 >
-                                    Lien URL
+                                    {t('create_offer.url_link')}
                                 </button>
                             </div>
 
                             {imageMode === 'url' ? (
                                 <div className='relative'>
-                                    <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400'>
+                                    <div className='absolute inset-y-0 left-0 rtl:right-0 rtl:left-auto pl-3 rtl:pr-3 flex items-center pointer-events-none text-gray-400'>
                                         <ImageIcon size={18} />
                                     </div>
                                     <input
                                         type='url'
                                         required={imageMode === 'url'}
                                         placeholder='https://exemple.com/image.jpg'
-                                        className='block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition'
+                                        className='block w-full pl-10 pr-3 rtl:pr-10 rtl:pl-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition'
                                         value={formData.pictureUrl}
                                         onChange={e => setFormData({ ...formData, pictureUrl: e.target.value })}
                                     />
@@ -300,10 +302,10 @@ export default function CreateOffer() {
                                         <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
                                         <div className="flex text-sm text-gray-600 justify-center">
                                             <span className="relative font-medium text-green-600 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500 truncate max-w-xs">
-                                                {imageFile ? imageFile.name : 'Cliquez pour choisir un fichier'}
+                                                {imageFile ? imageFile.name : t('create_offer.choose_file')}
                                             </span>
                                         </div>
-                                        <p className="text-xs text-gray-500">PNG, JPG, GIF jusqu'à 5MB</p>
+                                        <p className="text-xs text-gray-500">{t('create_offer.file_hint')}</p>
                                     </div>
                                 </div>
                             )}
@@ -315,14 +317,14 @@ export default function CreateOffer() {
                                 onClick={() => navigate('/dashboard')}
                                 className='w-full sm:w-1/3 flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition'
                             >
-                                Annuler
+                                {t('create_offer.cancel')}
                             </button>
                             <button
                                 type='submit'
                                 disabled={loading}
                                 className={`w-full sm:w-2/3 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                             >
-                                {loading ? 'Publication en cours...' : 'Publier mon annonce'}
+                                {loading ? t('create_offer.publishing') : t('create_offer.publish_btn')}
                             </button>
                         </div>
 

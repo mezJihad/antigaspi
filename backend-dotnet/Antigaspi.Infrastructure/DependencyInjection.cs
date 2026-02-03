@@ -24,6 +24,8 @@ public static class DependencyInjection
         services.AddScoped<ISellerRepository, SqlSellerRepository>();
         services.AddScoped<IOfferRepository, SqlOfferRepository>();
         services.AddScoped<IUserRepository, SqlUserRepository>();
+        services.AddScoped<ICityRepository, SqlCityRepository>();
+
 
         // Authentication
         services.AddSingleton<IPasswordHasher, PasswordHasher>();

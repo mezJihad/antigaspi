@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { resetPassword } from '../services/auth';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function ResetPassword() {
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
@@ -11,19 +13,28 @@ export default function ResetPassword() {
     const email = searchParams.get('email');
 
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [status, setStatus] = useState('idle');
     const [error, setError] = useState('');
 
     useEffect(() => {
         if (!token || !email) {
             setStatus('invalid');
-            setError('Lien invalide ou incomplet.');
+            setError(t('auth.invalid_link_desc'));
         }
-    }, [token, email]);
+    }, [token, email, t]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (password !== confirmPassword) {
+            setStatus('error');
+            setError(t('auth.password_mismatch'));
+            return;
+        }
+
         setStatus('loading');
         setError('');
 
@@ -33,7 +44,7 @@ export default function ResetPassword() {
             setTimeout(() => navigate('/login'), 3000); // Auto redirect
         } catch (err) {
             setStatus('error');
-            setError(err.message || 'Une erreur est survenue.');
+            setError(err.message || t('common.error'));
         }
     };
 
@@ -44,12 +55,12 @@ export default function ResetPassword() {
                     <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                         <CheckCircle className="h-6 w-6 text-green-600" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Mot de passe modifié !</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.reset_password_success_title')}</h2>
                     <p className="text-gray-600 mb-6">
-                        Votre mot de passe a été réinitialisé avec succès. Vous allez être redirigé vers la page de connexion.
+                        {t('auth.reset_password_success_desc')}
                     </p>
                     <Link to="/login" className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition">
-                        Se connecter maintenant
+                        {t('auth.login_now_btn')}
                     </Link>
                 </div>
             </div>
@@ -63,10 +74,10 @@ export default function ResetPassword() {
                     <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
                         <AlertCircle className="h-6 w-6 text-red-600" />
                     </div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">Lien invalide</h2>
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">{t('auth.invalid_link_title')}</h2>
                     <p className="text-gray-600 mb-6">{error}</p>
                     <Link to="/forgot-password" className="text-green-600 hover:underline">
-                        Demander un nouveau lien
+                        {t('auth.request_new_link')}
                     </Link>
                 </div>
             </div>
@@ -78,7 +89,7 @@ export default function ResetPassword() {
             <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-green-600 mb-2">NoGaspi</h1>
-                    <h2 className="text-xl font-semibold text-gray-800">Nouveau mot de passe</h2>
+                    <h2 className="text-xl font-semibold text-gray-800">{t('auth.reset_password_title')}</h2>
                 </div>
 
                 {status === 'error' && (
@@ -89,7 +100,7 @@ export default function ResetPassword() {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Nouveau mot de passe</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.new_password')}</label>
                         <div className="relative">
                             <input
                                 type={showPassword ? 'text' : 'password'}
@@ -99,18 +110,39 @@ export default function ResetPassword() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
-                            <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
+                            <Lock className="w-5 h-5 text-gray-400 absolute left-3 rtl:right-3 rtl:left-auto top-2.5" />
                             <button
                                 type="button"
-                                className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                                className="absolute right-3 rtl:left-3 rtl:right-auto top-2.5 text-gray-400 hover:text-gray-600"
                                 onClick={() => setShowPassword(!showPassword)}
                             >
                                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                             </button>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
-                            Min. 8 caractères, majuscule, minuscule, chiffre et caractère spécial.
+                            {t('auth.password_requirements')}
                         </p>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.confirm_password')}</label>
+                        <div className="relative">
+                            <input
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                required
+                                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                            />
+                            <Lock className="w-5 h-5 text-gray-400 absolute left-3 rtl:right-3 rtl:left-auto top-2.5" />
+                            <button
+                                type="button"
+                                className="absolute right-3 rtl:left-3 rtl:right-auto top-2.5 text-gray-400 hover:text-gray-600"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                            </button>
+                        </div>
                     </div>
 
                     <button
@@ -118,7 +150,7 @@ export default function ResetPassword() {
                         disabled={status === 'loading'}
                         className="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition disabled:opacity-50"
                     >
-                        {status === 'loading' ? 'Modification...' : 'Modifier le mot de passe'}
+                        {status === 'loading' ? t('auth.resetting') : t('auth.reset_btn')}
                     </button>
                 </form>
             </div>

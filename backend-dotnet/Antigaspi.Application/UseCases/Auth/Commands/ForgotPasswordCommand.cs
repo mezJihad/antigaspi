@@ -1,4 +1,4 @@
-using Antigaspi.Application.Common.Interfaces.Authentication;
+using Antigaspi.Application.Common.Interfaces;
 using Antigaspi.Application.Repositories;
 using MediatR;
 using Microsoft.Extensions.Configuration;
