@@ -35,9 +35,20 @@ public class ResendVerificationEmailCommandHandler : IRequestHandler<ResendVerif
             return;
         }
 
+        // Check rate limiting (3 attempts per 24 hours)
+        if (!user.CanSendVerificationEmail(maxAttempts: 3, lockoutHours: 24))
+        {
+            // Security/UX: We should probably let the user know they are blocked to avoid confusion
+            // Or typically we throw a specific exception that the controller maps to 429
+            throw new Exception("TOO_MANY_ATTEMPTS");
+        }
+
         // Generate NEW Token
         var token = Guid.NewGuid().ToString();
-        user.SetOtp(token); // Reuses existing method
+        user.SetOtp(token, 1440); // Valid for 24h
+        
+        // Update counts
+        user.IncrementVerificationEmailCount(lockoutHours: 24);
 
         await _userRepository.UpdateAsync(user, cancellationToken);
 
@@ -45,7 +56,7 @@ public class ResendVerificationEmailCommandHandler : IRequestHandler<ResendVerif
         var clientUrl = _configuration["ClientAppUrl"];
         var verificationLink = $"{clientUrl}/verify-email?email={System.Web.HttpUtility.UrlEncode(user.Email)}&token={System.Web.HttpUtility.UrlEncode(token)}";
         
-        var subject = "AntiGaspi - Nouveau lien de vérification";
+        var subject = "NoGaspi - Nouveau lien de vérification";
         
         // Reuse template but slightly modified subject/body if needed (here same body is fine)
         var body = $@"<!DOCTYPE html>
@@ -67,18 +78,18 @@ public class ResendVerificationEmailCommandHandler : IRequestHandler<ResendVerif
 <body>
   <div class=""container"">
     <div class=""header"">
-      <div class=""logo"">AntiGaspi</div>
+      <div class=""logo"">NoGaspi</div>
     </div>
     <div class=""content"">
       <p>Bonjour,</p>
-      <p>Vous avez demandé un nouveau lien de vérification pour votre compte AntiGaspi.</p>
+      <p>Vous avez demandé un nouveau lien de vérification pour votre compte NoGaspi.</p>
       <p>Veuillez cliquer sur le bouton ci-dessous pour vérifier votre adresse email :</p>
       
       <div class=""btn-container"">
         <a href=""{verificationLink}"" class=""btn"">Vérifier mon email</a>
       </div>
       
-      <p>Ce lien est valable pendant <strong>15 minutes</strong>.</p>
+      <p>Ce lien est valable pendant <strong>24 heures</strong>.</p>
       
       <div class=""link-fallback"">
         <p>Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur :<br>
@@ -89,7 +100,7 @@ public class ResendVerificationEmailCommandHandler : IRequestHandler<ResendVerif
     </div>
     
     <div class=""footer"">
-      &copy; 2026 AntiGaspi. Tous droits réservés.<br>
+      &copy; 2026 NoGaspi. Tous droits réservés.<br>
       Ceci est un email automatique, merci de ne pas y répondre.
     </div>
   </div>

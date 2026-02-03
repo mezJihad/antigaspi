@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { login as loginApi, resendVerification } from '../services/auth';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Leaf, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Leaf, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import heroImage from '../assets/auth-hero.png';
 
 export default function Login() {
@@ -59,14 +59,32 @@ export default function Login() {
         }
     };
 
+    const [cooldown, setCooldown] = useState(0);
+
+    useEffect(() => {
+        let timer;
+        if (cooldown > 0) {
+            timer = setInterval(() => {
+                setCooldown((prev) => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(timer);
+    }, [cooldown]);
+
     const handleResend = async () => {
         setIsResending(true);
         try {
             await resendVerification(email);
             setSuccess('Un nouveau lien de vérification a été envoyé.');
             setShowResend(false);
+            setCooldown(60); // Start 60s cooldown
         } catch (err) {
-            setError('Impossible de renvoyer l\'email. Veuillez réessayer plus tard.');
+            if (err.response && err.response.status === 429) {
+                setError('Trop de tentatives. Veuillez réessayer dans 24 heures ou contacter le support.');
+            } else {
+                setError('Impossible de renvoyer l\'email. Veuillez réessayer plus tard.');
+            }
+            setCooldown(60); // Even on error, prevent spamming
         } finally {
             setIsResending(false);
         }
@@ -109,18 +127,24 @@ export default function Login() {
                     )}
 
                     {error && (
-                        <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm">
+                        <div className={`mb-6 p-4 rounded-lg border text-sm ${showResend
+                            ? 'bg-amber-50 text-amber-800 border-amber-200'
+                            : 'bg-red-50 text-red-700 border-red-100'
+                            }`}>
                             <div className="flex items-center gap-2 mb-2">
-                                <span>⚠️</span> {error}
+                                {showResend ? <AlertCircle size={18} className="text-amber-600" /> : <span>⚠️</span>}
+                                <span className={showResend ? "font-medium" : ""}>{error}</span>
                             </div>
                             {showResend && (
-                                <button
-                                    onClick={handleResend}
-                                    disabled={isResending}
-                                    className="ml-6 text-xs font-semibold bg-white border border-red-200 px-3 py-1 rounded hover:bg-red-50 hover:border-red-300 transition-colors disabled:opacity-50"
-                                >
-                                    {isResending ? 'Envoi en cours...' : 'Renvoyer email de vérification'}
-                                </button>
+                                <div className="mt-3 ml-1">
+                                    <button
+                                        onClick={handleResend}
+                                        disabled={isResending || cooldown > 0}
+                                        className="text-xs font-semibold bg-white border border-amber-300 text-amber-900 px-4 py-2 rounded shadow-sm hover:bg-amber-50 hover:border-amber-400 transition-all disabled:opacity-50 flex items-center gap-2 disabled:cursor-not-allowed"
+                                    >
+                                        {isResending ? 'Envoi...' : cooldown > 0 ? `Réessayer dans ${cooldown}s` : "Renvoyer l'email de vérification"}
+                                    </button>
+                                </div>
                             )}
                         </div>
                     )}

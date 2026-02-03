@@ -58,7 +58,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
         // 2. Generate and Set OTP
         // Generate GUID Token
         var token = Guid.NewGuid().ToString();
-        user.SetOtp(token); // We reuse the OtpCode field for the token
+        user.SetOtp(token, 1440); // We reuse the OtpCode field for the token, valid for 24h
 
         await _userRepository.AddAsync(user, cancellationToken);
             
@@ -66,7 +66,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
             var clientUrl = _configuration["ClientAppUrl"];
             var verificationLink = $"{clientUrl}/verify-email?email={System.Web.HttpUtility.UrlEncode(user.Email)}&token={System.Web.HttpUtility.UrlEncode(token)}";
             
-            var subject = "AntiGaspi - Vérifiez votre email";
+            var subject = "NoGaspi - Vérifiez votre email";
             
             // Read template from file or use embedded string
             var body = $@"<!DOCTYPE html>
@@ -88,18 +88,18 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
 <body>
   <div class=""container"">
     <div class=""header"">
-      <div class=""logo"">AntiGaspi</div>
+      <div class=""logo"">NoGaspi</div>
     </div>
     <div class=""content"">
       <p>Bonjour,</p>
-      <p>Bienvenue sur AntiGaspi ! Nous sommes ravis de vous compter parmi nous.</p>
+      <p>Bienvenue sur NoGaspi ! Nous sommes ravis de vous compter parmi nous.</p>>
       <p>Pour finaliser votre inscription, veuillez cliquer sur le bouton ci-dessous pour vérifier votre adresse email :</p>
       
       <div class=""btn-container"">
         <a href=""{verificationLink}"" class=""btn"">Vérifier mon email</a>
       </div>
       
-      <p>Ce lien est valable pendant <strong>15 minutes</strong>.</p>
+      <p>Ce lien est valable pendant <strong>24 heures</strong>.</p>
       
       <div class=""link-fallback"">
         <p>Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur :<br>
@@ -110,7 +110,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
     </div>
     
     <div class=""footer"">
-      &copy; 2026 AntiGaspi. Tous droits réservés.<br>
+      &copy; 2026 NoGaspi. Tous droits réservés.<br>
       Ceci est un email automatique, merci de ne pas y répondre.
     </div>
   </div>

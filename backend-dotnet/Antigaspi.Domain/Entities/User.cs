@@ -14,6 +14,8 @@ public class User
     public string? OtpCode { get; private set; }
     public DateTime? OtpExpiration { get; private set; }
     public bool IsActive { get; private set; }
+    public int VerificationEmailCount { get; private set; }
+    public DateTime? LastVerificationEmailSentAt { get; private set; }
 
     // Constructor for EF Core / Persistence
     private User() { }
@@ -67,6 +69,36 @@ public class User
         IsEmailVerified = true;
         OtpCode = null;
         OtpExpiration = null;
+        VerificationEmailCount = 0; // Reset on success
+        LastVerificationEmailSentAt = null;
+    }
+
+    public bool CanSendVerificationEmail(int maxAttempts = 3, int lockoutHours = 24)
+    {
+        if (IsEmailVerified) return false;
+
+        // If never sent or sent long ago (outside lockout window), allowed
+        if (!LastVerificationEmailSentAt.HasValue) return true;
+        
+        // If window passed, reset happens in Increment, but here we just say 'yes you can start new window'
+        if (DateTime.UtcNow > LastVerificationEmailSentAt.Value.AddHours(lockoutHours)) return true;
+
+        // Within window, check count
+        return VerificationEmailCount < maxAttempts;
+    }
+
+    public void IncrementVerificationEmailCount(int lockoutHours = 24)
+    {
+        // If first time or window expired, reset
+        if (!LastVerificationEmailSentAt.HasValue || DateTime.UtcNow > LastVerificationEmailSentAt.Value.AddHours(lockoutHours))
+        {
+            VerificationEmailCount = 1;
+        }
+        else
+        {
+            VerificationEmailCount++;
+        }
+        LastVerificationEmailSentAt = DateTime.UtcNow;
     }
 
     public void Deactivate()

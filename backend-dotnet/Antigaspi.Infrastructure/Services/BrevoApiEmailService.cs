@@ -24,7 +24,7 @@ public class BrevoApiEmailService : IEmailService
     {
         var apiKey = _configuration["Brevo:ApiKey"];
         var senderEmail = _configuration["Brevo:SenderEmail"];
-        var senderName = _configuration["Brevo:SenderName"] ?? "Antigaspi";
+        var senderName = _configuration["Brevo:SenderName"] ?? "NoGaspi";
 
         if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(senderEmail))
         {

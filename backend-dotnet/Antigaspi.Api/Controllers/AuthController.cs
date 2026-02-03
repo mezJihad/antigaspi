@@ -60,9 +60,16 @@ public class AuthController : ControllerBase
     [HttpPost("resend-verification")]
     public async Task<IActionResult> ResendVerification([FromBody] ResendVerificationRequest request)
     {
-        var command = new ResendVerificationEmailCommand(request.Email);
-        await _sender.Send(command);
-        return Ok(new { message = "Verification email sent if account exists" });
+        try 
+        {
+            var command = new ResendVerificationEmailCommand(request.Email);
+            await _sender.Send(command);
+            return Ok(new { message = "Verification email sent if account exists" });
+        }
+        catch (Exception ex) when (ex.Message == "TOO_MANY_ATTEMPTS")
+        {
+            return StatusCode(429, new { message = "TOO_MANY_ATTEMPTS" });
+        }
     }
 }
 

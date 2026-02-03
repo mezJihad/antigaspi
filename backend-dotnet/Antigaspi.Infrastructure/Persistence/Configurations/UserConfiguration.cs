@@ -19,5 +19,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.PasswordHash).IsRequired();
 
         builder.Property(x => x.OtpCode).HasMaxLength(128).IsRequired(false);
+
+        builder.Property(x => x.VerificationEmailCount).HasDefaultValue(0);
+        builder.Property(x => x.LastVerificationEmailSentAt).IsRequired(false);
     }
 }
