@@ -65,6 +65,48 @@ public class BrevoApiEmailService : IEmailService
         }
     }
 
+    public async Task SendTemplateEmailAsync(string to, long templateId, Dictionary<string, string> parameters)
+    {
+        var apiKey = _configuration["Brevo:ApiKey"];
+        
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            _logger.LogWarning("Brevo API Key is missing. Template Email to {To} was not sent via API.", to);
+            return;
+        }
+
+        var request = new BrevoSendTemplateEmailRequest
+        {
+            To = new List<BrevoEmailContact> { new BrevoEmailContact { Email = to } },
+            TemplateId = templateId,
+            Params = parameters
+        };
+
+        _httpClient.DefaultRequestHeaders.Remove("api-key");
+        _httpClient.DefaultRequestHeaders.Add("api-key", apiKey);
+
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync("https://api.brevo.com/v3/smtp/email", request);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Template Email {TemplateId} sent successfully to {To} via Brevo API.", templateId, to);
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to send template email to {To}. Status: {Status}. Error: {Error}", to, response.StatusCode, errorContent);
+                throw new Exception($"Brevo API Error: {response.StatusCode} - {errorContent}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception occurred while sending template email to {To} via Brevo API.", to);
+            throw;
+        }
+    }
+
     private class BrevoSendEmailRequest
     {
         [JsonPropertyName("sender")]
@@ -78,6 +120,18 @@ public class BrevoApiEmailService : IEmailService
 
         [JsonPropertyName("htmlContent")]
         public string HtmlContent { get; set; }
+    }
+
+    private class BrevoSendTemplateEmailRequest
+    {
+        [JsonPropertyName("to")]
+        public List<BrevoEmailContact> To { get; set; }
+
+        [JsonPropertyName("templateId")]
+        public long TemplateId { get; set; }
+
+        [JsonPropertyName("params")]
+        public Dictionary<string, string> Params { get; set; }
     }
 
     private class BrevoEmailContact

@@ -13,6 +13,8 @@ import EditOffer from './pages/EditOffer';
 import EditShop from './pages/EditShop';
 import Terms from './pages/Terms'; // Import Terms
 import VerifyEmail from './pages/VerifyEmail'; // Import VerifyEmail
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import AdminDashboard from './pages/AdminDashboard'; // Import AdminDashboard
 
 import OfferDetails from './pages/OfferDetails'; // Import
@@ -30,6 +32,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/verify-email" element={<VerifyEmail />} /> {/* New Route */}
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/terms" element={<Terms />} />
 
             {/* Protected Seller Routes */}

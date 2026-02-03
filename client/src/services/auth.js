@@ -59,7 +59,37 @@ export const resendVerification = async (email) => {
         body: JSON.stringify({ email }),
     });
     if (!response.ok) {
-        throw new Error('Resend failed');
+        const error = new Error('Resend failed');
+        error.response = response;
+        throw error;
     }
     return response.json();
+};
+
+export const forgotPassword = async (email) => {
+    const response = await fetch(`${API_URL}/Auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+    });
+    // Always return true/success for security (no user enumeration) unless 500
+    if (response.status >= 500) throw new Error('Server error');
+    return true;
+};
+
+export const resetPassword = async (email, token, newPassword) => {
+    const response = await fetch(`${API_URL}/Auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, token, newPassword }),
+    });
+    if (!response.ok) {
+        let errorMessage = 'Reset failed';
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || 'Erreur lors de la réinitialisation.';
+        } catch (e) { }
+        throw new Error(errorMessage);
+    }
+    return true;
 };

@@ -58,4 +58,12 @@ public class SmtpEmailService : IEmailService
             _logger.LogWarning($"[FALLBACK MOCK EMAIL] To: {to}, Subject: {subject}, Body: {body}");
         }
     }
+
+
+    public Task SendTemplateEmailAsync(string to, long templateId, Dictionary<string, string> parameters)
+    {
+        var paramString = string.Join(", ", parameters.Select(kv => $"{kv.Key}={kv.Value}"));
+        _logger.LogWarning($"[MOCK TEMPLATE EMAIL] To: {to}, TemplateId: {templateId}, Params: {{{paramString}}}");
+        return Task.CompletedTask;
+    }
 }

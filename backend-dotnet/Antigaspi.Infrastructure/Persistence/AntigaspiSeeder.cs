@@ -24,7 +24,12 @@ public class AntigaspiSeeder
         // 1. Create Users
         // 1. Create Users
         var sellerUser = await context.Users.FirstOrDefaultAsync(u => u.Email == "seller@antigaspi.test");
-        var adminUser = await context.Users.FirstOrDefaultAsync(u => u.Email == "admin@nogaspi.test");
+        // Check for old admin or correct admin
+        var adminUser = await context.Users.FirstOrDefaultAsync(u => u.Email == "mez.jihad@gmail.com");
+        
+        // Optional: Remove old 'admin' user if it exists to clean up
+        var oldAdmin = await context.Users.FirstOrDefaultAsync(u => u.Email == "admin");
+        if (oldAdmin != null) context.Users.Remove(oldAdmin);
 
         if (sellerUser == null)
         {
@@ -34,16 +39,18 @@ public class AntigaspiSeeder
 
         if (adminUser == null)
         {
-            // Password: Password123!
-            string adminHash = BCrypt.Net.BCrypt.HashPassword("Password123!");
-            adminUser = User.Create("Admin", "System", "admin@nogaspi.test", adminHash, UserRole.ADMIN);
+            // Login: mez.jihad@gmail.com, Password: admin
+            string adminHash = BCrypt.Net.BCrypt.HashPassword("admin");
+            adminUser = User.Create("Admin", "System", "mez.jihad@gmail.com", adminHash, UserRole.ADMIN);
+            adminUser.MarkEmailVerified(); // Auto-verify admin
             await context.Users.AddAsync(adminUser);
         }
         else 
         {
-             // Ensure password is updated even if user exists (to fix previous bad hash)
-             string adminHash = BCrypt.Net.BCrypt.HashPassword("Password123!");
+             // Ensure password is updated to 'admin'
+             string adminHash = BCrypt.Net.BCrypt.HashPassword("admin");
              adminUser.ChangePassword(adminHash);
+             if (!adminUser.IsEmailVerified) adminUser.MarkEmailVerified();
              context.Users.Update(adminUser);
         }
 
