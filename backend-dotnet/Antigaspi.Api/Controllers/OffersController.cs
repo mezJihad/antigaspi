@@ -47,6 +47,33 @@ public class OffersController : ControllerBase
         {
             pictureUrl = await _fileStorage.SaveFileAsync(request.PictureFile, "offers");
         }
+        else if (!string.IsNullOrEmpty(request.PictureUrl) && request.PictureUrl.StartsWith("data:image"))
+        {
+            // Handle Base64 string
+            try 
+            {
+                var base64Data = request.PictureUrl.Split(',')[1];
+                var bytes = Convert.FromBase64String(base64Data);
+                
+                // Determine extension from header, e.g. "data:image/jpeg;base64"
+                var header = request.PictureUrl.Split(';')[0];
+                var extension = header.Contains("png") ? ".png" : ".jpg"; // simplified
+                if (header.Contains("webp")) extension = ".webp";
+                if (header.Contains("gif")) extension = ".gif";
+
+                using (var stream = new MemoryStream(bytes))
+                {
+                    pictureUrl = await _fileStorage.SaveFileAsync(stream, $"image{extension}", "offers");
+                }
+            }
+            catch (Exception)
+            {
+                // Fallback or log: if parsing fails, we might just let it fail later or set null.
+                // For now, let's consume error and maybe set empty or keep invalid string (but that causes SQL error).
+                // Better to set null/empty if invalid base64.
+                pictureUrl = "";
+            }
+        }
         
         var command = new CreateOfferCommand(
             confirmedSellerId,
@@ -60,7 +87,8 @@ public class OffersController : ControllerBase
             request.EndDate,
             request.ExpirationDate,
             request.Category,
-            pictureUrl ?? "" 
+            pictureUrl ?? "",
+            request.SourceLanguage ?? "fr"
         );
 
         var offerId = await _sender.Send(command);
@@ -109,7 +137,8 @@ public class OffersController : ControllerBase
             request.EndDate,
             request.ExpirationDate,
             request.Category,
-            pictureUrl
+            pictureUrl,
+            request.SourceLanguage
         );
 
         await _sender.Send(command);

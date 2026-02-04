@@ -7,20 +7,22 @@ public record RegisterSellerRequest(
     string StoreName,
     string Street,
     string City,
-    string ZipCode,
+    string? ZipCode,
     string Description,
     double? Latitude,
-    double? Longitude
+    double? Longitude,
+    string? SourceLanguage
 );
 
 public record UpdateSellerRequest(
     string StoreName,
     string Street,
     string City,
-    string ZipCode,
+    string? ZipCode,
     string Description,
     double? Latitude,
-    double? Longitude
+    double? Longitude,
+    string? SourceLanguage
 );
 
 public record CreateOfferRequest(
@@ -36,7 +38,8 @@ public record CreateOfferRequest(
     DateTime ExpirationDate,
     Antigaspi.Domain.Enums.OfferCategory Category,
     string? PictureUrl,
-    IFormFile? PictureFile
+    IFormFile? PictureFile,
+    string? SourceLanguage
 );
 
 public record ReasonRequest(string Reason);

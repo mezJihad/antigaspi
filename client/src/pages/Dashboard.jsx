@@ -64,6 +64,7 @@ export default function Dashboard() {
     }, [token, mySellerId]);
 
     const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, offerId: null });
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const openDeleteModal = (offerId) => {
         setDeleteConfirmation({ show: true, offerId });
@@ -72,6 +73,8 @@ export default function Dashboard() {
     const confirmDelete = async () => {
         const { offerId } = deleteConfirmation;
         if (!offerId) return;
+
+        setIsDeleting(true);
 
         try {
             const res = await fetch(`${API_URL}/Offers/${offerId}/cancel?userId=${sellerProfile.userId}`, {
@@ -97,6 +100,8 @@ export default function Dashboard() {
     const confirmShopDelete = async () => {
         const { sellerId } = shopDeleteConfirmation;
         if (!sellerId) return;
+
+        setIsDeleting(true);
 
         try {
             const res = await fetch(`${API_URL}/Sellers/${sellerId}`, {
@@ -276,17 +281,27 @@ export default function Dashboard() {
 
                         <div className="flex justify-end gap-3">
                             <button
-                                onClick={() => setDeleteConfirmation({ show: false, offerId: null })}
-                                className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition"
+                                className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition disabled:opacity-50"
+                                disabled={isDeleting}
                             >
                                 {t('seller_dashboard.cancel')}
                             </button>
                             <button
                                 onClick={confirmDelete}
-                                className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium shadow-sm transition flex items-center gap-2"
+                                className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium shadow-sm transition flex items-center gap-2 disabled:opacity-50"
+                                disabled={isDeleting}
                             >
-                                <Trash2 size={16} />
-                                {t('seller_dashboard.delete_btn')}
+                                {isDeleting ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        {t('common.loading')}
+                                    </>
+                                ) : (
+                                    <>
+                                        <Trash2 size={16} />
+                                        {t('seller_dashboard.delete_btn')}
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>
@@ -311,16 +326,27 @@ export default function Dashboard() {
                         <div className="flex justify-end gap-3">
                             <button
                                 onClick={() => setShopDeleteConfirmation({ show: false, sellerId: null })}
-                                className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition"
+                                className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition disabled:opacity-50"
+                                disabled={isDeleting}
                             >
                                 {t('seller_dashboard.cancel')}
                             </button>
                             <button
                                 onClick={confirmShopDelete}
-                                className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium shadow-sm transition flex items-center gap-2"
+                                className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium shadow-sm transition flex items-center gap-2 disabled:opacity-50"
+                                disabled={isDeleting}
                             >
-                                <Trash2 size={16} />
-                                {t('seller_dashboard.delete_all_btn')}
+                                {isDeleting ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        {t('common.loading')}
+                                    </>
+                                ) : (
+                                    <>
+                                        <Trash2 size={16} />
+                                        {t('seller_dashboard.delete_all_btn')}
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>

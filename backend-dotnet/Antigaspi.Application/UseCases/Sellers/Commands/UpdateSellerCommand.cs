@@ -9,10 +9,11 @@ public record UpdateSellerCommand(
     string StoreName,
     string Street,
     string City,
-    string ZipCode,
+    string? ZipCode,
     string Description,
     double? Latitude,
-    double? Longitude
+    double? Longitude,
+    string? SourceLanguage
 ) : IRequest;
 
 public class UpdateSellerCommandHandler : IRequestHandler<UpdateSellerCommand>
@@ -35,7 +36,7 @@ public class UpdateSellerCommandHandler : IRequestHandler<UpdateSellerCommand>
 
         var address = new Address(request.Street, request.City, request.ZipCode, "France", request.Latitude, request.Longitude);
 
-        seller.UpdateDetails(request.StoreName, request.Description, address);
+        seller.UpdateDetails(request.StoreName, request.Description, address, request.SourceLanguage);
 
         await _sellerRepository.UpdateAsync(seller, cancellationToken);
     }

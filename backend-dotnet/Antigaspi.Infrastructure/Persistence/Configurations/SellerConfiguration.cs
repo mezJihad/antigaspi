@@ -13,6 +13,7 @@ public class SellerConfiguration : IEntityTypeConfiguration<Seller>
         builder.Property(x => x.StoreName).IsRequired().HasMaxLength(200);
         builder.Property(x => x.Description).HasMaxLength(2000);
         builder.Property(x => x.RejectionReason).HasMaxLength(500);
+        builder.Property(x => x.SourceLanguage).IsRequired().HasMaxLength(10).HasDefaultValue("fr");
 
         builder.OwnsOne(x => x.Address, a =>
         {

@@ -36,7 +36,8 @@ public class Offer
     public DateTime ExpirationDate { get; private set; }
     public OfferCategory Category { get; private set; }
     public OfferStatus Status { get; private set; }
-    
+    public string SourceLanguage { get; private set; } = "fr"; // Default to 'fr'
+
     // Encapsulate collection
     private readonly List<OfferStatusEntry> _statusHistory = new();
     public IReadOnlyCollection<OfferStatusEntry> StatusHistory => _statusHistory.AsReadOnly();
@@ -55,7 +56,8 @@ public class Offer
         DateTime expirationDate,
         OfferCategory category,
         Guid? id = null,
-        OfferStatus status = OfferStatus.DRAFT)
+        OfferStatus status = OfferStatus.DRAFT,
+        string sourceLanguage = "fr")
     {
         Id = id ?? Guid.NewGuid();
         SellerId = sellerId;
@@ -69,6 +71,7 @@ public class Offer
         ExpirationDate = expirationDate;
         Category = category;
         Status = status;
+        SourceLanguage = sourceLanguage;
         
         ValidateState();
     }
@@ -83,9 +86,12 @@ public class Offer
         DateTime? endDate,
         DateTime expirationDate,
         OfferCategory category,
-        string pictureUrl)
+        string pictureUrl,
+        string sourceLanguage = "fr")
     {
         if (sellerId == Guid.Empty) throw new ArgumentException("Offer requires a sellerId");
+
+        ValidatePictureUrl(pictureUrl);
 
         // Invariant: Price must be lower than original price
         if (price != null && originalPrice != null && !price.IsLessThan(originalPrice))
@@ -121,7 +127,8 @@ public class Offer
             expirationDate,
             category,
             null,
-            OfferStatus.DRAFT
+            OfferStatus.DRAFT,
+            sourceLanguage
         );
     }
 
@@ -174,7 +181,8 @@ public class Offer
         DateTime? endDate,
         DateTime? expirationDate, 
         OfferCategory? category,
-        string? pictureUrl)
+        string? pictureUrl,
+        string? sourceLanguage = null)
     {
         if (Status == OfferStatus.PENDING_VALIDATION)
         {
@@ -185,7 +193,12 @@ public class Offer
 
         if (!string.IsNullOrWhiteSpace(title)) Title = title;
         if (!string.IsNullOrWhiteSpace(description)) Description = description;
-        if (!string.IsNullOrWhiteSpace(pictureUrl)) PictureUrl = pictureUrl;
+        if (!string.IsNullOrWhiteSpace(pictureUrl)) 
+        {
+            ValidatePictureUrl(pictureUrl);
+            PictureUrl = pictureUrl;
+        }
+        if (!string.IsNullOrWhiteSpace(sourceLanguage)) SourceLanguage = sourceLanguage;
 
         // Date Logic Checks
         // We need to validate the new combination of dates.
@@ -270,6 +283,22 @@ public class Offer
             ExpirationDate == default)
         {
             throw new InvalidOperationException("Offer incomplete: missing required fields for submission");
+        }
+    }
+
+    private static void ValidatePictureUrl(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return; // Or throw if required? context says Create makes it required via nullable annotations/logic, but let's stick to content check. In Create it validates passed arg.
+
+        if (url.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException("Base64 images are not allowed. Please provide a valid URL.");
+        }
+
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uriResult) 
+            || (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
+        {
+            throw new ArgumentException("Invalid picture URL. Must be a valid HTTP/HTTPS URL.");
         }
     }
 }

@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Calendar, Euro, Tag, Type, Image as ImageIcon, ArrowLeft, Edit } from 'lucide-react';
+import { Calendar, Euro, Tag, Type, Image as ImageIcon, ArrowLeft, Edit, Keyboard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import VirtualKeyboard from '../components/VirtualKeyboard';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function EditOffer() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { id } = useParams();
     const { token } = useAuth();
     const navigate = useNavigate();
@@ -35,9 +36,23 @@ export default function EditOffer() {
         pictureUrl: ''
     });
 
+    const [sourceLanguage, setSourceLanguage] = useState('fr');
     const [imageMode, setImageMode] = useState('file'); // 'file' or 'url'
     const [imageFile, setImageFile] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    // Virtual Keyboard State
+    const [showKeyboard, setShowKeyboard] = useState(false);
+    const [activeInput, setActiveInput] = useState(null);
+
+    const handleKeyboardChange = (input) => {
+        if (activeInput) {
+            setFormData(prev => ({
+                ...prev,
+                [activeInput]: input
+            }));
+        }
+    };
 
     // Load Offer Data
     useEffect(() => {
@@ -70,6 +85,10 @@ export default function EditOffer() {
                         expirationDate: data.expirationDate.split('T')[0],
                         pictureUrl: data.pictureUrl || ''
                     });
+                    // Set source language if available, otherwise default fallback
+                    if (data.sourceLanguage) {
+                        setSourceLanguage(data.sourceLanguage);
+                    }
                     if (data.pictureUrl) setImageMode('url');
                 } else {
                     alert(t('edit_offer.error_not_found'));
@@ -102,6 +121,7 @@ export default function EditOffer() {
             body.append('startDate', formData.startDate);
             if (formData.endDate) body.append('endDate', formData.endDate);
             body.append('expirationDate', formData.expirationDate);
+            body.append('sourceLanguage', sourceLanguage);
 
             if (imageMode === 'url') {
                 body.append('pictureUrl', formData.pictureUrl);
@@ -164,7 +184,22 @@ export default function EditOffer() {
                         {/* Title & Description */}
                         <div className='space-y-4'>
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-1'>{t('create_offer.offer_title')}</label>
+                                <label className='block text-sm font-medium text-gray-700 mb-1 flex justify-between'>
+                                    {t('create_offer.offer_title')}
+                                    {i18n.language === 'ar' && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setActiveInput('title');
+                                                setShowKeyboard(true);
+                                            }}
+                                            className="text-gray-500 hover:text-blue-600 transition"
+                                            title="Clavier Virtuel"
+                                        >
+                                            <Keyboard size={18} />
+                                        </button>
+                                    )}
+                                </label>
                                 <div className='relative'>
                                     <div className='absolute inset-y-0 left-0 rtl:right-0 rtl:left-auto pl-3 rtl:pr-3 flex items-center pointer-events-none text-gray-400'>
                                         <Type size={18} />
@@ -172,23 +207,44 @@ export default function EditOffer() {
                                     <input
                                         required
                                         type="text"
+                                        name="title"
                                         placeholder={t('create_offer.title_placeholder')}
                                         className='block w-full pl-10 pr-3 rtl:pr-10 rtl:pl-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition'
                                         value={formData.title}
                                         onChange={e => setFormData({ ...formData, title: e.target.value })}
+                                        onFocus={() => {
+                                            setActiveInput('title');
+                                        }}
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-1'>{t('create_offer.description')}</label>
+                                <label className='block text-sm font-medium text-gray-700 mb-1 flex justify-between'>
+                                    {t('create_offer.description')}
+                                    {i18n.language === 'ar' && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setActiveInput('description');
+                                                setShowKeyboard(true);
+                                            }}
+                                            className="text-gray-500 hover:text-blue-600 transition"
+                                            title="Clavier Virtuel"
+                                        >
+                                            <Keyboard size={18} />
+                                        </button>
+                                    )}
+                                </label>
                                 <textarea
                                     required
+                                    name="description"
                                     rows={4}
                                     placeholder={t('edit_offer.desc_placeholder')}
                                     className='block w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition'
                                     value={formData.description}
                                     onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                    onFocus={() => setActiveInput('description')}
                                 />
                             </div>
 
@@ -366,6 +422,15 @@ export default function EditOffer() {
                     </form>
                 </div>
             </div>
+
+            {showKeyboard && activeInput && (
+                <VirtualKeyboard
+                    onChange={handleKeyboardChange}
+                    inputName={activeInput}
+                    value={formData[activeInput]}
+                    onClose={() => setShowKeyboard(false)}
+                />
+            )}
         </div>
     );
 }

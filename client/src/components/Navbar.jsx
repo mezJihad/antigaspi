@@ -32,18 +32,22 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 rtl:flex-row-reverse">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2 text-xl font-bold text-green-600 hover:text-green-700 transition">
+            <Link to="/" dir="ltr" className="flex items-center gap-2 text-xl font-bold text-green-600 hover:text-green-700 transition">
               <Leaf size={24} />
               <span>NoGaspi</span>
+            </Link>
+
+          </div>
+
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden md:block">
+            <Link to="/" className="text-green-700 font-medium text-sm bg-green-50 px-3 py-1 rounded-full whitespace-nowrap hover:bg-green-100 transition">
+              {t('home.subtitle')}
             </Link>
           </div>
 
           <div className="flex items-center gap-4 rtl:flex-row-reverse">
             <LanguageSwitcher />
 
-            <Link to="/" className="text-green-700 font-medium transition-all text-sm hidden md:flex items-center gap-1 bg-green-50 hover:bg-green-100 px-3 py-1 rounded-full">
-              <span>{t('home.subtitle')}</span>
-            </Link>
 
             {user ? (
               <div className="relative" ref={dropdownRef}>

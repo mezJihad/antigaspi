@@ -62,7 +62,6 @@
         "forgot_password_title": "Mot de passe oublié ?",
         "forgot_password_desc": "Entrez votre email pour recevoir un lien de réinitialisation.",
         "send_link_btn": "Envoyer le lien",
-        "sending": "Envoi...",
         "back_to_login": "Retour à la connexion",
         "check_email_title": "Vérifiez vos emails",
         "check_email_desc": "Si un compte existe avec l'adresse <strong>{{email}}</strong>, vous recevrez un lien de réinitialisation dans quelques instants.",
@@ -235,5 +234,26 @@
         "success_update": "Boutique mise à jour avec succès !",
         "error_update": "Erreur lors de la modification de la boutique.",
         "error_generic": "Une erreur est survenue."
+    },
+    "offer_details": {
+        "back": "Retour aux offres",
+        "loading": "Chargement...",
+        "not_found": "Offre introuvable",
+        "available": "Disponible",
+        "description": "Description",
+        "seller_title": "Le Commerçant",
+        "geo_unavailable": "Localisation non disponible pour cette offre.",
+        "pickup_before": "À récupérer avant le :"
+    },
+    "explore": {
+        "locating": "Obtention de la localisation...",
+        "loading": "Chargement des offres...",
+        "no_results": "Aucune offre trouvée pour ces critères.",
+        "prev_page": "Précédent",
+        "next_page": "Suivant",
+        "page_info": "Page {{current}} sur {{total}}",
+        "expire_on": "Expire le {{date}}",
+        "location_denied": "Vous avez refusé l'accès à la localisation.",
+        "location_error": "Impossible de récupérer votre position."
     }
 }

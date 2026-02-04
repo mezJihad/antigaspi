@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Euro, Tag, Type, Image as ImageIcon } from 'lucide-react';
+import { Calendar, Euro, Tag, Type, Image as ImageIcon, Keyboard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import VirtualKeyboard from '../components/VirtualKeyboard';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function CreateOffer() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { token } = useAuth();
     const navigate = useNavigate();
 
@@ -37,9 +38,31 @@ export default function CreateOffer() {
         pictureUrl: ''
     });
 
+    const [sourceLanguage, setSourceLanguage] = useState(i18n.language || 'fr');
     const [imageMode, setImageMode] = useState('file'); // 'file' or 'url'
     const [imageFile, setImageFile] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    // Virtual Keyboard State
+    const [showKeyboard, setShowKeyboard] = useState(false);
+    const [activeInput, setActiveInput] = useState(null);
+
+    const handleInputFocus = (inputName) => {
+        setActiveInput(inputName);
+    };
+
+    const handleKeyboardChange = (input) => {
+        if (activeInput) {
+            setFormData(prev => ({
+                ...prev,
+                [activeInput]: input
+            }));
+        }
+    };
+
+    // Explicitly set Source Language when changed manually (if we add a dropdown later)
+    // For now we default to interface language but maybe we should allow user to pick.
+    // Let's add a hidden field or a small selector.
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -74,6 +97,7 @@ export default function CreateOffer() {
             body.append('startDate', formData.startDate);
             if (formData.endDate) body.append('endDate', formData.endDate);
             body.append('expirationDate', formData.expirationDate);
+            body.append('sourceLanguage', sourceLanguage);
 
             if (imageMode === 'url') {
                 body.append('pictureUrl', formData.pictureUrl);
@@ -127,7 +151,22 @@ export default function CreateOffer() {
                         {/* Title & Description */}
                         <div className='space-y-4'>
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-1'>{t('create_offer.offer_title')}</label>
+                                <label className='block text-sm font-medium text-gray-700 mb-1 flex justify-between'>
+                                    {t('create_offer.offer_title')}
+                                    {i18n.language === 'ar' && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setActiveInput('title');
+                                                setShowKeyboard(true);
+                                            }}
+                                            className="text-gray-500 hover:text-green-600 transition"
+                                            title="Clavier Virtuel"
+                                        >
+                                            <Keyboard size={18} />
+                                        </button>
+                                    )}
+                                </label>
                                 <div className='relative'>
                                     <div className='absolute inset-y-0 left-0 rtl:right-0 rtl:left-auto pl-3 rtl:pr-3 flex items-center pointer-events-none text-gray-400'>
                                         <Type size={18} />
@@ -135,23 +174,45 @@ export default function CreateOffer() {
                                     <input
                                         required
                                         type="text"
+                                        name="title"
                                         placeholder={t('create_offer.title_placeholder')}
                                         className='block w-full pl-10 pr-3 rtl:pr-10 rtl:pl-3 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition'
                                         value={formData.title}
                                         onChange={e => setFormData({ ...formData, title: e.target.value })}
+                                        onFocus={() => {
+                                            setActiveInput('title');
+                                            // Optional: Don't auto-show keyboard on focus to avoid annoyance on mobile/desktop
+                                        }}
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className='block text-sm font-medium text-gray-700 mb-1'>{t('create_offer.description')}</label>
+                                <label className='block text-sm font-medium text-gray-700 mb-1 flex justify-between'>
+                                    {t('create_offer.description')}
+                                    {i18n.language === 'ar' && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setActiveInput('description');
+                                                setShowKeyboard(true);
+                                            }}
+                                            className="text-gray-500 hover:text-green-600 transition"
+                                            title="Clavier Virtuel"
+                                        >
+                                            <Keyboard size={18} />
+                                        </button>
+                                    )}
+                                </label>
                                 <textarea
                                     required
+                                    name="description"
                                     rows={4}
                                     placeholder={t('create_offer.desc_placeholder')}
                                     className='block w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition'
                                     value={formData.description}
                                     onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                    onFocus={() => setActiveInput('description')}
                                 />
                             </div>
 
@@ -168,6 +229,9 @@ export default function CreateOffer() {
                                 </select>
                             </div>
                         </div>
+
+                        {/* Source Language Indicator (Hidden or Small UI) */}
+                        <input type="hidden" name="sourceLanguage" value={sourceLanguage} />
 
                         {/* Prices */}
                         <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
@@ -331,6 +395,15 @@ export default function CreateOffer() {
                     </form>
                 </div>
             </div>
+
+            {showKeyboard && activeInput && (
+                <VirtualKeyboard
+                    onChange={handleKeyboardChange}
+                    inputName={activeInput}
+                    value={formData[activeInput]}
+                    onClose={() => setShowKeyboard(false)}
+                />
+            )}
         </div>
     );
 }

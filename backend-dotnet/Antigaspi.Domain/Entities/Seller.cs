@@ -12,10 +12,11 @@ public class Seller
     public string Description { get; private set; }
     public SellerStatus Status { get; private set; }
     public string? RejectionReason { get; private set; }
+    public string SourceLanguage { get; private set; } = "fr";
 
     private Seller() { }
 
-    public Seller(Guid userId, string storeName, Address address, string description, Guid? id = null, SellerStatus status = SellerStatus.PENDING, string? rejectionReason = null)
+    public Seller(Guid userId, string storeName, Address address, string description, Guid? id = null, SellerStatus status = SellerStatus.PENDING, string? rejectionReason = null, string sourceLanguage = "fr")
     {
         if (userId == Guid.Empty) throw new ArgumentException("Seller must be linked to a user");
         if (string.IsNullOrWhiteSpace(storeName)) throw new ArgumentException("Store name is required");
@@ -28,14 +29,15 @@ public class Seller
         Description = description;
         Status = status;
         RejectionReason = rejectionReason;
+        SourceLanguage = sourceLanguage;
     }
 
-    public static Seller Create(Guid userId, string storeName, Address address, string description)
+    public static Seller Create(Guid userId, string storeName, Address address, string description, string sourceLanguage = "fr")
     {
-        return new Seller(userId, storeName, address, description);
+        return new Seller(userId, storeName, address, description, null, SellerStatus.PENDING, null, sourceLanguage);
     }
 
-    public void UpdateDetails(string storeName, string description, Address address)
+    public void UpdateDetails(string storeName, string description, Address address, string? sourceLanguage = null)
     {
         if (string.IsNullOrWhiteSpace(storeName)) throw new ArgumentException("Store name is required");
         if (address is null) throw new ArgumentNullException(nameof(address), "Address is required");
@@ -43,6 +45,7 @@ public class Seller
         StoreName = storeName;
         Description = description;
         Address = address;
+        if (!string.IsNullOrWhiteSpace(sourceLanguage)) SourceLanguage = sourceLanguage;
     }
 
     public void Approve()

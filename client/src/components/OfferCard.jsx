@@ -1,8 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { MapPin, Clock, Store, ArrowRight } from 'lucide-react';
 
 const OfferCard = ({ offer, distance }) => {
+    const { t } = useTranslation();
+
     // Helper to get color based on category
     const getCategoryColor = (category) => {
         const colors = {
@@ -16,6 +19,24 @@ const OfferCard = ({ offer, distance }) => {
             'Other': 'gray'
         };
         return colors[category] || 'green';
+    };
+
+    const getCategoryLabel = (cat) => {
+        // Map backend values (likely English/Enum strings) to translation keys used in SearchFilters
+        const map = {
+            'Bakery': 'cat_bakery',
+            'Produce': 'cat_fruits', // Assuming 'Produce' maps to Fruits
+            'Fruits': 'cat_fruits',
+            'MeatFish': 'cat_meat',
+            'Dairy': 'cat_dairy',
+            'Prepared': 'cat_prepared',
+            'Grocery': 'cat_grocery',
+            'Surprise': 'cat_surprise',
+            'Other': 'cat_other'
+        };
+        // If exact match found, return translated. Else try direct translation or fallback.
+        const key = map[cat] || `cat_${cat?.toLowerCase()}`;
+        return t(`search.${key}`, cat); // Fallback to cat if key not found (though t returns key usually)
     };
 
     return (
@@ -42,7 +63,7 @@ const OfferCard = ({ offer, distance }) => {
                     </div>
                     <div className="absolute top-3 left-3">
                         <div className={`px-2 py-1 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm flex items-center gap-1 bg-white/90 backdrop-blur-sm text-${getCategoryColor(offer.category)}-700 border border-white/50`}>
-                            {offer.category}
+                            {getCategoryLabel(offer.category)}
                         </div>
                     </div>
                 </div>
@@ -72,7 +93,7 @@ const OfferCard = ({ offer, distance }) => {
                         <div>
                             <p className="text-xs text-gray-400 mb-0.5 flex items-center gap-1">
                                 <Clock size={12} />
-                                Expire le {new Date(offer.expirationDate).toLocaleDateString()}
+                                {t('explore.expire_on', { date: new Date(offer.expirationDate).toLocaleDateString() })}
                             </p>
                             <div className="flex items-baseline gap-2">
                                 <span className="text-xl font-extrabold text-green-600">

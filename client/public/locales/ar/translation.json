@@ -235,5 +235,26 @@
         "success_update": "تم تحديث المتجر بنجاح!",
         "error_update": "خطأ في تحديث المتجر.",
         "error_generic": "حدث خطأ."
+    },
+    "offer_details": {
+        "back": "العودة للعروض",
+        "loading": "جاري التحميل...",
+        "not_found": "العرض غير موجود",
+        "available": "متاح",
+        "description": "الوصف",
+        "seller_title": "التاجر",
+        "geo_unavailable": "الموقع غير متاح لهذا العرض.",
+        "pickup_before": "يستلم قبل :"
+    },
+    "explore": {
+        "locating": "جاري تحديد الموقع...",
+        "loading": "جاري تحميل العروض...",
+        "no_results": "لا توجد عروض لهذه المعايير.",
+        "prev_page": "السابق",
+        "next_page": "التالي",
+        "page_info": "صفحة {{current}} من {{total}}",
+        "expire_on": "ينتهي في {{date}}",
+        "location_denied": "لقد رفضت الوصول إلى الموقع.",
+        "location_error": "تعذر استرداد موقعك."
     }
 }

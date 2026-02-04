@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Store, MapPin, Search } from 'lucide-react';
+import { Store, MapPin, Search, Keyboard } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { cityService } from '../services/cityService';
 import { useTranslation } from 'react-i18next';
+import VirtualKeyboard from '../components/VirtualKeyboard';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -44,8 +45,6 @@ export default function SellerRegister() {
     const { user, token } = useAuth();
     const navigate = useNavigate();
 
-    // ... (rest of state)
-
     const getCityName = (city) => {
         if (!city) return '';
         if (i18n.language === 'ar') return city.nameAr || city.nameFr;
@@ -60,6 +59,21 @@ export default function SellerRegister() {
         zipCode: '',
         description: ''
     });
+
+    const [sourceLanguage, setSourceLanguage] = useState(i18n.language || 'fr');
+
+    // Virtual Keyboard State
+    const [showKeyboard, setShowKeyboard] = useState(false);
+    const [activeInput, setActiveInput] = useState(null);
+
+    const handleKeyboardChange = (input) => {
+        if (activeInput) {
+            setFormData(prev => ({
+                ...prev,
+                [activeInput]: input
+            }));
+        }
+    };
 
     // Map & Geolocation State
     const [position, setPosition] = useState({ lat: 33.5731, lng: -7.5898 }); // Casablanca default
@@ -77,6 +91,10 @@ export default function SellerRegister() {
 
     // Cities State
     const [cities, setCities] = useState([]);
+
+    useEffect(() => {
+        setSourceLanguage(i18n.language);
+    }, [i18n.language]);
 
     useEffect(() => {
         // Fetch Cities
@@ -99,6 +117,24 @@ export default function SellerRegister() {
                 setIsMorocco(true);
             });
     }, []);
+
+    // Sync City Name with Language
+    useEffect(() => {
+        if (formData.city && cities.length > 0) {
+            const currentCity = cities.find(c =>
+                c.nameFr === formData.city ||
+                c.nameEn === formData.city ||
+                c.nameAr === formData.city
+            );
+
+            if (currentCity) {
+                const newName = getCityName(currentCity);
+                if (newName !== formData.city) {
+                    setFormData(prev => ({ ...prev, city: newName }));
+                }
+            }
+        }
+    }, [i18n.language, cities, formData.city]);
 
     // Handle Address Search Input
     const handleSearchChange = (e) => {
@@ -155,8 +191,6 @@ export default function SellerRegister() {
             addressObj.state ||
             "";
 
-        const postcode = addressObj.postcode || "";
-
         console.log("OSM Address:", addressObj); // Debug logic
         console.log("Detected City:", city);
 
@@ -179,8 +213,7 @@ export default function SellerRegister() {
         setFormData(prev => ({
             ...prev,
             street: houseNumber + road,
-            city: city,
-            zipCode: postcode
+            city: city
         }));
 
         if (displayName) setQuery(displayName);
@@ -223,13 +256,18 @@ export default function SellerRegister() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("Submitting Seller Registration Form...", formData); // DEBUG: Log form data
+
         try {
             const body = {
                 ...formData,
                 userId: "00000000-0000-0000-0000-000000000000",
                 latitude: position.lat,
-                longitude: position.lng
+                longitude: position.lng,
+                sourceLanguage: sourceLanguage
             };
+
+            console.log("Payload sent to server:", body); // DEBUG: Log payload
 
             const response = await fetch(`${API_URL}/Sellers`, {
                 method: 'POST',
@@ -239,14 +277,38 @@ export default function SellerRegister() {
                 },
                 body: JSON.stringify(body)
             });
+
+            console.log("Server Response Status:", response.status); // DEBUG: Log status
+
             if (response.ok) {
+                console.log("Seller created successfully"); // DEBUG
                 navigate('/dashboard', { state: { successMessage: t('seller_shop.success') } });
             } else {
+                const errorText = await response.text();
+                console.error("Server Error Response:", errorText); // DEBUG: Log error body
                 setError(t('seller_shop.error_create'));
             }
         } catch (error) {
+            console.error("Network or Client Error during submission:", error); // DEBUG: Log exception
             setError(t('seller_shop.error_generic'));
         }
+    };
+
+    const handleSearchInput = (value) => {
+        setQuery(value);
+        if (value.length > 3) {
+            // Trigger search logic similar to handleSearchChange but directly with value
+            // Note: debouncing is handled in handleSearchChange, here we might need manual trigger or rely on effect if we refactor. 
+            // Ideally we just update query, and if we want live search we call the fetch logic.
+            // For simplicity, let's just reuse the existing event handler logic logic or extract it.
+            // But since handleSearchChange expects an event, let's create a synthetic event or extract logic.
+            // Extracting logic is safer.
+        }
+        // ... (We need to refactor handleSearchChange slightly to support direct value update if we want live suggestions while typing on virtual keyboard)
+        // For now, let's just setQuery. The user might need to type one char on real keyboard to trigger search or we improve this later. 
+        // Actually, VirtualKeyboard calls 'onChange' which we map to handleKeyboardChange. 
+        // If activeInput is 'query', we need to handle it.
+        // Wait, 'query' is not in formData. It's a separate state.
     };
 
     return (
@@ -269,18 +331,49 @@ export default function SellerRegister() {
 
                         {/* Store Name - Always First */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">{t('seller_shop.store_name')}</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between">
+                                {t('seller_shop.store_name')}
+                                {sourceLanguage === 'ar' && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setActiveInput('storeName');
+                                            setShowKeyboard(true);
+                                        }}
+                                        className="text-gray-500 hover:text-green-600 transition"
+                                        title="Clavier Virtuel"
+                                    >
+                                        <Keyboard size={18} />
+                                    </button>
+                                )}
+                            </label>
                             <input
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                                 value={formData.storeName}
                                 onChange={e => setFormData({ ...formData, storeName: e.target.value })}
                                 required
+                                onFocus={() => setActiveInput('storeName')}
                             />
                         </div>
 
                         {/* Autocomplete Search Bar */}
                         <div className="relative">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('seller_shop.search_address')}</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between">
+                                {t('seller_shop.search_address')}
+                                {sourceLanguage === 'ar' && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setActiveInput('query'); // Special case for query state
+                                            setShowKeyboard(true);
+                                        }}
+                                        className="text-gray-500 hover:text-green-600 transition"
+                                        title="Clavier Virtuel"
+                                    >
+                                        <Keyboard size={18} />
+                                    </button>
+                                )}
+                            </label>
                             <div className="flex gap-2">
                                 <div className="relative flex-grow">
                                     <span className="absolute inset-y-0 left-0 rtl:right-0 rtl:left-auto pl-3 rtl:pr-3 rtl:pl-0 flex items-center pointer-events-none text-gray-500">
@@ -292,7 +385,10 @@ export default function SellerRegister() {
                                         placeholder={t('seller_shop.search_placeholder')}
                                         value={query}
                                         onChange={handleSearchChange}
-                                        onFocus={() => setShowSuggestions(true)}
+                                        onFocus={() => {
+                                            setShowSuggestions(true);
+                                            setActiveInput('query');
+                                        }}
                                         onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
                                     />
                                 </div>
@@ -324,8 +420,8 @@ export default function SellerRegister() {
                             )}
                         </div>
 
-                        {/* Auto-filled Fields (Read-Only or Editable) */}
-                        <div className="grid grid-cols-2 gap-4">
+                        {/* City (No ZipCode) */}
+                        <div className="grid grid-cols-1 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">{t('seller_shop.city')}</label>
                                 {isMorocco ? (
@@ -337,7 +433,7 @@ export default function SellerRegister() {
                                     >
                                         <option value="">{t('seller_shop.select_city')}</option>
                                         {cities.map(city => (
-                                            <option key={city.id} value={city.nameFr}>{getCityName(city)}</option>
+                                            <option key={city.id} value={getCityName(city)}>{getCityName(city)}</option>
                                         ))}
                                     </select>
                                 ) : (
@@ -349,24 +445,31 @@ export default function SellerRegister() {
                                     />
                                 )}
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">{t('seller_shop.zip_code')}</label>
-                                <input
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:ring-green-500 focus:border-green-500 sm:text-sm"
-                                    value={formData.zipCode}
-                                    onChange={e => setFormData({ ...formData, zipCode: e.target.value })}
-                                    required
-                                />
-                            </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">{t('seller_shop.street')}</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between">
+                                {t('seller_shop.street')}
+                                {sourceLanguage === 'ar' && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setActiveInput('street');
+                                            setShowKeyboard(true);
+                                        }}
+                                        className="text-gray-500 hover:text-green-600 transition"
+                                        title="Clavier Virtuel"
+                                    >
+                                        <Keyboard size={18} />
+                                    </button>
+                                )}
+                            </label>
                             <input
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:ring-green-500 focus:border-green-500 sm:text-sm"
                                 value={formData.street}
                                 onChange={e => setFormData({ ...formData, street: e.target.value })}
                                 required
+                                onFocus={() => setActiveInput('street')}
                             />
                         </div>
 
@@ -389,12 +492,28 @@ export default function SellerRegister() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">{t('seller_shop.description')}</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between">
+                                {t('seller_shop.description')}
+                                {sourceLanguage === 'ar' && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setActiveInput('description');
+                                            setShowKeyboard(true);
+                                        }}
+                                        className="text-gray-500 hover:text-green-600 transition"
+                                        title="Clavier Virtuel"
+                                    >
+                                        <Keyboard size={18} />
+                                    </button>
+                                )}
+                            </label>
                             <textarea
                                 rows={3}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                                 value={formData.description}
                                 onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                onFocus={() => setActiveInput('description')}
                             />
                         </div>
                     </div>
@@ -410,6 +529,22 @@ export default function SellerRegister() {
                     </button>
                 </form>
             </div>
+
+            {showKeyboard && activeInput && (
+                <VirtualKeyboard
+                    onChange={(val) => {
+                        if (activeInput === 'query') {
+                            setQuery(val);
+                            handleSearchChange({ target: { value: val } });
+                        } else {
+                            handleKeyboardChange(val);
+                        }
+                    }}
+                    inputName={activeInput}
+                    value={activeInput === 'query' ? query : formData[activeInput]}
+                    onClose={() => setShowKeyboard(false)}
+                />
+            )}
         </div>
     );
 }

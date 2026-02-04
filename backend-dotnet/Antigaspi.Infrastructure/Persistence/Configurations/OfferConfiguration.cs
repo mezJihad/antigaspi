@@ -13,6 +13,7 @@ public class OfferConfiguration : IEntityTypeConfiguration<Offer>
         builder.Property(x => x.Title).IsRequired().HasMaxLength(200);
         builder.Property(x => x.Description).IsRequired().HasMaxLength(2000);
         builder.Property(x => x.PictureUrl).HasMaxLength(500);
+        builder.Property(x => x.SourceLanguage).IsRequired().HasMaxLength(10).HasDefaultValue("fr");
 
         builder.OwnsOne(x => x.Price, p =>
         {

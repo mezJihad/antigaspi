@@ -17,6 +17,8 @@ public class SqlOfferRepository : IOfferRepository
     {
         return await _context.Offers
             .Include(o => o.StatusHistory) // Eagerly load owned collection
+            .Include(o => o.Seller)
+                .ThenInclude(s => s.Address)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 

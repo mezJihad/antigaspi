@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { ArrowLeft, MapPin, Store, Calendar, Tag, AlertCircle } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
@@ -19,6 +20,7 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 const OfferDetails = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const [offer, setOffer] = useState(null);
@@ -29,7 +31,7 @@ const OfferDetails = () => {
         const fetchOffer = async () => {
             try {
                 const response = await fetch(`/api/offers/${id}`);
-                if (!response.ok) throw new Error('Offre introuvable');
+                if (!response.ok) throw new Error(t('offer_details.not_found'));
                 const data = await response.json();
                 setOffer(data);
             } catch (err) {
@@ -41,12 +43,12 @@ const OfferDetails = () => {
         fetchOffer();
     }, [id]);
 
-    if (loading) return <div className="p-8 text-center">Chargement...</div>;
+    if (loading) return <div className="p-8 text-center">{t('offer_details.loading')}</div>;
     if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
     if (!offer) return null;
 
-    const hasLocation = offer.sellerAddress?.latitude && offer.sellerAddress?.longitude;
-    const position = hasLocation ? [offer.sellerAddress.latitude, offer.sellerAddress.longitude] : null;
+    const hasLocation = offer.seller?.address?.latitude && offer.seller?.address?.longitude;
+    const position = hasLocation ? [offer.seller.address.latitude, offer.seller.address.longitude] : null;
 
 
 
@@ -61,7 +63,7 @@ const OfferDetails = () => {
                 className="inline-flex items-center text-gray-600 hover:text-green-600 mb-6 transition bg-transparent border-none cursor-pointer"
             >
                 <ArrowLeft size={20} className="mr-2" />
-                Retour aux offres
+                {t('offer_details.back')}
             </button>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -82,7 +84,7 @@ const OfferDetails = () => {
                         </span>
                         {offer.status === 'PUBLISHED' && (
                             <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
-                                Disponible
+                                {t('offer_details.available')}
                             </span>
                         )}
                     </div>
@@ -99,7 +101,7 @@ const OfferDetails = () => {
                     </div>
 
                     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-6">
-                        <h2 className="text-lg font-semibold mb-3">Description</h2>
+                        <h2 className="text-lg font-semibold mb-3">{t('offer_details.description')}</h2>
                         <p className="text-gray-600 leading-relaxed">{offer.description}</p>
                     </div>
                 </div>
@@ -109,15 +111,14 @@ const OfferDetails = () => {
                     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                             <Store className="text-green-600" size={20} />
-                            Le Commerçant
+                            {t('offer_details.seller_title')}
                         </h2>
                         <div className="space-y-3">
-                            <p className="font-medium text-gray-900">{offer.shopName}</p>
+                            <p className="font-medium text-gray-900">{offer.seller?.storeName}</p>
                             <p className="text-gray-600 flex items-start gap-2">
                                 <MapPin size={18} className="text-gray-400 mt-1 shrink-0" />
                                 <span>
-                                    {offer.sellerAddress?.street}, <br />
-                                    {offer.sellerAddress?.zipCode} {offer.sellerAddress?.city}
+                                    {offer.seller?.address?.street}, {offer.seller?.address?.zipCode} {offer.seller?.address?.city}
                                 </span>
                             </p>
                         </div>
@@ -137,7 +138,7 @@ const OfferDetails = () => {
                                 />
                                 <Marker position={position}>
                                     <Popup>
-                                        <b>{offer.shopName}</b><br />
+                                        <b>{offer.seller?.storeName}</b><br />
                                         {offer.title}
                                     </Popup>
                                 </Marker>
@@ -145,7 +146,7 @@ const OfferDetails = () => {
                         ) : (
                             <div className="h-full w-full flex flex-col items-center justify-center bg-gray-50 text-gray-400">
                                 <MapPin size={48} className="mb-2 opacity-20" />
-                                <p>Localisation non disponible pour cette offre.</p>
+                                <p>{t('offer_details.geo_unavailable')}</p>
                             </div>
                         )}
                     </div>
@@ -153,8 +154,8 @@ const OfferDetails = () => {
                     <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 text-orange-800 text-sm flex items-start gap-3">
                         <AlertCircle size={20} className="shrink-0 mt-0.5" />
                         <div>
-                            <p className="font-semibold mb-1">À récupérer avant le :</p>
-                            <p>{new Date(offer.expirationDate).toLocaleDateString()} à {new Date(offer.expirationDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                            <p className="font-semibold mb-1">{t('offer_details.pickup_before')}</p>
+                            <p>{new Date(offer.expirationDate).toLocaleDateString()}</p>
                         </div>
                     </div>
 

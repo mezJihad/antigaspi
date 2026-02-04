@@ -23,7 +23,9 @@ public record OfferResponse(
     string ShopName,
     string City,
     List<OfferStatusEntryResponse> StatusHistory,
-    SellerAddressResponse? SellerAddress
+    SellerAddressResponse? SellerAddress,
+    OfferSellerResponse? Seller, 
+    string SourceLanguage
 )
 {
     public static OfferResponse FromEntity(Offer offer) => new(
@@ -50,9 +52,22 @@ public record OfferResponse(
             offer.Seller.Address.ZipCode,
             offer.Seller.Address.Latitude,
             offer.Seller.Address.Longitude
-        ) : null
+        ) : null,
+        offer.Seller != null ? new OfferSellerResponse(
+            offer.Seller.StoreName,
+            new SellerAddressResponse(
+                offer.Seller.Address.Street,
+                offer.Seller.Address.City,
+                offer.Seller.Address.ZipCode,
+                offer.Seller.Address.Latitude,
+                offer.Seller.Address.Longitude
+            )
+        ) : null,
+        offer.SourceLanguage
     );
 }
+
+public record OfferSellerResponse(string StoreName, SellerAddressResponse Address);
 
 public record SellerAddressResponse(string Street, string City, string ZipCode, double? Latitude, double? Longitude);
 
@@ -70,7 +85,8 @@ public record SellerResponse(
     double? Longitude,
     string Description,
     string Status,
-    string? RejectionReason
+    string? RejectionReason,
+    string SourceLanguage
 )
 {
     public static SellerResponse FromEntity(Seller seller) => new(
@@ -85,6 +101,7 @@ public record SellerResponse(
         seller.Address.Longitude,
         seller.Description,
         seller.Status.ToString(),
-        seller.RejectionReason
+        seller.RejectionReason,
+        seller.SourceLanguage
     );
 }

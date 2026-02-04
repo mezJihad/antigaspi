@@ -235,5 +235,26 @@
         "success_update": "Shop updated successfully!",
         "error_update": "Error updating shop.",
         "error_generic": "An error occurred."
+    },
+    "offer_details": {
+        "back": "Back to offers",
+        "loading": "Loading...",
+        "not_found": "Offer not found",
+        "available": "Available",
+        "description": "Description",
+        "seller_title": "The Merchant",
+        "geo_unavailable": "Location not available for this offer.",
+        "pickup_before": "Pick up before:"
+    },
+    "explore": {
+        "locating": "Getting location...",
+        "loading": "Loading offers...",
+        "no_results": "No offers found for these criteria.",
+        "prev_page": "Previous",
+        "next_page": "Next",
+        "page_info": "Page {{current}} of {{total}}",
+        "expire_on": "Expires on {{date}}",
+        "location_denied": "You denied location access.",
+        "location_error": "Unable to retrieve your location."
     }
 }

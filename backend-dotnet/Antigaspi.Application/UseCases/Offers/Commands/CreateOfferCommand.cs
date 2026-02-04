@@ -17,7 +17,8 @@ public record CreateOfferCommand(
     DateTime? EndDate,
     DateTime ExpirationDate,
     Antigaspi.Domain.Enums.OfferCategory Category,
-    string PictureUrl
+    string PictureUrl,
+    string SourceLanguage
 ) : IRequest<Guid>;
 
 public class CreateOfferCommandHandler : IRequestHandler<CreateOfferCommand, Guid>
@@ -59,7 +60,8 @@ public class CreateOfferCommandHandler : IRequestHandler<CreateOfferCommand, Gui
             request.EndDate,
             request.ExpirationDate,
             request.Category,
-            request.PictureUrl
+            request.PictureUrl,
+            request.SourceLanguage
         );
 
         // 4. Persist

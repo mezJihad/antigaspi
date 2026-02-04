@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Antigaspi.Application.UseCases.Sellers.Commands;
 using Antigaspi.Application.UseCases.Sellers.Queries;
 using Antigaspi.Api.Dtos;
+using Microsoft.Extensions.Logging;
 
 namespace Antigaspi.Api.Controllers;
 
@@ -12,17 +13,21 @@ public class SellersController : ControllerBase
 {
     private readonly ISender _sender;
     private readonly Antigaspi.Application.Repositories.ISellerRepository _sellerRepo;
+    private readonly ILogger<SellersController> _logger;
 
-    public SellersController(ISender sender, Antigaspi.Application.Repositories.ISellerRepository sellerRepo)
+    public SellersController(ISender sender, Antigaspi.Application.Repositories.ISellerRepository sellerRepo, ILogger<SellersController> logger)
     {
         _sender = sender;
         _sellerRepo = sellerRepo;
+        _logger = logger;
     }
 
     [HttpPost]
     [Microsoft.AspNetCore.Authorization.Authorize]
     public async Task<IActionResult> RegisterSeller([FromBody] RegisterSellerRequest request)
     {
+        _logger.LogInformation("RegisterSeller endpoint called for store: {StoreName}. Payload: {@Request}", request.StoreName, request);
+
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier) 
                           ?? User.Claims.FirstOrDefault(c => c.Type == System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub);
                           
@@ -38,7 +43,8 @@ public class SellersController : ControllerBase
             updatedRequest.ZipCode,
             updatedRequest.Description,
             updatedRequest.Latitude,
-            updatedRequest.Longitude
+            updatedRequest.Longitude,
+            updatedRequest.SourceLanguage ?? "fr"
         );
 
         var sellerId = await _sender.Send(command);
@@ -131,7 +137,8 @@ public class SellersController : ControllerBase
             request.ZipCode,
             request.Description,
             request.Latitude,
-            request.Longitude
+            request.Longitude,
+            request.SourceLanguage
         );
 
         await _sender.Send(command);
@@ -152,7 +159,12 @@ public class SellersController : ControllerBase
         var sellerQuery = new GetSellerByUserIdQuery(userId);
         var seller = await _sender.Send(sellerQuery);
 
-        if (seller == null || seller.Id != id)
+        if (seller == null)
+        {
+            return NotFound();
+        }
+
+        if (seller.Id != id)
         {
             return Forbid();
         }

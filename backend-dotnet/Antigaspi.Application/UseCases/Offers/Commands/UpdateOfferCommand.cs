@@ -16,7 +16,8 @@ public record UpdateOfferCommand(
     DateTime? EndDate,
     DateTime ExpirationDate,
     OfferCategory Category,
-    string? PictureUrl
+    string? PictureUrl,
+    string? SourceLanguage
 ) : IRequest;
 
 public class UpdateOfferCommandHandler : IRequestHandler<UpdateOfferCommand>
@@ -52,7 +53,8 @@ public class UpdateOfferCommandHandler : IRequestHandler<UpdateOfferCommand>
             request.EndDate,
             request.ExpirationDate,
             request.Category,
-            request.PictureUrl
+            request.PictureUrl,
+            request.SourceLanguage
         );
 
         // 3. Save Changes

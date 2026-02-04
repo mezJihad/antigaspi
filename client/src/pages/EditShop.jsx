@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Store, MapPin, Search } from 'lucide-react';
+import { Store, MapPin, Search, Keyboard } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { cityService } from '../services/cityService';
 import { useTranslation } from 'react-i18next';
+import VirtualKeyboard from '../components/VirtualKeyboard';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -61,6 +62,21 @@ export default function EditShop() {
         description: ''
     });
 
+    const [sourceLanguage, setSourceLanguage] = useState('fr');
+
+    // Virtual Keyboard State
+    const [showKeyboard, setShowKeyboard] = useState(false);
+    const [activeInput, setActiveInput] = useState(null);
+
+    const handleKeyboardChange = (input) => {
+        if (activeInput) {
+            setFormData(prev => ({
+                ...prev,
+                [activeInput]: input
+            }));
+        }
+    };
+
     // Map & Geolocation State
     const [position, setPosition] = useState({ lat: 33.5731, lng: -7.5898 }); // Casablanca default
     const [error, setError] = useState('');
@@ -101,6 +117,11 @@ export default function EditShop() {
             });
     }, []);
 
+    // Sync sourceLanguage with UI language (User Intent)
+    useEffect(() => {
+        setSourceLanguage(i18n.language);
+    }, [i18n.language]);
+
     // Fetch existing data
     useEffect(() => {
         if (!id || !token) return;
@@ -121,6 +142,9 @@ export default function EditShop() {
                     if (data.latitude && data.longitude) {
                         setPosition({ lat: data.latitude, lng: data.longitude });
                     }
+                    if (data.sourceLanguage) {
+                        setSourceLanguage(data.sourceLanguage);
+                    }
                 } else {
                     setError(t('edit_shop.error_load'));
                 }
@@ -133,6 +157,25 @@ export default function EditShop() {
         }
         fetchShop();
     }, [id, token]);
+
+
+    // Sync City Name with Language
+    useEffect(() => {
+        if (formData.city && cities.length > 0) {
+            const currentCity = cities.find(c =>
+                c.nameFr === formData.city ||
+                c.nameEn === formData.city ||
+                c.nameAr === formData.city
+            );
+
+            if (currentCity) {
+                const newName = getCityName(currentCity);
+                if (newName !== formData.city) {
+                    setFormData(prev => ({ ...prev, city: newName }));
+                }
+            }
+        }
+    }, [i18n.language, cities, formData.city]);
 
 
     // Handle Address Search Input
@@ -190,8 +233,6 @@ export default function EditShop() {
             addressObj.state ||
             "";
 
-        const postcode = addressObj.postcode || "";
-
         console.log("OSM Address:", addressObj); // Debug logic
         console.log("Detected City:", city);
 
@@ -214,8 +255,7 @@ export default function EditShop() {
         setFormData(prev => ({
             ...prev,
             street: houseNumber + road,
-            city: city,
-            zipCode: postcode
+            city: city
         }));
 
         if (displayName) setQuery(displayName);
@@ -262,7 +302,8 @@ export default function EditShop() {
             const body = {
                 ...formData,
                 latitude: position.lat,
-                longitude: position.lng
+                longitude: position.lng,
+                sourceLanguage: sourceLanguage
             };
 
             const response = await fetch(`${API_URL}/Sellers/${id}`, {
@@ -305,18 +346,49 @@ export default function EditShop() {
 
                         {/* Store Name - Always First */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">{t('edit_shop.store_name')}</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between">
+                                {t('edit_shop.store_name')}
+                                {sourceLanguage === 'ar' && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setActiveInput('storeName');
+                                            setShowKeyboard(true);
+                                        }}
+                                        className="text-gray-500 hover:text-blue-600 transition"
+                                        title="Clavier Virtuel"
+                                    >
+                                        <Keyboard size={18} />
+                                    </button>
+                                )}
+                            </label>
                             <input
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 value={formData.storeName}
                                 onChange={e => setFormData({ ...formData, storeName: e.target.value })}
                                 required
+                                onFocus={() => setActiveInput('storeName')}
                             />
                         </div>
 
                         {/* Autocomplete Search Bar */}
                         <div className="relative">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('edit_shop.search_address_label')}</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between">
+                                {t('edit_shop.search_address_label')}
+                                {sourceLanguage === 'ar' && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setActiveInput('query');
+                                            setShowKeyboard(true);
+                                        }}
+                                        className="text-gray-500 hover:text-blue-600 transition"
+                                        title="Clavier Virtuel"
+                                    >
+                                        <Keyboard size={18} />
+                                    </button>
+                                )}
+                            </label>
                             <div className="flex gap-2">
                                 <div className="relative flex-grow">
                                     <span className="absolute inset-y-0 left-0 rtl:right-0 rtl:left-auto pl-3 rtl:pr-3 flex items-center pointer-events-none text-gray-500">
@@ -328,7 +400,10 @@ export default function EditShop() {
                                         placeholder={t('edit_shop.search_placeholder')}
                                         value={query}
                                         onChange={handleSearchChange}
-                                        onFocus={() => setShowSuggestions(true)}
+                                        onFocus={() => {
+                                            setShowSuggestions(true);
+                                            setActiveInput('query');
+                                        }}
                                         onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
                                     />
                                 </div>
@@ -360,8 +435,8 @@ export default function EditShop() {
                             )}
                         </div>
 
-                        {/* Auto-filled Fields (Read-Only or Editable) */}
-                        <div className="grid grid-cols-2 gap-4">
+                        {/* City (No ZipCode) */}
+                        <div className="grid grid-cols-1 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">{t('edit_shop.city')}</label>
                                 {isMorocco ? (
@@ -373,7 +448,7 @@ export default function EditShop() {
                                     >
                                         <option value="">{t('edit_shop.select_city')}</option>
                                         {cities.map(city => (
-                                            <option key={city.id} value={city.nameFr}>{getCityName(city)}</option>
+                                            <option key={city.id} value={getCityName(city)}>{getCityName(city)}</option>
                                         ))}
                                     </select>
                                 ) : (
@@ -385,24 +460,31 @@ export default function EditShop() {
                                     />
                                 )}
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">{t('edit_shop.zip_code')}</label>
-                                <input
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    value={formData.zipCode}
-                                    onChange={e => setFormData({ ...formData, zipCode: e.target.value })}
-                                    required
-                                />
-                            </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">{t('edit_shop.street')}</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between">
+                                {t('edit_shop.street')}
+                                {sourceLanguage === 'ar' && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setActiveInput('street');
+                                            setShowKeyboard(true);
+                                        }}
+                                        className="text-gray-500 hover:text-blue-600 transition"
+                                        title="Clavier Virtuel"
+                                    >
+                                        <Keyboard size={18} />
+                                    </button>
+                                )}
+                            </label>
                             <input
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                className="mt-1 block w-full px-3 py-2 border border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 value={formData.street}
                                 onChange={e => setFormData({ ...formData, street: e.target.value })}
                                 required
+                                onFocus={() => setActiveInput('street')}
                             />
                         </div>
 
@@ -425,12 +507,28 @@ export default function EditShop() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">{t('edit_shop.description')}</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between">
+                                {t('edit_shop.description')}
+                                {sourceLanguage === 'ar' && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setActiveInput('description');
+                                            setShowKeyboard(true);
+                                        }}
+                                        className="text-gray-500 hover:text-blue-600 transition"
+                                        title="Clavier Virtuel"
+                                    >
+                                        <Keyboard size={18} />
+                                    </button>
+                                )}
+                            </label>
                             <textarea
                                 rows={3}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 value={formData.description}
                                 onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                onFocus={() => setActiveInput('description')}
                             />
                         </div>
                     </div>
@@ -449,6 +547,22 @@ export default function EditShop() {
                     </button>
                 </form>
             </div>
+
+            {showKeyboard && activeInput && (
+                <VirtualKeyboard
+                    onChange={(val) => {
+                        if (activeInput === 'query') {
+                            setQuery(val);
+                            handleSearchChange({ target: { value: val } });
+                        } else {
+                            handleKeyboardChange(val);
+                        }
+                    }}
+                    inputName={activeInput}
+                    value={activeInput === 'query' ? query : formData[activeInput]}
+                    onClose={() => setShowKeyboard(false)}
+                />
+            )}
         </div>
     );
 }

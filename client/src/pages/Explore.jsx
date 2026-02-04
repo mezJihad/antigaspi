@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import SearchFilters from '../components/SearchFilters';
 import OfferCard from '../components/OfferCard';
 
 const Explore = () => {
+    const { t } = useTranslation();
     const [searchParams, setSearchParams] = useSearchParams();
 
     // Init state from URL
@@ -145,7 +147,7 @@ const Explore = () => {
         // Let's simplified: Always try to get/refresh location.
 
         if (!navigator.geolocation) {
-            alert('La géolocalisation n\'est pas supportée par votre navigateur.');
+            alert(t('edit_shop.error_geo_support'));
             return;
         }
 
@@ -161,9 +163,9 @@ const Explore = () => {
             (err) => {
                 console.warn("Geolocation error:", err.code, err.message); // Added logging
                 if (err.code === 1) {
-                    alert("Vous avez refusé l'accès à la localisation (ou le navigateur l'a bloqué). Vérifiez l'icône dans la barre d'adresse.");
+                    alert(t('explore.location_denied'));
                 } else {
-                    alert(`Impossible de récupérer votre position: ${err.message}`);
+                    alert(`${t('explore.location_error')} ${err.message}`);
                 }
                 setIsLocating(false);
             }
@@ -204,17 +206,17 @@ const Explore = () => {
                     onRequestLocation={handleUseMyLocation}
                 />
 
-                {isLocating && <p>Obtention de la localisation...</p>}
+                {isLocating && <p>{t('explore.locating')}</p>}
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '2rem' }}>Chargement des offres...</div>
+                    <div style={{ textAlign: 'center', padding: '2rem' }}>{t('explore.loading')}</div>
                 ) : error ? (
                     <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>
                 ) : (
                     <>
                         <div className="offers-grid">
                             {offers.length === 0 ? (
-                                <p style={{ textAlign: 'center', gridColumn: '1/-1', color: '#666' }}>Aucune offre trouvée pour ces critères.</p>
+                                <p style={{ textAlign: 'center', gridColumn: '1/-1', color: '#666' }}>{t('explore.no_results')}</p>
                             ) : (
                                 offers.map((offer) => {
                                     const distance = userLocation
@@ -247,10 +249,10 @@ const Explore = () => {
                                         cursor: page === 1 ? 'not-allowed' : 'pointer',
                                     }}
                                 >
-                                    Précédent
+                                    {t('explore.prev_page')}
                                 </button>
                                 <span style={{ color: '#555' }}>
-                                    Page {page} sur {totalPages}
+                                    {t('explore.page_info', { current: page, total: totalPages })}
                                 </span>
                                 <button
                                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
@@ -264,7 +266,7 @@ const Explore = () => {
                                         cursor: page === totalPages ? 'not-allowed' : 'pointer',
                                     }}
                                 >
-                                    Suivant
+                                    {t('explore.next_page')}
                                 </button>
                             </div>
                         )}
