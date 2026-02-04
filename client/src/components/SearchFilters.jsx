@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search } from 'lucide-react';
+import { Search, Filter, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cityService } from '../services/cityService';
 
@@ -8,6 +8,7 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
     const [cities, setCities] = React.useState([]); // Store full city objects
     const [localQuery, setLocalQuery] = React.useState(filters.query || '');
     const [isSortMenuOpen, setIsSortMenuOpen] = React.useState(false);
+    const [isMobileFilterOpen, setIsMobileFilterOpen] = React.useState(false);
     const sortMenuRef = React.useRef(null);
 
     React.useEffect(() => {
@@ -84,56 +85,19 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
         { value: 'price_desc', label: t('search.sort_price_desc') },
     ];
 
-    const currentSortLabel = sortOptions.find(o => o.value === filters.sortBy)?.label || t('search.sort_relevance');
+    const currentSortLabel = sortOptions.find(o => o.value === filters.sortBy)?.label || t('search.sort');
 
-    return (
-        <div style={{
-            backgroundColor: 'white',
-            padding: '1.5rem',
-            borderRadius: 'var(--radius-md)',
-            boxShadow: 'var(--shadow-sm)',
-            marginBottom: '2rem'
-        }}>
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-                {/* Search Bar */}
-                <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>{t('search.label')}</label>
-                    <div style={{ position: 'relative' }}>
-                        <Search size={20} className='rtl:right-4 ltr:left-4' style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', color: '#999' }} />
-                        <input
-                            type="text"
-                            placeholder={t('search.placeholder')}
-                            value={localQuery}
-                            onChange={(e) => setLocalQuery(e.target.value)}
-                            className='rtl:pr-12 ltr:pl-12'
-                            style={{
-                                width: '100%',
-                                paddingTop: '0.75rem',
-                                paddingBottom: '0.75rem',
-                                border: '1px solid var(--color-border)',
-                                borderRadius: 'var(--radius-full)',
-                                fontSize: '1rem'
-                            }}
-                        />
-                    </div>
-                </div>
-
-                {/* City Filter */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>{t('search.city')}</label>
+    // Reusable controls to avoid duplication
+    const FilterControls = ({ mobile = false }) => (
+        <>
+            {/* City Filter */}
+            <div className={`${mobile ? 'w-full' : 'w-full md:w-auto'} flex flex-col gap-1`}>
+                <label className="text-sm font-bold text-gray-600 ml-1">{t('search.city')}</label>
+                <div className="relative">
                     <select
                         value={filters.city}
                         onChange={(e) => setFilters({ ...filters, city: e.target.value })}
-                        style={{
-                            padding: '0.75rem 2rem 0.75rem 1rem',
-                            border: '1px solid var(--color-border)',
-                            borderRadius: 'var(--radius-full)',
-                            fontSize: '1rem',
-                            backgroundColor: 'white',
-                            color: 'inherit',
-                            cursor: 'pointer',
-                            minWidth: '150px'
-                        }}
+                        className={`w-full ${!mobile && 'md:w-48'} appearance-none py-3 pl-4 pr-10 border border-gray-200 rounded-full bg-white focus:outline-none focus:border-green-500 cursor-pointer text-base`}
                     >
                         <option value="Toutes">{t('search.all_cities')}</option>
                         {cities.map(c => (
@@ -142,45 +106,37 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
                             </option>
                         ))}
                     </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                    </div>
                 </div>
+            </div>
 
-                {/* Category Filter */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>{t('search.category')}</label>
+            {/* Category Filter */}
+            <div className={`${mobile ? 'w-full' : 'w-full md:w-auto'} flex flex-col gap-1`}>
+                <label className="text-sm font-bold text-gray-600 ml-1">{t('search.category')}</label>
+                <div className="relative">
                     <select
                         value={filters.category}
                         onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-                        style={{
-                            padding: '0.75rem 2rem 0.75rem 1rem',
-                            border: '1px solid var(--color-border)',
-                            borderRadius: 'var(--radius-full)',
-                            fontSize: '1rem',
-                            backgroundColor: 'white',
-                            cursor: 'pointer',
-                            minWidth: '180px'
-                        }}
+                        className={`w-full ${!mobile && 'md:w-56'} appearance-none py-3 pl-4 pr-10 border border-gray-200 rounded-full bg-white focus:outline-none focus:border-green-500 cursor-pointer text-base`}
                     >
                         {categories.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                     </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                    </div>
                 </div>
+            </div>
 
-                {/* Sort Icon Button */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', position: 'relative' }} ref={sortMenuRef}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#555' }}>{t('search.sort')}</label>
+            {/* Sort Icon Button - Desktop Only (visible inline) */}
+            {!mobile && (
+                <div className="flex flex-col gap-1 relative z-10" ref={sortMenuRef}>
+                    <label className="text-sm font-bold text-gray-600 ml-1 hidden md:block opacity-0">{t('search.sort')}</label>
                     <button
                         onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
-                        className="btn"
+                        className="w-12 h-12 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:border-green-500 hover:text-green-600 transition-colors"
                         title={currentSortLabel}
-                        style={{
-                            width: '46px',
-                            height: '46px',
-                            borderRadius: 'var(--radius-full)',
-                            border: '1px solid var(--color-border)',
-                            backgroundColor: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="m21 16-4 4-4-4" /><path d="M17 20V4" /><path d="m3 8 4-4 4 4" /><path d="M7 4v16" />
@@ -189,35 +145,15 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
 
                     {/* Sort Popup */}
                     {isSortMenuOpen && (
-                        <div style={{
-                            position: 'absolute',
-                            top: '100%',
-                            right: 0,
-                            marginTop: '0.5rem',
-                            backgroundColor: 'white',
-                            borderRadius: 'var(--radius-md)',
-                            boxShadow: 'var(--shadow-md)',
-                            zIndex: 50,
-                            minWidth: '200px',
-                            overflow: 'hidden',
-                            border: '1px solid #e5e7eb'
-                        }}>
+                        <div className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 min-w-[200px] overflow-hidden z-50">
                             {sortOptions.map(option => (
                                 <button
                                     key={option.value}
                                     onClick={() => handleSortSelect(option.value)}
-                                    style={{
-                                        display: 'block',
-                                        width: '100%',
-                                        textAlign: 'left',
-                                        padding: '0.75rem 1rem',
-                                        border: 'none',
-                                        backgroundColor: filters.sortBy === option.value ? '#f0fdf4' : 'white',
-                                        color: filters.sortBy === option.value ? 'var(--color-primary)' : 'inherit',
-                                        cursor: 'pointer',
-                                        fontWeight: filters.sortBy === option.value ? '600' : '400',
-                                        fontSize: '0.95rem'
-                                    }}
+                                    className={`block w-full text-left px-4 py-3 text-sm transition-colors ${filters.sortBy === option.value
+                                        ? 'bg-green-50 text-green-700 font-semibold'
+                                        : 'hover:bg-gray-50 text-gray-700'
+                                        }`}
                                 >
                                     {option.label}
                                 </button>
@@ -225,6 +161,92 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
                         </div>
                     )}
                 </div>
+            )}
+
+            {/* Sort Select for Mobile Modal (simpler than popup) */}
+            {mobile && (
+                <div className="w-full flex flex-col gap-1">
+                    <label className="text-sm font-bold text-gray-600 ml-1">{t('search.sort')}</label>
+                    <div className="relative">
+                        <select
+                            value={filters.sortBy || ''}
+                            onChange={(e) => handleSortSelect(e.target.value)}
+                            className="w-full appearance-none py-3 pl-4 pr-10 border border-gray-200 rounded-full bg-white focus:outline-none focus:border-green-500 cursor-pointer text-base"
+                        >
+                            <option value="">{t('search.sort')}</option>
+                            {sortOptions.map(option => (
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
+    );
+
+    return (
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm mb-8">
+            <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-end">
+                {/* Search Bar */}
+                <div className="flex-1 flex flex-col gap-1">
+                    <label className="text-sm font-bold text-gray-600 ml-1">{t('search.label')}</label>
+                    <div className="relative">
+                        <Search size={20} className='rtl:right-4 ltr:left-4 absolute top-1/2 -translate-y-1/2 text-gray-400' />
+                        <input
+                            type="text"
+                            placeholder={t('search.placeholder')}
+                            value={localQuery}
+                            onChange={(e) => setLocalQuery(e.target.value)}
+                            className='w-full py-3 ltr:pl-12 rtl:pr-12 pr-4 border border-gray-200 rounded-full focus:outline-none focus:border-green-500 transition-colors text-base'
+                        />
+                        {/* Mobile Filter Toggle Button */}
+                        <button
+                            className="md:hidden absolute rtl:left-2 ltr:right-2 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-green-600 hover:bg-gray-100 rounded-full transition-colors"
+                            onClick={() => setIsMobileFilterOpen(true)}
+                        >
+                            <Filter size={20} />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Desktop Filters (Hidden on Mobile) */}
+                <div className="hidden md:flex flex-row gap-4 items-end">
+                    <FilterControls />
+                </div>
+
+                {/* Mobile Filter Modal */}
+                {isMobileFilterOpen && (
+                    <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:hidden animate-fade-in" onClick={() => setIsMobileFilterOpen(false)}>
+                        <div
+                            className="bg-white w-full rounded-t-3xl p-6 flex flex-col gap-6 max-h-[90vh] overflow-y-auto animate-slide-up"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className="flex justify-between items-center border-b border-gray-100 pb-4">
+                                <h3 className="text-xl font-bold text-gray-800">{t('search.filters')}</h3>
+                                <button
+                                    onClick={() => setIsMobileFilterOpen(false)}
+                                    className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="flex flex-col gap-4">
+                                <FilterControls mobile={true} />
+                            </div>
+
+                            <button
+                                onClick={() => setIsMobileFilterOpen(false)}
+                                className="w-full py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors mt-4 shadow-lg shadow-green-200"
+                            >
+                                {t('common.apply')}
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

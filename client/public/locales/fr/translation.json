@@ -109,7 +109,8 @@
         "cat_prepared": "🍱 Plats Cuisinés",
         "cat_grocery": "🥫 Épicerie",
         "cat_surprise": "🎁 Panier Surprise",
-        "cat_other": "Autre"
+        "cat_other": "Autre",
+        "filters": "Filtres"
     },
     "seller_shop": {
         "title": "Ouvrir votre Boutique",
@@ -166,7 +167,8 @@
     "common": {
         "loading": "Chargement...",
         "error": "Une erreur est survenue",
-        "success": "Succès"
+        "success": "Succès",
+        "apply": "Appliquer"
     },
     "create_offer": {
         "title": "Publier une Offre",
