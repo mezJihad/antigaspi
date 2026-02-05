@@ -124,11 +124,15 @@ export default function CreateOffer() {
             } else {
                 const errorData = await response.json();
                 console.error("Publication failed", errorData);
-                alert(`${t('create_offer.error_publish')}: ${errorData.detail || ''}`);
+                if (errorData.message === 'CREATE_OFFER_FAILED') {
+                    alert(`${t('errors.create_offer_failed')}: ${errorData.detail || ''}`);
+                } else {
+                    alert(`${t('errors.create_offer_failed')}: ${errorData.detail || ''}`);
+                }
             }
         } catch (error) {
             console.error("Error creating offer", error);
-            alert(t('create_offer.error_server'));
+            alert(t('errors.generic_error'));
         } finally {
             setLoading(false);
         }

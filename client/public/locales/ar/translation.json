@@ -172,6 +172,22 @@
         "edit": "تعديل",
         "delete": "حذف"
     },
+    "errors": {
+        "email_exists": "يوجد مستخدم بهذا البريد الإلكتروني بالفعل.",
+        "required_field": "هذا الحقل مطلوب.",
+        "invalid_email": "الرجاء إدخال عنوان بريد إلكتروني صالح.",
+        "weak_password": "كلمة المرور لا تفي بمتطلبات الأمان.",
+        "invalid_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+        "account_suspended": "تم تعليق حسابك.",
+        "email_not_verified": "لم يتم التحقق من بريدك الإلكتروني بعد.",
+        "invalid_token": "الرابط غير صالح أو منتهي الصلاحية.",
+        "create_seller_failed": "فشل إنشاء حساب البائع.",
+        "update_seller_failed": "فشل تحديث بيانات البائع.",
+        "create_offer_failed": "فشل إنشاء العرض.",
+        "update_offer_failed": "فشل تحديث العرض.",
+        "generic_error": "حدث خطأ ما.",
+        "reset_password_failed": "تعذر إعادة تعيين كلمة المرور."
+    },
     "create_offer": {
         "title": "نشر عرض",
         "subtitle": "اجعل منتجاتك المضادة للهدر مرئية في بضع نقرات.",

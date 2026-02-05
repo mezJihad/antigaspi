@@ -91,8 +91,15 @@ public class OffersController : ControllerBase
             request.SourceLanguage ?? "fr"
         );
 
-        var offerId = await _sender.Send(command);
-        return CreatedAtAction(nameof(GetOfferById), new { id = offerId }, new { id = offerId });
+        try
+        {
+             var offerId = await _sender.Send(command);
+             return CreatedAtAction(nameof(GetOfferById), new { id = offerId }, new { id = offerId });
+        }
+        catch (Exception ex)
+        {
+             return BadRequest(new { message = "CREATE_OFFER_FAILED", detail = ex.Message });
+        }
     }
 
     [HttpPut("{id}")]
@@ -141,8 +148,15 @@ public class OffersController : ControllerBase
             request.SourceLanguage
         );
 
-        await _sender.Send(command);
-        return NoContent();
+        try
+        {
+            await _sender.Send(command);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = "UPDATE_OFFER_FAILED", detail = ex.Message });
+        }
     }
 
     [HttpGet("{id}")]

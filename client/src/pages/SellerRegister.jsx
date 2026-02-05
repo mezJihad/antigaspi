@@ -284,13 +284,22 @@ export default function SellerRegister() {
                 console.log("Seller created successfully"); // DEBUG
                 navigate('/dashboard', { state: { successMessage: t('seller_shop.success') } });
             } else {
-                const errorText = await response.text();
-                console.error("Server Error Response:", errorText); // DEBUG: Log error body
-                setError(t('seller_shop.error_create'));
+                const errorText = await response.text(); // or response.json() if you change backend to return json
+                console.error("Server Error Response:", errorText);
+                try {
+                    const errObj = JSON.parse(errorText);
+                    if (errObj.message === 'CREATE_SELLER_FAILED') {
+                        setError(t('errors.create_seller_failed'));
+                    } else {
+                        setError(t('errors.create_seller_failed'));
+                    }
+                } catch {
+                    setError(t('errors.create_seller_failed'));
+                }
             }
         } catch (error) {
-            console.error("Network or Client Error during submission:", error); // DEBUG: Log exception
-            setError(t('seller_shop.error_generic'));
+            console.error("Network or Client Error during submission:", error);
+            setError(t('errors.generic_error'));
         }
     };
 

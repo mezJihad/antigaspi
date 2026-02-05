@@ -5,7 +5,8 @@ public record RegisterRequest(
     string LastName,
     string Email,
     string Password,
-    string Role = "CUSTOMER"
+    string Role = "CUSTOMER",
+    string Language = "fr"
 );
 
 public record LoginRequest(

@@ -317,10 +317,20 @@ export default function EditShop() {
             if (response.ok) {
                 navigate('/dashboard', { state: { successMessage: t('edit_shop.success_update') } });
             } else {
-                setError(t('edit_shop.error_update'));
+                const errorText = await response.text();
+                try {
+                    const errObj = JSON.parse(errorText);
+                    if (errObj.message === 'UPDATE_SELLER_FAILED') {
+                        setError(t('errors.update_seller_failed'));
+                    } else {
+                        setError(t('errors.update_seller_failed'));
+                    }
+                } catch {
+                    setError(t('errors.update_seller_failed'));
+                }
             }
         } catch (error) {
-            setError(t('edit_shop.error_generic'));
+            setError(t('errors.generic_error'));
         }
     };
 

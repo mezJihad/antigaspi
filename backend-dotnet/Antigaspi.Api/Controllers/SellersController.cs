@@ -47,8 +47,16 @@ public class SellersController : ControllerBase
             updatedRequest.SourceLanguage ?? "fr"
         );
 
-        var sellerId = await _sender.Send(command);
-        return CreatedAtAction(nameof(GetSellerById), new { id = sellerId }, new { id = sellerId });
+        try
+        {
+            var sellerId = await _sender.Send(command);
+            return CreatedAtAction(nameof(GetSellerById), new { id = sellerId }, new { id = sellerId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to register seller");
+            return BadRequest(new { message = "CREATE_SELLER_FAILED", detail = ex.Message });
+        }
     }
 
     [HttpGet("{id}")]
@@ -141,8 +149,16 @@ public class SellersController : ControllerBase
             request.SourceLanguage
         );
 
-        await _sender.Send(command);
-        return NoContent();
+        try 
+        {
+            await _sender.Send(command);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+             _logger.LogError(ex, "Failed to update seller");
+             return BadRequest(new { message = "UPDATE_SELLER_FAILED", detail = ex.Message });
+        }
     }
 
     [HttpDelete("{id}")]

@@ -44,7 +44,17 @@ export default function ResetPassword() {
             setTimeout(() => navigate('/login'), 3000); // Auto redirect
         } catch (err) {
             setStatus('error');
-            setError(err.message || t('common.error'));
+            const msg = err.message || (err.response?.data?.message);
+
+            if (msg === 'INVALID_TOKEN') {
+                setError(t('errors.invalid_token'));
+            } else if (msg === 'WEAK_PASSWORD') {
+                setError(t('errors.weak_password'));
+            } else if (msg === 'RESET_PASSWORD_FAILED') {
+                setError(t('errors.reset_password_failed'));
+            } else {
+                setError(t('errors.generic_error'));
+            }
         }
     };
 

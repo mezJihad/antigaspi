@@ -70,7 +70,8 @@ export default function Register() {
 
         try {
             // 1. Create User Account
-            await registerUser(formData.firstName, formData.lastName, formData.email, formData.password, 'SELLER');
+            const lang = i18n.language || window.localStorage.getItem('i18nextLng') || 'fr';
+            await registerUser(formData.firstName, formData.lastName, formData.email, formData.password, 'SELLER', lang);
 
             // 2. Redirect to Verify Page
             // Passing email and status to show correct message
@@ -82,8 +83,15 @@ export default function Register() {
             });
 
         } catch (err) {
-            console.error(err);
-            setError(err.message || t('common.error'));
+            console.error("Registration Error Caught:", err);
+            console.log("Error Message:", err.message);
+            if (err.message === 'EMAIL_EXISTS') {
+                setError(t('errors.email_exists'));
+            } else if (err.message === 'WEAK_PASSWORD') {
+                setError(t('errors.weak_password'));
+            } else {
+                setError(t('errors.generic_error'));
+            }
             setIsLoading(false);
         }
     };
@@ -97,6 +105,23 @@ export default function Register() {
                 ...prev,
                 [activeInput]: input
             }));
+        }
+    };
+
+    const handleInvalid = (e) => {
+        e.target.setCustomValidity(t('errors.required_field'));
+    };
+
+    const handleInput = (e) => {
+        e.target.setCustomValidity('');
+        handleChange(e);
+    };
+
+    const handleEmailInvalid = (e) => {
+        if (e.target.validity.valueMissing) {
+            e.target.setCustomValidity(t('errors.required_field'));
+        } else if (e.target.validity.typeMismatch) {
+            e.target.setCustomValidity(t('errors.invalid_email'));
         }
     };
 
@@ -168,7 +193,8 @@ export default function Register() {
                                     name="firstName"
                                     required
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
-                                    onChange={handleChange}
+                                    onChange={handleInput}
+                                    onInvalid={handleInvalid}
                                     value={formData.firstName}
                                     onFocus={() => setActiveInput('firstName')}
                                 />
@@ -194,7 +220,8 @@ export default function Register() {
                                     name="lastName"
                                     required
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
-                                    onChange={handleChange}
+                                    onChange={handleInput}
+                                    onInvalid={handleInvalid}
                                     value={formData.lastName}
                                     onFocus={() => setActiveInput('lastName')}
                                 />
@@ -203,7 +230,14 @@ export default function Register() {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.professional_email')}</label>
-                            <input type="email" name="email" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
+                            <input
+                                type="email"
+                                name="email"
+                                required
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                                onChange={handleInput}
+                                onInvalid={handleEmailInvalid}
+                            />
                         </div>
 
                         <div>
@@ -213,7 +247,8 @@ export default function Register() {
                                 name="password"
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
-                                onChange={handlePasswordChange}
+                                onChange={(e) => { handlePasswordChange(e); e.target.setCustomValidity(''); }}
+                                onInvalid={handleInvalid}
                             />
                             {/* Password Strength Indicators */}
                             <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-500">
@@ -236,7 +271,15 @@ export default function Register() {
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <input type="checkbox" name="termsAccepted" required id="terms" className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer" onChange={handleChange} />
+                            <input
+                                type="checkbox"
+                                name="termsAccepted"
+                                required
+                                id="terms"
+                                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
+                                onChange={handleInput}
+                                onInvalid={handleInvalid}
+                            />
                             <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">{t('auth.terms_accept')} <Link to="/terms" className="text-green-600 hover:underline" target="_blank">{t('auth.terms_link')}</Link></label>
                         </div>
 

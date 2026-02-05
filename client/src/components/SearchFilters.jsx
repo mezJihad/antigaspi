@@ -122,7 +122,7 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
                     <select
                         value={filters.city}
                         onChange={(e) => setFilters({ ...filters, city: e.target.value })}
-                        className={`w-full ${!mobile && 'md:w-48'} appearance-none py-3 pl-4 pr-10 border border-gray-200 rounded-full bg-white focus:outline-none focus:border-green-500 cursor-pointer text-base`}
+                        className={`w-full ${!mobile && 'md:w-48'} appearance-none py-3 ltr:pl-4 ltr:pr-10 rtl:pr-4 rtl:pl-10 border border-gray-200 rounded-full bg-white focus:outline-none focus:border-green-500 cursor-pointer text-base`}
                     >
                         <option value="Toutes">{t('search.all_cities')}</option>
                         {cities.map(c => (
@@ -131,7 +131,7 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
                             </option>
                         ))}
                     </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                    <div className="pointer-events-none absolute inset-y-0 ltr:right-0 rtl:left-0 flex items-center px-3 text-gray-500">
                         <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
                     </div>
                 </div>
@@ -144,11 +144,11 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
                     <select
                         value={filters.category}
                         onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-                        className={`w-full ${!mobile && 'md:w-56'} appearance-none py-3 pl-4 pr-10 border border-gray-200 rounded-full bg-white focus:outline-none focus:border-green-500 cursor-pointer text-base`}
+                        className={`w-full ${!mobile && 'md:w-56'} appearance-none py-3 ltr:pl-4 ltr:pr-10 rtl:pr-4 rtl:pl-10 border border-gray-200 rounded-full bg-white focus:outline-none focus:border-green-500 cursor-pointer text-base`}
                     >
                         {categories.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                     </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                    <div className="pointer-events-none absolute inset-y-0 ltr:right-0 rtl:left-0 flex items-center px-3 text-gray-500">
                         <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
                     </div>
                 </div>
@@ -170,12 +170,12 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
 
                     {/* Sort Popup */}
                     {isSortMenuOpen && (
-                        <div className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 min-w-[200px] overflow-hidden z-50">
+                        <div className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 min-w-[200px] overflow-hidden z-50 origin-top-right">
                             {sortOptions.map(option => (
                                 <button
                                     key={option.value}
                                     onClick={() => handleSortSelect(option.value)}
-                                    className={`block w-full text-left px-4 py-3 text-sm transition-colors ${filters.sortBy === option.value
+                                    className={`block w-full ltr:text-left rtl:text-right px-4 py-3 text-sm transition-colors ${filters.sortBy === option.value
                                         ? 'bg-green-50 text-green-700 font-semibold'
                                         : 'hover:bg-gray-50 text-gray-700'
                                         }`}
@@ -196,14 +196,14 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
                         <select
                             value={filters.sortBy || ''}
                             onChange={(e) => handleSortSelect(e.target.value)}
-                            className="w-full appearance-none py-3 pl-4 pr-10 border border-gray-200 rounded-full bg-white focus:outline-none focus:border-green-500 cursor-pointer text-base"
+                            className="w-full appearance-none py-3 ltr:pl-4 ltr:pr-10 rtl:pr-4 rtl:pl-10 border border-gray-200 rounded-full bg-white focus:outline-none focus:border-green-500 cursor-pointer text-base"
                         >
                             <option value="">{t('search.sort')}</option>
                             {sortOptions.map(option => (
                                 <option key={option.value} value={option.value}>{option.label}</option>
                             ))}
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                        <div className="pointer-events-none absolute inset-y-0 ltr:right-0 rtl:left-0 flex items-center px-3 text-gray-500">
                             <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
                         </div>
                     </div>

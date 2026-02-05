@@ -173,6 +173,22 @@
         "edit": "Edit",
         "delete": "Delete"
     },
+    "errors": {
+        "email_exists": "A user with this email already exists.",
+        "required_field": "This field is required.",
+        "invalid_email": "Please enter a valid email address.",
+        "weak_password": "Password does not meet security requirements.",
+        "invalid_credentials": "Invalid email or password.",
+        "account_suspended": "Your account is suspended.",
+        "email_not_verified": "Your email is not verified yet.",
+        "invalid_token": "The link is invalid or has expired.",
+        "create_seller_failed": "Failed to create seller account.",
+        "update_seller_failed": "Failed to update seller.",
+        "create_offer_failed": "Failed to create offer.",
+        "update_offer_failed": "Failed to update offer.",
+        "generic_error": "An error occurred.",
+        "reset_password_failed": "Unable to reset password."
+    },
     "create_offer": {
         "title": "Publish an Offer",
         "subtitle": "Make your anti-waste products visible in a few clicks.",

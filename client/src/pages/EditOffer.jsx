@@ -149,11 +149,15 @@ export default function EditOffer() {
             } else {
                 const errorData = await response.json().catch(() => ({}));
                 console.error("Update failed", errorData);
-                alert(`${t('edit_offer.error_update')}: ${errorData.detail || ''}`);
+                if (errorData.message === 'UPDATE_OFFER_FAILED') {
+                    alert(`${t('errors.update_offer_failed')}: ${errorData.detail || ''}`);
+                } else {
+                    alert(`${t('errors.update_offer_failed')}: ${errorData.detail || ''}`);
+                }
             }
         } catch (error) {
             console.error("Error updating offer", error);
-            alert(t('create_offer.error_server'));
+            alert(t('errors.generic_error'));
         } finally {
             setLoading(false);
         }

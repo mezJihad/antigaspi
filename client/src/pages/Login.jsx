@@ -43,18 +43,17 @@ export default function Login() {
             }
         } catch (error) {
             console.error("Login error:", error);
-            if (error.message && error.message.includes("ACCOUNT_SUSPENDED")) {
-                setError(t('auth.error_suspended'));
-            } else if (error.message && error.message.includes("EMAIL_NOT_VERIFIED")) {
-                setError(t('auth.error_verify_email'));
+            const msg = error.message || (error.response?.data?.message);
+
+            if (msg === "ACCOUNT_SUSPENDED") {
+                setError(t('errors.account_suspended'));
+            } else if (msg === "EMAIL_NOT_VERIFIED") {
+                setError(t('errors.email_not_verified'));
                 setShowResend(true);
-            } else if (error.response && error.response.status === 403 && error.response.data && error.response.data.message == "EMAIL_NOT_VERIFIED") {
-                setError(t('auth.error_verify_email'));
-                setShowResend(true);
-            } else if (error.response && error.response.status === 403 && error.response.data && error.response.data.message == "ACCOUNT_SUSPENDED") {
-                setError(t('auth.error_suspended'));
+            } else if (msg === "INVALID_CREDENTIALS") {
+                setError(t('errors.invalid_credentials'));
             } else {
-                setError(t('auth.error_invalid_credentials'));
+                setError(t('errors.invalid_credentials'));
             }
         } finally {
             setIsLoading(false);
@@ -90,6 +89,14 @@ export default function Login() {
         } finally {
             setIsResending(false);
         }
+    };
+
+    const handleInvalid = (e) => {
+        e.target.setCustomValidity(t('errors.required_field'));
+    };
+
+    const handleInput = (e) => {
+        e.target.setCustomValidity('');
     };
 
     return (
@@ -159,7 +166,8 @@ export default function Login() {
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => { setEmail(e.target.value); handleInput(e); }}
+                                onInvalid={handleInvalid}
                             />
                         </div>
                         <div>
@@ -169,7 +177,8 @@ export default function Login() {
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) => { setPassword(e.target.value); handleInput(e); }}
+                                onInvalid={handleInvalid}
                             />
                             <div className="mt-2">
                                 <Link to="/forgot-password" className="text-sm text-green-600 hover:text-green-500 font-medium">{t('auth.forgot_password')}</Link>

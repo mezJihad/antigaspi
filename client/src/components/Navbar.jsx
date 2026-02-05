@@ -76,7 +76,7 @@ const Navbar = () => {
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute ltr:right-0 rtl:left-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 transform origin-top-right transition-all z-50">
+                  <div className="absolute right-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 transform origin-top-right transition-all z-50">
                     <div className="px-4 py-3">
                       <p className="text-xs text-gray-500 uppercase font-semibold">{t('nav.login')}</p>
                       <p className="text-sm font-bold text-gray-900 truncate">
@@ -104,6 +104,14 @@ const Navbar = () => {
                           {t('nav.dashboard')}
                         </Link>
                       )}
+                      <Link
+                        to="/"
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700"
+                      >
+                        <Globe size={16} className="ltr:mr-3 rtl:ml-3 text-gray-400 group-hover:text-green-600" />
+                        {t('nav.explore')}
+                      </Link>
                     </div>
                     <div className="py-1">
                       <button

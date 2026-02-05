@@ -5,6 +5,8 @@ using Antigaspi.Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 
+using System.Text.Json.Serialization;
+
 namespace Antigaspi.Application.UseCases.Auth.Commands;
 
 public record RegisterUserCommand(
@@ -13,7 +15,7 @@ public record RegisterUserCommand(
     string Email,
     string Password,
     string Role = "BUYER", // Default role
-    string Language = "fr" // Default language
+    [property: JsonPropertyName("language")] string Language = "unknown" // Default language
 ) : IRequest<Guid>;
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Guid>
@@ -33,6 +35,9 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
 
     public async Task<Guid> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
+        // Log the received language to debug
+        Console.WriteLine($"[RegisterUserCommandHandler] Received registration request for {request.Email}, Language: '{request.Language}'");
+
         if (await _userRepository.GetByEmailAsync(request.Email, cancellationToken) is not null)
         {
             throw new Exception("User with given email already exists");

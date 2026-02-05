@@ -22,18 +22,19 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var command = new RegisterUserCommand(request.FirstName, request.LastName, request.Email, request.Password, request.Role);
+            Console.WriteLine($"[AuthController] Register Request: Email={request.Email}, Language={request.Language}");
+            var command = new RegisterUserCommand(request.FirstName, request.LastName, request.Email, request.Password, request.Role, request.Language);
             var userId = await _sender.Send(command);
 
             return Ok(new { UserId = userId });
         }
         catch (Exception ex) when (ex.Message == "User with given email already exists")
         {
-            return Conflict(new { message = "Un utilisateur avec cet email existe déjà." });
+            return Conflict(new { message = "EMAIL_EXISTS" });
         }
         catch (Exception ex) when (ex.Message.StartsWith("Password must be"))
         {
-             return BadRequest(new { message = "Le mot de passe ne respecte pas les critères de sécurité." });
+             return BadRequest(new { message = "WEAK_PASSWORD" });
         }
     }
 
@@ -56,7 +57,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception)
         {
-            return Unauthorized(new { message = "Invalid credentials" });
+            return Unauthorized(new { message = "INVALID_CREDENTIALS" });
         }
     }
 
@@ -100,16 +101,16 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex) when (ex.Message == "Invalid or expired token.")
         {
-            return BadRequest(new { message = "Le lien est invalide ou a expiré." });
+            return BadRequest(new { message = "INVALID_TOKEN" });
         }
         catch (Exception ex) when (ex.Message.StartsWith("Password must be"))
         {
-             return BadRequest(new { message = "Le mot de passe ne respecte pas les critères de sécurité." });
+             return BadRequest(new { message = "WEAK_PASSWORD" });
         }
         catch (Exception) 
         {
              // Generic error for Invalid Request (User not found) to allow safe failure
-             return BadRequest(new { message = "Impossible de réinitialiser le mot de passe." });
+             return BadRequest(new { message = "RESET_PASSWORD_FAILED" });
         }
     }
 }
