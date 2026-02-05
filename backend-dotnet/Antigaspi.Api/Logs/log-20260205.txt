@@ -58,3 +58,6 @@ System.Exception: Brevo API Error: Unauthorized - {"message":"Key not found","co
 2026-02-05 18:10:36.862 +01:00 [INF] Seeding database...
 2026-02-05 18:10:37.909 +01:00 [INF] Database seeded successfully.
 2026-02-05 18:12:24.507 +01:00 [WRN] Failed to determine the https port for redirect.
+2026-02-05 18:13:26.005 +01:00 [INF] Seeding database...
+2026-02-05 18:13:26.965 +01:00 [INF] Database seeded successfully.
+2026-02-05 18:13:42.025 +01:00 [WRN] Failed to determine the https port for redirect.
