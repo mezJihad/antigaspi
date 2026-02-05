@@ -6,7 +6,10 @@
         "dashboard": "Dashboard",
         "logout": "Logout",
         "explore": "Explore Offers",
-        "seller_space": "Seller Space"
+        "seller_space": "Seller Space",
+        "menu": "Menu",
+        "language": "Language",
+        "greeting": "Hello,"
     },
     "home": {
         "welcome": "Welcome to AntiGaspi",
@@ -62,7 +65,6 @@
         "forgot_password_title": "Forgot Password?",
         "forgot_password_desc": "Enter your email to receive a reset link.",
         "send_link_btn": "Send Link",
-        "sending": "Sending...",
         "back_to_login": "Back to Login",
         "check_email_title": "Check your emails",
         "check_email_desc": "If an account exists with the address <strong>{{email}}</strong>, you will receive a reset link shortly.",
@@ -167,7 +169,9 @@
     "common": {
         "loading": "Loading...",
         "error": "An error occurred",
-        "success": "Success"
+        "success": "Success",
+        "edit": "Edit",
+        "delete": "Delete"
     },
     "create_offer": {
         "title": "Publish an Offer",

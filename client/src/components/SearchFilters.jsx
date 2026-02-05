@@ -14,8 +14,33 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
     React.useEffect(() => {
         const fetchCities = async () => {
             try {
-                // Fetch all reference cities to get translations
-                const data = await cityService.getAll();
+                let userCountry = null;
+                // 1. Try to detect country from IP
+                try {
+                    const ipRes = await fetch('https://api.country.is/');
+                    if (ipRes.ok) {
+                        const ipData = await ipRes.json();
+                        // Map country code to full name if needed, or use country code directly?
+                        // Backend expects full country name (e.g. "France", "Maroc") matching Address.
+                        // api.country.is returns 2-letter code (e.g. "US", "FR", "MA").
+                        // We need a mapper.
+
+                        const countryMap = {
+                            'FR': 'France',
+                            'MA': 'Maroc',
+                            'US': 'United States',
+                            // Add others as needed or fallback to code if Address uses codes (Address defaults to "France")
+                        };
+
+                        userCountry = countryMap[ipData.country];
+                        console.log("Detected Country:", userCountry);
+                    }
+                } catch (e) {
+                    console.warn("Could not detect country from IP", e);
+                }
+
+                // 2. Fetch cities filtered by active offers AND country
+                const data = await cityService.getAll(true, userCountry);
                 setCities(data);
             } catch (error) {
                 console.error("Error fetching cities", error);
@@ -219,9 +244,9 @@ const SearchFilters = ({ filters, setFilters, onRequestLocation }) => {
 
                 {/* Mobile Filter Modal */}
                 {isMobileFilterOpen && (
-                    <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:hidden animate-fade-in" onClick={() => setIsMobileFilterOpen(false)}>
+                    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center md:hidden animate-fade-in px-4" onClick={() => setIsMobileFilterOpen(false)}>
                         <div
-                            className="bg-white w-full rounded-t-3xl p-6 flex flex-col gap-6 max-h-[90vh] overflow-y-auto animate-slide-up"
+                            className="bg-white w-full max-w-sm rounded-2xl p-6 flex flex-col gap-6 max-h-[90vh] overflow-y-auto animate-fade-in shadow-xl"
                             onClick={e => e.stopPropagation()}
                         >
                             <div className="flex justify-between items-center border-b border-gray-100 pb-4">

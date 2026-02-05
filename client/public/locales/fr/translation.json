@@ -6,7 +6,10 @@
         "dashboard": "Tableau de bord",
         "logout": "Déconnexion",
         "explore": "Explorer les Offres",
-        "seller_space": "Espace Vendeur"
+        "seller_space": "Espace Vendeur",
+        "menu": "Menu",
+        "language": "Langue",
+        "greeting": "Bonjour,"
     },
     "home": {
         "welcome": "Bienvenue sur AntiGaspi",
@@ -168,6 +171,8 @@
         "loading": "Chargement...",
         "error": "Une erreur est survenue",
         "success": "Succès",
+        "edit": "Modifier",
+        "delete": "Supprimer",
         "apply": "Appliquer"
     },
     "create_offer": {

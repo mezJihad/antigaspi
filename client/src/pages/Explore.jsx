@@ -8,7 +8,7 @@ const Explore = () => {
     const { t } = useTranslation();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    // Init state from URL
+    // Init state from URL (Filters only)
     const [filters, setFilters] = useState({
         query: searchParams.get('search') || '',
         city: searchParams.get('city') || 'Toutes',
@@ -16,62 +16,37 @@ const Explore = () => {
         sortBy: searchParams.get('sortBy') || ''
     });
 
-    // Pagination State
-    const [page, setPage] = useState(parseInt(searchParams.get('page') || '1'));
+    // Pagination State - Internal only, not synced to URL for infinite scroll simplicity
+    const [page, setPage] = useState(1);
 
     const [offers, setOffers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [userLocation, setUserLocation] = useState(null); // { lat: number, lon: number }
+    const [userLocation, setUserLocation] = useState(null);
     const [isLocating, setIsLocating] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
 
-    // Sync State -> URL
+    // Sentinel ref for infinite scroll
+    const observerTarget = React.useRef(null);
+
+    // Sync State -> URL (Filters only)
     useEffect(() => {
         const params = {};
         if (filters.query) params.search = filters.query;
         if (filters.city && filters.city !== 'Toutes') params.city = filters.city;
         if (filters.category && filters.category !== 'Toutes') params.category = filters.category;
         if (filters.sortBy) params.sortBy = filters.sortBy;
-        if (page > 1) params.page = page.toString();
 
+        // Remove page syncing to prevent starting in middle of list on refresh
         setSearchParams(params, { replace: true });
-    }, [filters, page]); // setPage resets to 1 on filter change handled below
+    }, [filters]);
 
-    useEffect(() => {
-        // Reset page to 1 when filters change (except usually handled by UI, but good to ensure)
-        // Check if filters effectively changed vs URL?
-        // Actually, if I change filter, I should reset page.
-        // Let's rely on the previous logic: "Reset page to 1 when filters change"
-        // But we need to distinguish mount vs update.
-        // The previous code had:
-        /*
-        useEffect(() => {
-            setPage(1);
-        }, [filters]);
-        */
-        // If I init filters from URL, this effect runs on mount? No, only if filters change from initial?
-        // Actually, initial render runs effects. So it might reset page to 1 on load even if URL has page=5.
-        // To avoid this, we can use a ref to track mount.
-    }, []);
-
-    // Helper: Reset page when filters change (excluding page itself)
-    // We can wrap setFilters to also setPage(1).
+    // Reset page when filters change
     const handleSetFilters = (newFilters) => {
         setFilters(newFilters);
         setPage(1);
+        setOffers([]); // Clear offers immediately to show loading state cleanly
     };
-    // Note: SearchFilters component likely calls setFilters directly or via functional update.
-    // If SearchFilters uses setFilters(prev => ...), passing handleSetFilters might break if signature differs.
-    // Let's check SearchFilters usage.
-    // Assuming standard setFilters usage.
-    // actually, simpler: Just keep the useEffect but add a check if it's not mount?
-
-    /* Using a simpler approach for now: 
-       The fetch logic reads from STATE.
-       The state initializes from URL. 
-       This is enough for "Back" button to work (restore state from URL).
-    */
 
     useEffect(() => {
         const fetchOffers = async () => {
@@ -97,13 +72,23 @@ const Explore = () => {
                 const response = await fetch(`/api/offers?${params.toString()}`);
                 if (response.ok) {
                     const data = await response.json();
+                    let newItems = [];
+                    let total = 1;
+
                     if (Array.isArray(data)) {
-                        setOffers(data);
-                        setTotalPages(1);
+                        newItems = data;
+                        total = 1;
                     } else {
-                        setOffers(data.items || []);
-                        setTotalPages(data.totalPages || 1);
+                        newItems = data.items || [];
+                        total = data.totalPages || 1;
                     }
+
+                    if (page === 1) {
+                        setOffers(newItems);
+                    } else {
+                        setOffers(prev => [...prev, ...newItems]);
+                    }
+                    setTotalPages(total);
                 } else {
                     setError('Failed to fetch offers');
                 }
@@ -118,11 +103,30 @@ const Explore = () => {
         fetchOffers();
     }, [filters, userLocation, page]);
 
-    // ... (rest of location logic)
+    // Infinite Scroll Observer
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting && !loading && page < totalPages) {
+                    setPage(prev => prev + 1);
+                }
+            },
+            { threshold: 1.0 }
+        );
+
+        if (observerTarget.current) {
+            observer.observe(observerTarget.current);
+        }
+
+        return () => {
+            if (observerTarget.current) {
+                observer.unobserve(observerTarget.current);
+            }
+        };
+    }, [loading, page, totalPages]);
 
     // Auto-request location on mount
     useEffect(() => {
-        // Try to get location silently or with prompt on load
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -132,7 +136,6 @@ const Explore = () => {
                     });
                 },
                 (err) => {
-                    // Ignore errors on auto-load, user can trigger manually later
                     console.log("Auto-location failed or denied:", err.message);
                 }
             );
@@ -141,11 +144,6 @@ const Explore = () => {
 
     // Handle "Use My Location"
     const handleUseMyLocation = () => {
-        // If we already have location, we don't strictly need to do anything, 
-        // but the sort menu calls this to ENSURE we have it.
-        // We shouldn't toggle it off here if called from sort menu.
-        // Let's simplified: Always try to get/refresh location.
-
         if (!navigator.geolocation) {
             alert(t('edit_shop.error_geo_support'));
             return;
@@ -161,7 +159,7 @@ const Explore = () => {
                 setIsLocating(false);
             },
             (err) => {
-                console.warn("Geolocation error:", err.code, err.message); // Added logging
+                console.warn("Geolocation error:", err.code, err.message);
                 if (err.code === 1) {
                     alert(t('explore.location_denied'));
                 } else {
@@ -191,12 +189,6 @@ const Explore = () => {
         return deg * (Math.PI / 180);
     };
 
-
-
-    // ... (location logic)
-
-    // ...
-
     return (
         <div className="explore-page" style={{ padding: '2rem 1rem', backgroundColor: 'var(--color-bg)', minHeight: '100vh' }}>
             <div className="container">
@@ -206,16 +198,14 @@ const Explore = () => {
                     onRequestLocation={handleUseMyLocation}
                 />
 
-                {isLocating && <p>{t('explore.locating')}</p>}
+                {isLocating && <p className="text-center text-gray-500 py-4">{t('explore.locating')}</p>}
 
-                {loading ? (
-                    <div style={{ textAlign: 'center', padding: '2rem' }}>{t('explore.loading')}</div>
-                ) : error ? (
+                {error ? (
                     <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>
                 ) : (
                     <>
                         <div className="offers-grid">
-                            {offers.length === 0 ? (
+                            {offers.length === 0 && !loading ? (
                                 <p style={{ textAlign: 'center', gridColumn: '1/-1', color: '#666' }}>{t('explore.no_results')}</p>
                             ) : (
                                 offers.map((offer) => {
@@ -234,42 +224,15 @@ const Explore = () => {
                             )}
                         </div>
 
-                        {/* Pagination Controls */}
-                        {offers.length > 0 && (
-                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem', gap: '1rem', alignItems: 'center' }}>
-                                <button
-                                    onClick={() => setPage(p => Math.max(1, p - 1))}
-                                    disabled={page === 1}
-                                    style={{
-                                        padding: '0.5rem 1rem',
-                                        border: '1px solid var(--color-border)',
-                                        borderRadius: 'var(--radius-md)',
-                                        backgroundColor: page === 1 ? '#f3f4f6' : 'white',
-                                        color: page === 1 ? '#9ca3af' : 'inherit',
-                                        cursor: page === 1 ? 'not-allowed' : 'pointer',
-                                    }}
-                                >
-                                    {t('explore.prev_page')}
-                                </button>
-                                <span style={{ color: '#555' }}>
-                                    {t('explore.page_info', { current: page, total: totalPages })}
-                                </span>
-                                <button
-                                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                                    disabled={page === totalPages}
-                                    style={{
-                                        padding: '0.5rem 1rem',
-                                        border: '1px solid var(--color-border)',
-                                        borderRadius: 'var(--radius-md)',
-                                        backgroundColor: page === totalPages ? '#f3f4f6' : 'white',
-                                        color: page === totalPages ? '#9ca3af' : 'inherit',
-                                        cursor: page === totalPages ? 'not-allowed' : 'pointer',
-                                    }}
-                                >
-                                    {t('explore.next_page')}
-                                </button>
-                            </div>
-                        )}
+                        {/* Loading Indicator / Sentinel */}
+                        <div ref={observerTarget} className="h-10 flex items-center justify-center mt-8">
+                            {loading && (
+                                <div className="flex items-center gap-2 text-gray-500">
+                                    <div className="w-5 h-5 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                                    <span>{t('explore.loading')}</span>
+                                </div>
+                            )}
+                        </div>
                     </>
                 )}
             </div>

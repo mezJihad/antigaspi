@@ -16,9 +16,9 @@ public class CitiesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<CityDto>>> GetAll()
+    public async Task<ActionResult<List<CityDto>>> GetAll([FromQuery] bool onlyActiveOffers = false, [FromQuery] string? country = null)
     {
-        var result = await _sender.Send(new GetAllCitiesQuery());
+        var result = await _sender.Send(new GetAllCitiesQuery(onlyActiveOffers, country));
         return Ok(result);
     }
 }

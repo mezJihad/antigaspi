@@ -195,7 +195,7 @@ export default function Login() {
                         </div>
                         <div className="bg-gray-50 rounded-lg p-4 text-center">
                             <p className="text-sm text-gray-600">{t('auth.buyer_prompt')}</p>
-                            <Link to="/explore" className="inline-block mt-2 text-sm font-medium text-gray-900 border-b border-gray-900 hover:text-green-600 hover:border-green-600 transition-colors">
+                            <Link to="/" className="inline-block mt-2 text-sm font-medium text-gray-900 border-b border-gray-900 hover:text-green-600 hover:border-green-600 transition-colors">
                                 {t('auth.explore_link')}
                             </Link>
                         </div>

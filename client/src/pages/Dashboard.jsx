@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, MoreVertical } from 'lucide-react';
 import Notification from '../components/Notification';
 import { useTranslation } from 'react-i18next';
 
@@ -16,6 +16,18 @@ export default function Dashboard() {
     const [mySellerId, setMySellerId] = useState(null);
     const [sellerProfile, setSellerProfile] = useState(null);
     const [notification, setNotification] = useState(null);
+    const [activeMenuId, setActiveMenuId] = useState(null);
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (activeMenuId && !event.target.closest('.offer-menu-container')) {
+                setActiveMenuId(null);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [activeMenuId]);
 
     useEffect(() => {
         if (location.state?.successMessage) {
@@ -138,10 +150,10 @@ export default function Dashboard() {
                     onClose={() => setNotification(null)}
                 />
             )}
-            <div className="flex justify-between items-center mb-8">
-                <h1 className='text-3xl font-bold text-gray-900'>{t('seller_dashboard.title')}</h1>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <h1 className='text-3xl font-bold text-gray-900 w-full md:w-auto'>{t('seller_dashboard.title')}</h1>
                 {mySellerId && (
-                    <Link to='/create-offer' className='bg-green-600 text-white px-6 py-2 rounded-lg shadow hover:bg-green-700 transition flex items-center gap-2 font-medium'>
+                    <Link to='/create-offer' className='w-auto bg-green-600 text-white px-6 py-2 rounded-lg shadow hover:bg-green-700 transition flex items-center justify-center gap-2 font-medium'>
                         {t('seller_dashboard.new_offer')}
                     </Link>
                 )}
@@ -169,21 +181,35 @@ export default function Dashboard() {
                                         <span>📍 {sellerProfile.street}, {sellerProfile.zipCode} {sellerProfile.city}</span>
                                     </div>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="relative offer-menu-container">
                                     <button
-                                        onClick={() => navigate(`/edit-shop/${sellerProfile.id}`)}
-                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition border border-transparent hover:border-blue-100"
-                                        title={t('common.edit')}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setActiveMenuId(activeMenuId === 'shop-actions' ? null : 'shop-actions');
+                                        }}
+                                        className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
                                     >
-                                        <Edit size={20} />
+                                        <MoreVertical size={20} />
                                     </button>
-                                    <button
-                                        onClick={() => setShopDeleteConfirmation({ show: true, sellerId: sellerProfile.id })}
-                                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition border border-transparent hover:border-red-100"
-                                        title={t('common.delete')}
-                                    >
-                                        <Trash2 size={20} />
-                                    </button>
+
+                                    {activeMenuId === 'shop-actions' && (
+                                        <div className="absolute right-0 rtl:left-0 rtl:right-auto mt-1 w-32 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20 animate-in fade-in zoom-in duration-100 origin-top-right rtl:origin-top-left">
+                                            <button
+                                                onClick={() => navigate(`/edit-shop/${sellerProfile.id}`)}
+                                                className="w-full text-left rtl:text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                            >
+                                                <Edit size={14} />
+                                                {t('common.edit')}
+                                            </button>
+                                            <button
+                                                onClick={() => setShopDeleteConfirmation({ show: true, sellerId: sellerProfile.id })}
+                                                className="w-full text-left rtl:text-right px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                            >
+                                                <Trash2 size={14} />
+                                                {t('common.delete')}
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -196,7 +222,7 @@ export default function Dashboard() {
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                     {myOffers.length > 0 ? (
                         myOffers.map(offer => (
-                            <div key={offer.id} className='border border-gray-100 rounded-xl p-4 shadow-sm bg-white hover:shadow-md transition'>
+                            <div key={offer.id} className='relative border border-gray-100 rounded-xl p-4 shadow-sm bg-white hover:shadow-md transition'>
                                 {offer.pictureUrl ? (
                                     <img src={offer.pictureUrl} alt={offer.title} className='w-full h-48 object-cover rounded-lg mb-4' />
                                 ) : (
@@ -204,7 +230,44 @@ export default function Dashboard() {
                                         {t('seller_dashboard.no_image')}
                                     </div>
                                 )}
-                                <h3 className='text-xl font-bold text-gray-900 mb-1'>{offer.title}</h3>
+
+
+                                <div className="flex justify-between items-start mb-1">
+                                    <h3 className='text-xl font-bold text-gray-900 pr-2'>{offer.title}</h3>
+
+                                    {/* Kebab Menu for Actions */}
+                                    <div className="relative offer-menu-container">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveMenuId(activeMenuId === offer.id ? null : offer.id);
+                                            }}
+                                            className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                                        >
+                                            <MoreVertical size={20} />
+                                        </button>
+
+                                        {activeMenuId === offer.id && (
+                                            <div className="absolute right-0 rtl:left-0 rtl:right-auto mt-1 w-32 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20 animate-in fade-in zoom-in duration-100 origin-top-right rtl:origin-top-left">
+                                                <button
+                                                    onClick={() => navigate(`/edit-offer/${offer.id}`)}
+                                                    className="w-full text-left rtl:text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                                >
+                                                    <Edit size={14} />
+                                                    {t('common.edit')}
+                                                </button>
+                                                <button
+                                                    onClick={() => openDeleteModal(offer.id)}
+                                                    className="w-full text-left rtl:text-right px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                                >
+                                                    <Trash2 size={14} />
+                                                    {t('common.delete')}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
                                 <p className='text-gray-500 text-sm mb-3 line-clamp-2'>{offer.description}</p>
                                 <div className='flex justify-between items-end'>
                                     <div className="flex flex-col">
@@ -230,22 +293,6 @@ export default function Dashboard() {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end gap-2">
-                                    <button
-                                        onClick={() => navigate(`/edit-offer/${offer.id}`)}
-                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                                        title={t('common.edit')}
-                                    >
-                                        <Edit size={18} />
-                                    </button>
-                                    <button
-                                        onClick={() => openDeleteModal(offer.id)}
-                                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
-                                        title={t('common.delete')}
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
                                 </div>
                             </div>
                         ))
