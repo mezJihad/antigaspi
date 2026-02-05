@@ -12,7 +12,8 @@ public record RegisterUserCommand(
     string LastName,
     string Email,
     string Password,
-    string Role = "BUYER" // Default role, can be "SELLER" if we allow direct seller reg
+    string Role = "BUYER", // Default role
+    string Language = "fr" // Default language
 ) : IRequest<Guid>;
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Guid>
@@ -54,7 +55,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
             role = UserRole.CUSTOMER;
         }
 
-        var user = User.Create(request.FirstName, request.LastName, request.Email, passwordHash, role);
+        var user = User.Create(request.FirstName, request.LastName, request.Email, passwordHash, role, request.Language);
 
         // 2. Generate and Set OTP
         // Generate GUID Token
@@ -65,13 +66,19 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
             
             // 3. Send Email with Link (Using Brevo Template)
             var clientUrl = _configuration["ClientAppUrl"];
-            var verificationLink = $"{clientUrl}/verify-email?email={System.Web.HttpUtility.UrlEncode(user.Email)}&token={System.Web.HttpUtility.UrlEncode(token)}";
+            // Pass language in URL for frontend to switch language automatically
+            var verificationLink = $"{clientUrl}/verify-email?email={System.Web.HttpUtility.UrlEncode(user.Email)}&token={System.Web.HttpUtility.UrlEncode(token)}&lang={user.PreferredLanguage}";
             
-            var templateId = _configuration.GetValue<long>("Brevo:Templates:VerificationEmail");
+            // dynamically select template based on language
+            string templateConfigKey = $"Brevo:Templates:VerificationEmail_{user.PreferredLanguage.ToUpper()}";
+            var templateId = _configuration.GetValue<long>(templateConfigKey);
             
-            // If template ID is not configured (e.g. 0), fallback to old behavior or log warning
-            // treating it as required for now since user provided it.
-            
+            // Fallback to default if language specific template not found
+            if (templateId == 0)
+            {
+                templateId = _configuration.GetValue<long>("Brevo:Templates:VerificationEmail");
+            }
+
             var emailParams = new Dictionary<string, string>
             {
                 { "verification_link", verificationLink },

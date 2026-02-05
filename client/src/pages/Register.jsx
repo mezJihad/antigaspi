@@ -3,12 +3,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { register as registerUser, login as loginUser } from '../services/auth';
 import { registerSeller } from '../services/sellers';
-import { Leaf, Store, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Leaf, Store, ArrowRight, CheckCircle2, Keyboard } from 'lucide-react';
 import heroImage from '../assets/auth-hero.png';
 import { useTranslation } from 'react-i18next';
+import VirtualKeyboard from '../components/VirtualKeyboard';
 
 export default function Register() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const { login } = useAuth();
 
@@ -87,6 +88,18 @@ export default function Register() {
         }
     };
 
+    const [showKeyboard, setShowKeyboard] = useState(false);
+    const [activeInput, setActiveInput] = useState(null);
+
+    const handleKeyboardChange = (input) => {
+        if (activeInput) {
+            setFormData(prev => ({
+                ...prev,
+                [activeInput]: input
+            }));
+        }
+    };
+
     return (
         <div className="min-h-screen flex text-gray-900 font-sans">
             {/* Left Side - Hero Image */}
@@ -135,12 +148,56 @@ export default function Register() {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.first_name')}</label>
-                                <input name="firstName" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
+                                <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between">
+                                    {t('auth.first_name')}
+                                    {i18n.language === 'ar' && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setActiveInput('firstName');
+                                                setShowKeyboard(true);
+                                            }}
+                                            className="text-gray-500 hover:text-green-600 transition"
+                                            title="Clavier Virtuel"
+                                        >
+                                            <Keyboard size={18} />
+                                        </button>
+                                    )}
+                                </label>
+                                <input
+                                    name="firstName"
+                                    required
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                                    onChange={handleChange}
+                                    value={formData.firstName}
+                                    onFocus={() => setActiveInput('firstName')}
+                                />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.last_name')}</label>
-                                <input name="lastName" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" onChange={handleChange} />
+                                <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between">
+                                    {t('auth.last_name')}
+                                    {i18n.language === 'ar' && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setActiveInput('lastName');
+                                                setShowKeyboard(true);
+                                            }}
+                                            className="text-gray-500 hover:text-green-600 transition"
+                                            title="Clavier Virtuel"
+                                        >
+                                            <Keyboard size={18} />
+                                        </button>
+                                    )}
+                                </label>
+                                <input
+                                    name="lastName"
+                                    required
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                                    onChange={handleChange}
+                                    value={formData.lastName}
+                                    onFocus={() => setActiveInput('lastName')}
+                                />
                             </div>
                         </div>
 
@@ -209,6 +266,15 @@ export default function Register() {
                     </div>
                 </div>
             </div>
+
+            {showKeyboard && activeInput && (
+                <VirtualKeyboard
+                    onChange={(val) => handleKeyboardChange(val)}
+                    inputName={activeInput}
+                    value={formData[activeInput]}
+                    onClose={() => setShowKeyboard(false)}
+                />
+            )}
         </div>
     );
 }

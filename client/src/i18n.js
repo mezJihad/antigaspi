@@ -24,7 +24,8 @@ i18n
 
         // Optional: detect language from path, cookie, localStorage, etc.
         detection: {
-            order: ['localStorage', 'navigator'],
+            order: ['querystring', 'localStorage', 'navigator'],
+            lookupQuerystring: 'lang',
             caches: ['localStorage'],
         }
     });

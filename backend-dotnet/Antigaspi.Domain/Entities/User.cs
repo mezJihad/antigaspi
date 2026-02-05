@@ -16,11 +16,12 @@ public class User
     public bool IsActive { get; private set; }
     public int VerificationEmailCount { get; private set; }
     public DateTime? LastVerificationEmailSentAt { get; private set; }
+    public string PreferredLanguage { get; private set; } // 'fr', 'en', 'ar'
 
     // Constructor for EF Core / Persistence
     private User() { }
 
-    public User(string firstName, string lastName, string email, string passwordHash, UserRole role, Guid? id = null, bool isActive = true)
+    public User(string firstName, string lastName, string email, string passwordHash, UserRole role, string preferredLanguage = "fr", Guid? id = null, bool isActive = true)
     {
         if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("User email is required");
         if (string.IsNullOrWhiteSpace(passwordHash)) throw new ArgumentException("User password hash is required");
@@ -31,13 +32,22 @@ public class User
         Email = email;
         PasswordHash = passwordHash;
         Role = role;
+        PreferredLanguage = preferredLanguage;
         IsActive = isActive;
         IsEmailVerified = false; // Default false
     }
 
-    public static User Create(string firstName, string lastName, string email, string passwordHash, UserRole role)
+    public static User Create(string firstName, string lastName, string email, string passwordHash, UserRole role, string preferredLanguage = "fr")
     {
-        return new User(firstName, lastName, email, passwordHash, role);
+        return new User(firstName, lastName, email, passwordHash, role, preferredLanguage);
+    }
+
+    public void UpdatePreferredLanguage(string language)
+    {
+        if (!string.IsNullOrWhiteSpace(language))
+        {
+            PreferredLanguage = language.ToLower();
+        }
     }
 
     public void ChangePassword(string newPasswordHash)

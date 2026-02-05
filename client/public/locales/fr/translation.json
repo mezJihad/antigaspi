@@ -39,7 +39,7 @@
         "resend_btn": "Renvoyer l'email de vérification",
         "sending": "Envoi...",
         "retry_in": "Réessayer dans {{seconds}}s",
-        "copyright": "© 2024 Antigaspi. Tous droits réservés.",
+        "copyright": "© 2024 NoGaspi. Tous droits réservés.",
         "hero_title": "Valorisez vos invendus, touchez de nouveaux clients.",
         "hero_description": "Rejoignez la communauté de commerçants qui s'engagent contre le gaspillage alimentaire tout en augmentant leurs revenus.",
         "hero_benefit_1": "Gérez vos offres simplement",
@@ -262,5 +262,78 @@
         "expire_on": "Expire le {{date}}",
         "location_denied": "Vous avez refusé l'accès à la localisation.",
         "location_error": "Impossible de récupérer votre position."
+    },
+    "terms": {
+        "page_title": "Conditions Générales d'Utilisation (CGU)",
+        "back_to_register": "Retour à l'inscription",
+        "sections": {
+            "object": {
+                "title": "1. Objet et Champ d'Application",
+                "content_1": "Les présentes Conditions Générales ont pour objet de définir les modalités de mise à disposition des services de l'application <strong>NoGaspi</strong> (ci-après \"la Plateforme\") et les conditions d'utilisation du Service par les Utilisateurs (Acheteurs) et les Partenaires (Vendeurs).",
+                "content_2": "La Plateforme est un service de mise en relation permettant à des commerçants de proposer des invendus alimentaires à prix réduit à des utilisateurs."
+            },
+            "role": {
+                "title": "2. Rôle de la Plateforme (Intermédiaire)",
+                "subtitle": "NoGaspi agit en tant qu'intermédiaire technique.",
+                "content_1": "La Plateforme héberge les offres des Partenaires mais <strong>n'est pas le vendeur des produits</strong>.",
+                "list": {
+                    "item_1": "Le contrat de vente des produits est conclu exclusivement et directement entre le Partenaire (Vendeur) et l'Utilisateur.",
+                    "item_2": "NoGaspi ne peut être tenu responsable de la qualité, de la sécurité, de la comestibilité ou de la conformité des produits vendus par les Partenaires.",
+                    "item_3": "NoGaspi n'exerce aucun contrôle sur les produits remis aux Utilisateurs."
+                }
+            },
+            "access": {
+                "title": "3. Accès au Service",
+                "content_1": "L'accès à la Plateforme est gratuit pour les Utilisateurs. L'accès pour les Partenaires (Vendeurs) est soumis à inscription et validation par l'administrateur de la Plateforme.",
+                "content_2": "NoGaspi se réserve le droit de refuser, suspendre ou supprimer tout compte ne respectant pas les présentes conditions, sans indemnité."
+            },
+            "obligations": {
+                "title": "4. Obligations des Parties",
+                "partners": {
+                    "title": "4.1 Obligations des Partenaires (Vendeurs)",
+                    "list": {
+                        "item_1": "Le Partenaire s'engage à remettre des produits propres à la consommation, respectant les dates limites de consommation (DLC/DDM) et les normes d'hygiène en vigueur.",
+                        "item_2": "Le Partenaire est seul responsable des informations fournies dans ses offres (description, allergènes, prix)."
+                    }
+                },
+                "users": {
+                    "title": "4.2 Obligations des Utilisateurs (Acheteurs)",
+                    "list": {
+                        "item_1": "L'Utilisateur doit vérifier la marchandise lors de la collecte. Toute réclamation concernant le produit doit être adressée directement au Partenaire."
+                    }
+                }
+            },
+            "moderation": {
+                "title": "5. Modération et Signalement",
+                "content_1": "Bien que les litiges commerciaux (remboursement, échange) doivent être réglés directement entre l'Acheteur et le Vendeur, NoGaspi met à disposition un outil de signalement.",
+                "content_2": "NoGaspi se réserve le droit de <strong>suspendre ou de bannir définitivement</strong> tout Partenaire vendeur en cas de :",
+                "list": {
+                    "item_1": "Signalements répétés de la part des utilisateurs concernant la qualité des produits.",
+                    "item_2": "Manquement grave aux règles d'hygiène ou de sécurité.",
+                    "item_3": "Comportement frauduleux ou inapproprié."
+                }
+            },
+            "liability": {
+                "title": "6. Responsabilité",
+                "content_1": "NoGaspi décline toute responsabilité en cas de :",
+                "list": {
+                    "item_1": "Intoxication alimentaire ou problème de santé lié à la consommation des produits (la responsabilité incombant au Partenaire Vendeur).",
+                    "item_2": "Indisponibilité de la Plateforme pour des raisons techniques (maintenance, panne).",
+                    "item_3": "Litige entre un Utilisateur et un Partenaire (bien que la Plateforme puisse proposer un service de médiation à sa discrétion)."
+                }
+            },
+            "ip": {
+                "title": "7. Propriété Intellectuelle",
+                "content_1": "Tous les éléments de la Plateforme (textes, graphismes, logos, logiciels, codes sources) sont la propriété exclusive de l'éditeur du site NoGaspi. Toute reproduction ou exploitation non autorisée est interdite."
+            },
+            "data": {
+                "title": "8. Données Personnelles",
+                "content_1": "La Plateforme collecte et traite des données personnelles (Nom, Email, Localisation) pour le bon fonctionnement du service. Ces données ne sont transmises aux Partenaires que dans la stricte nécessité du traitement de la commande."
+            },
+            "law": {
+                "title": "9. Droit Applicable",
+                "content_1": "Les présentes conditions sont soumises au droit local en vigueur. Tout litige relatif à leur interprétation relève des tribunaux compétents."
+            }
+        }
     }
 }

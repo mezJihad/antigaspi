@@ -1,0 +1,29 @@
+2026-02-05 16:40:47.562 +01:00 [INF] Seeding database...
+2026-02-05 16:40:48.470 +01:00 [INF] Database seeded successfully.
+2026-02-05 16:41:49.151 +01:00 [WRN] Failed to determine the https port for redirect.
+2026-02-05 17:24:56.704 +01:00 [ERR] Failed to send template email to jihad.mezouari@outlook.com. Status: "Unauthorized". Error: {"message":"Key not found","code":"unauthorized"}
+
+2026-02-05 17:24:56.720 +01:00 [ERR] Exception occurred while sending template email to jihad.mezouari@outlook.com via Brevo API.
+System.Exception: Brevo API Error: Unauthorized - {"message":"Key not found","code":"unauthorized"}
+
+   at Antigaspi.Infrastructure.Services.BrevoApiEmailService.SendTemplateEmailAsync(String to, Int64 templateId, Dictionary`2 parameters) in C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Infrastructure\Services\BrevoApiEmailService.cs:line 100
+2026-02-05 17:24:56.742 +01:00 [ERR] An unhandled exception has occurred. ErrorId: "e1d92b57-a3c3-40a0-ad1c-b0cb54732dbe"
+System.Exception: Brevo API Error: Unauthorized - {"message":"Key not found","code":"unauthorized"}
+
+   at Antigaspi.Infrastructure.Services.BrevoApiEmailService.SendTemplateEmailAsync(String to, Int64 templateId, Dictionary`2 parameters) in C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Infrastructure\Services\BrevoApiEmailService.cs:line 100
+   at Antigaspi.Application.UseCases.Auth.Commands.RegisterUserCommandHandler.Handle(RegisterUserCommand request, CancellationToken cancellationToken) in C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\UseCases\Auth\Commands\RegisterUserCommand.cs:line 88
+   at Antigaspi.Api.Controllers.AuthController.Register(RegisterRequest request) in C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Api\Controllers\AuthController.cs:line 26
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Antigaspi.Api.Middleware.GlobalExceptionHandlerMiddleware.Invoke(HttpContext context) in C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Api\Middleware\GlobalExceptionHandlerMiddleware.cs:line 20

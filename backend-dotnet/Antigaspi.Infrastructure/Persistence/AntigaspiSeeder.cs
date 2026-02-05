@@ -241,7 +241,7 @@ public class AntigaspiSeeder
                     continue;
                 }
 
-                var user = User.Create($"Seller{s}", city.Name, email, "hash123", UserRole.SELLER);
+                var user = User.Create($"Seller{s}", city.Name, email, "hash123", UserRole.SELLER, "fr");
                 await context.Users.AddAsync(user);
                 
                 // Address with slight random offset for realism (approx 500m-1km)

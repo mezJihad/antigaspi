@@ -1,8 +1,19 @@
 using Antigaspi.Application;
 using Antigaspi.Application.Repositories;
 using Antigaspi.Infrastructure;
+using Serilog;
+using Antigaspi.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 
@@ -24,7 +35,6 @@ builder.Services.AddCors(options =>
 // Layer Injection
 builder.Services.AddApplication();
 
-// Infrastructure Injection (MongoDB)
 // Infrastructure Injection
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -47,13 +57,11 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer
         };
     });
 
-// Infrastructure Injection (Fake for now) - COMMENTED OUT
-// builder.Services.AddSingleton<ISellerRepository, InMemorySellerRepository>();
-// builder.Services.AddSingleton<IOfferRepository, InMemoryOfferRepository>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>(); // Use Exception Handler first
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

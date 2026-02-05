@@ -39,11 +39,16 @@ public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordComman
         // Send Email
         var clientUrl = _configuration["ClientAppUrl"];
         // Link points to frontend ResetPassword page
-        var resetLink = $"{clientUrl}/reset-password?email={System.Web.HttpUtility.UrlEncode(user.Email)}&token={System.Web.HttpUtility.UrlEncode(token)}";
+        // Pass language prop to link if needed by frontend
+        var resetLink = $"{clientUrl}/reset-password?email={System.Web.HttpUtility.UrlEncode(user.Email)}&token={System.Web.HttpUtility.UrlEncode(token)}&lang={user.PreferredLanguage}";
         
-        var templateId = _configuration.GetValue<long>("Brevo:Templates:ResetPasswordEmail");
+        string templateConfigKey = $"Brevo:Templates:ResetPasswordEmail_{user.PreferredLanguage.ToUpper()}";
+        var templateId = _configuration.GetValue<long>(templateConfigKey);
         
-        // If template ID is missing, fallback/warn (or user will add it later)
+        if (templateId == 0)
+        {
+            templateId = _configuration.GetValue<long>("Brevo:Templates:ResetPasswordEmail");
+        }
         
         var emailParams = new Dictionary<string, string>
         {
@@ -54,15 +59,6 @@ public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordComman
         if (templateId > 0)
         {
             await _emailService.SendTemplateEmailAsync(user.Email, templateId, emailParams);
-        }
-        else 
-        {
-             // Fallback logger if not configured yet
-             // In real production this should error or send defaults.
-             // We'll rely on the service to handle "0" or just send it.
-             // But actually SendTemplateEmailAsync logs if key missing.
-             // Let's retry sending even if 0, maybe they use a default.
-             // Or better, handle the case where it might be 0.
         }
     }
 }

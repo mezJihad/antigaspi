@@ -39,7 +39,7 @@
         "resend_btn": "Resend verification email",
         "sending": "Sending...",
         "retry_in": "Retry in {{seconds}}s",
-        "copyright": "© 2024 Antigaspi. All rights reserved.",
+        "copyright": "© 2024 NoGaspi. All rights reserved.",
         "hero_title": "Turn unsold goods into revenue, reach new customers.",
         "hero_description": "Join the community of merchants committed to fighting food waste while increasing their income.",
         "hero_benefit_1": "Manage offers simply",
@@ -260,5 +260,78 @@
         "expire_on": "Expires on {{date}}",
         "location_denied": "You denied location access.",
         "location_error": "Unable to retrieve your location."
+    },
+    "terms": {
+        "page_title": "General Terms of Use (GTU)",
+        "back_to_register": "Back to registration",
+        "sections": {
+            "object": {
+                "title": "1. Object and Scope",
+                "content_1": "The purpose of these General Terms is to define the terms of provision of the <strong>NoGaspi</strong> application services (hereinafter \"the Platform\") and the conditions of use of the Service by Users (Buyers) and Partners (Sellers).",
+                "content_2": "The Platform is a matchmaking service allowing merchants to offer unsold food items at reduced prices to users."
+            },
+            "role": {
+                "title": "2. Role of the Platform (Intermediary)",
+                "subtitle": "NoGaspi acts as a technical intermediary.",
+                "content_1": "The Platform hosts Partner offers but <strong>is not the seller of the products</strong>.",
+                "list": {
+                    "item_1": "The sales contract for the products is concluded exclusively and directly between the Partner (Seller) and the User.",
+                    "item_2": "NoGaspi cannot be held responsible for the quality, safety, edibility, or conformity of the products sold by Partners.",
+                    "item_3": "NoGaspi exercises no control over the products handed over to Users."
+                }
+            },
+            "access": {
+                "title": "3. Access to Service",
+                "content_1": "Access to the Platform is free for Users. Access for Partners (Sellers) is subject to registration and validation by the Platform administrator.",
+                "content_2": "NoGaspi reserves the right to refuse, suspend, or delete any account not complying with these terms, without compensation."
+            },
+            "obligations": {
+                "title": "4. Obligations of the Parties",
+                "partners": {
+                    "title": "4.1 Obligations of Partners (Sellers)",
+                    "list": {
+                        "item_1": "The Partner agrees to provide products fit for consumption, respecting expiration dates (DLC/DDM) and current hygiene standards.",
+                        "item_2": "The Partner is solely responsible for the information provided in their offers (description, allergens, price)."
+                    }
+                },
+                "users": {
+                    "title": "4.2 Obligations of Users (Buyers)",
+                    "list": {
+                        "item_1": "The User must verify the merchandise upon collection. Any complaint concerning the product must be addressed directly to the Partner."
+                    }
+                }
+            },
+            "moderation": {
+                "title": "5. Moderation and Reporting",
+                "content_1": "Although commercial disputes (refunds, exchanges) must be settled directly between the Buyer and the Seller, NoGaspi provides a reporting tool.",
+                "content_2": "NoGaspi reserves the right to <strong>suspend or permanently ban</strong> any Partner seller in case of:",
+                "list": {
+                    "item_1": "Repeated reports from users regarding product quality.",
+                    "item_2": "Serious breach of hygiene or safety rules.",
+                    "item_3": "Fraudulent or inappropriate behavior."
+                }
+            },
+            "liability": {
+                "title": "6. Liability",
+                "content_1": "NoGaspi declines all responsibility in case of:",
+                "list": {
+                    "item_1": "Food poisoning or health problems linked to product consumption (responsibility lies with the Partner Seller).",
+                    "item_2": "Unavailability of the Platform for technical reasons (maintenance, breakdown).",
+                    "item_3": "Dispute between a User and a Partner (although the Platform may offer a mediation service at its discretion)."
+                }
+            },
+            "ip": {
+                "title": "7. Intellectual Property",
+                "content_1": "All elements of the Platform (texts, graphics, logos, software, source codes) are the exclusive property of NoGaspi site editor. Any unauthorized reproduction or exploitation is prohibited."
+            },
+            "data": {
+                "title": "8. Personal Data",
+                "content_1": "The Platform collects and processes personal data (Name, Email, Location) for the proper functioning of the service. This data is only transmitted to Partners strictly necessary for order processing."
+            },
+            "law": {
+                "title": "9. Applicable Law",
+                "content_1": "These terms are subject to current local law. Any dispute relating to their interpretation falls under the jurisdiction of competent courts."
+            }
+        }
     }
 }
