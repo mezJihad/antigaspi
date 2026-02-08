@@ -1,0 +1,9 @@
+nogaspi.com, www.nogaspi.com {
+    # Serve Frontend
+    reverse_proxy antigaspi-client:80
+
+    # Serve Backend API
+    handle /api/* {
+        reverse_proxy antigaspi-api:8080
+    }
+}

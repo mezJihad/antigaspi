@@ -16,7 +16,7 @@ public static class DependencyInjection
         // DB Context
         // DB Context
         services.AddDbContext<AntigaspiDbContext>(options =>
-            options.UseSqlServer(
+            options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection"),
                 b => b.MigrationsAssembly(typeof(AntigaspiDbContext).Assembly.FullName)));
 

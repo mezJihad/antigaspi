@@ -1,0 +1,67 @@
+services:
+  antigaspi-db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: nogaspi
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal-net
+
+  antigaspi-api:
+    build:
+      context: ./backend-dotnet
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=antigaspi-db;Database=nogaspi;Username=postgres;Password=${DB_PASSWORD}
+      - JwtSettings__Secret=${JWT_SECRET}
+      # Email settings
+      - EmailSettings__SmtpServer=${SMTP_SERVER}
+      - EmailSettings__SmtpPort=${SMTP_PORT}
+      - EmailSettings__SenderEmail=${SENDER_EMAIL}
+      - EmailSettings__SenderName=${SENDER_NAME}
+      - EmailSettings__Password=${SMTP_PASSWORD}
+    depends_on:
+      - antigaspi-db
+    networks:
+      - internal-net
+
+  antigaspi-client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=/api
+    restart: always
+    expose:
+      - "80"
+    depends_on:
+      - antigaspi-api
+    networks:
+      - internal-net
+
+  caddy:
+    image: caddy:2-alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - internal-net
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  internal-net:

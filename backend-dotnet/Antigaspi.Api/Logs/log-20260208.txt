@@ -1,0 +1,19 @@
+2026-02-08 16:30:31.579 +01:00 [ERR] Failed executing DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Users" (
+    "Id" uuid NOT NULL,
+    "Email" character varying(200) NOT NULL,
+    "PasswordHash" text NOT NULL,
+    "FirstName" character varying(100),
+    "LastName" character varying(100),
+    "Role" integer NOT NULL,
+    "IsEmailVerified" boolean NOT NULL,
+    "OtpCode" character varying(128),
+    "OtpExpiration" timestamp with time zone,
+    "IsActive" boolean NOT NULL,
+    "VerificationEmailCount" integer NOT NULL DEFAULT 0,
+    "LastVerificationEmailSentAt" timestamp with time zone,
+    "PreferredLanguage" text NOT NULL,
+    CONSTRAINT "PK_Users" PRIMARY KEY ("Id")
+);
+2026-02-08 16:35:59.392 +01:00 [INF] Seeding database...
+2026-02-08 16:36:00.573 +01:00 [INF] Database seeded successfully (Admin only).
