@@ -20,12 +20,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=antigaspi-db;Database=nogaspi;Username=postgres;Password=${DB_PASSWORD}
       - JwtSettings__Secret=${JWT_SECRET}
-      # Email settings
-      - EmailSettings__SmtpServer=${SMTP_SERVER}
-      - EmailSettings__SmtpPort=${SMTP_PORT}
-      - EmailSettings__SenderEmail=${SENDER_EMAIL}
-      - EmailSettings__SenderName=${SENDER_NAME}
-      - EmailSettings__Password=${SMTP_PASSWORD}
+      - Brevo__ApiKey=${BREVO_API_KEY}
     depends_on:
       - antigaspi-db
     networks:

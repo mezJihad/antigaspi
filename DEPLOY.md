@@ -68,14 +68,11 @@ scp -r backend-dotnet client docker-compose.prod.yml Caddyfile root@123.45.67.89
     ```
     Paste your secrets (Right-click to paste in some terminals):
     ```env
-    DB_PASSWORD=ChangeMeToSomethingSecure!
+    DB_PASSWORD=SecurePassword123!
     JWT_SECRET=super-long-secure-secret-key-that-is-at-least-32-chars
-    SMTP_SERVER=smtp.gmail.com
-    SMTP_PORT=587
-    SENDER_EMAIL=your-email@gmail.com
-    SENDER_NAME=AntiGaspi
-    SMTP_PASSWORD=your-app-password
-    # Add VITE_API_URL if needed, but it's handled in build args
+    BREVO_API_KEY=xkeysib-ton-clé-api-brevo
+    # SenderEmail/Name gérés par les templates Brevo directement
+    ```# Add VITE_API_URL if needed, but it's handled in build args
     ```
     Save: `Ctrl+X`, then `Y`, then `Enter`.
 
