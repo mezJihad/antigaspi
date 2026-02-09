@@ -82,7 +82,28 @@ scp -r backend-dotnet client docker-compose.prod.yml Caddyfile root@123.45.67.89
     docker-compose -f docker-compose.prod.yml up -d --build
     ```
 
+    docker-compose -f docker-compose.prod.yml up -d --build
+    ```
+
 ## Phase 6: Verify
 - Go to `https://nogaspi.com`.
 - Caddy automatically gets SSL certificates.
 - Enjoy!
+
+## Phase 7: Daily Updates (Git Workflow)
+Now that your server is set up with Git, deploying updates is easy:
+
+1.  **On your PC**:
+    ```powershell
+    git add .
+    git commit -m "Your specific message"
+    git push origin main
+    ```
+
+2.  **On the Server**:
+    ```bash
+    ssh root@77.42.90.107
+    cd antigaspi
+    git pull
+    docker-compose -f docker-compose.prod.yml up -d --build
+    ```

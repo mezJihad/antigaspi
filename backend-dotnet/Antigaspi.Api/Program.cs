@@ -61,12 +61,12 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
+
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -88,11 +88,21 @@ app.MapControllers();
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
 // Seed Database
-using (var scope = app.Services.CreateScope())
+try 
 {
-    var context = scope.ServiceProvider.GetRequiredService<Antigaspi.Infrastructure.Persistence.AntigaspiDbContext>();
-    await Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.MigrateAsync(context.Database); 
-    await Antigaspi.Infrastructure.Persistence.AntigaspiSeeder.SeedAsync(scope.ServiceProvider);
+    Log.Information("Starting Database Seeding...");
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<Antigaspi.Infrastructure.Persistence.AntigaspiDbContext>();
+        await Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.MigrateAsync(context.Database); 
+        await Antigaspi.Infrastructure.Persistence.AntigaspiSeeder.SeedAsync(scope.ServiceProvider);
+    }
+    Log.Information("Database Seeding Completed.");
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "An error occurred while seeding the database.");
 }
 
+Log.Information("Starting Application...");
 app.Run();
