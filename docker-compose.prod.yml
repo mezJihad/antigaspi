@@ -21,6 +21,7 @@ services:
       - ConnectionStrings__DefaultConnection=Host=antigaspi-db;Database=nogaspi;Username=postgres;Password=${DB_PASSWORD}
       - JwtSettings__Secret=${JWT_SECRET}
       - Brevo__ApiKey=${BREVO_API_KEY}
+      - ClientAppUrl=https://nogaspi.com
     depends_on:
       - antigaspi-db
     networks:

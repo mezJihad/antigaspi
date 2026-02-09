@@ -3,6 +3,7 @@ using Antigaspi.Application.Repositories;
 using Antigaspi.Infrastructure;
 using Serilog;
 using Antigaspi.Api.Middleware;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,15 +61,20 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseMiddleware<GlobalExceptionHandlerMiddleware>(); // Use Exception Handler first
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseCors("AllowAll");

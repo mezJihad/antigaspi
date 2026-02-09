@@ -71,6 +71,7 @@ scp -r backend-dotnet client docker-compose.prod.yml Caddyfile root@123.45.67.89
     DB_PASSWORD=SecurePassword123!
     JWT_SECRET=super-long-secure-secret-key-that-is-at-least-32-chars
     BREVO_API_KEY=xkeysib-ton-clé-api-brevo
+    ClientAppUrl=https://nogaspi.com
     # SenderEmail/Name gérés par les templates Brevo directement
     ```# Add VITE_API_URL if needed, but it's handled in build args
     ```
@@ -78,7 +79,7 @@ scp -r backend-dotnet client docker-compose.prod.yml Caddyfile root@123.45.67.89
 
 3.  **Start the App**:
     ```bash
-    docker compose -f docker-compose.prod.yml up -d --build
+    docker-compose -f docker-compose.prod.yml up -d --build
     ```
 
 ## Phase 6: Verify
