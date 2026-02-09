@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Information) // Force Info logs for debugging
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .CreateLogger();
@@ -104,5 +105,17 @@ catch (Exception ex)
     Log.Fatal(ex, "An error occurred while seeding the database.");
 }
 
-Log.Information("Starting Application...");
-app.Run();
+Log.Information("Starting Application Host...");
+try 
+{
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly during startup.");
+}
+finally
+{
+    Log.Information("Application Stopping...");
+    Log.CloseAndFlush();
+}
