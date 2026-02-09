@@ -24,6 +24,8 @@ services:
       - ClientAppUrl=https://nogaspi.com
     depends_on:
       - antigaspi-db
+    volumes:
+      - uploads_data:/app/wwwroot/uploads
     networks:
       - internal-net
 
@@ -58,6 +60,7 @@ volumes:
   postgres_data:
   caddy_data:
   caddy_config:
+  uploads_data:
 
 networks:
   internal-net:

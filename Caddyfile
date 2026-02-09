@@ -6,4 +6,9 @@ nogaspi.com, www.nogaspi.com {
     handle /api/* {
         reverse_proxy antigaspi-api:8080
     }
+
+    # Serve Uploaded Files
+    handle /uploads/* {
+        reverse_proxy antigaspi-api:8080
+    }
 }
