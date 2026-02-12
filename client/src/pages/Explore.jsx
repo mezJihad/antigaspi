@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import SearchFilters from '../components/SearchFilters';
 import OfferCard from '../components/OfferCard';
+import api from '../services/api';
 
 const Explore = () => {
     const { t } = useTranslation();
@@ -52,48 +53,45 @@ const Explore = () => {
         const fetchOffers = async () => {
             setLoading(true);
             try {
-                // Build query params from STATE
-                const params = new URLSearchParams();
-                if (filters.category && filters.category !== 'Toutes') params.append('category', filters.category);
-                if (filters.city && filters.city !== 'Toutes') params.append('city', filters.city);
-                if (filters.query) params.append('search', filters.query);
-                if (filters.sortBy) params.append('sortBy', filters.sortBy);
+                // Build query params
+                const params = {};
+                if (filters.category && filters.category !== 'Toutes') params.category = filters.category;
+                if (filters.city && filters.city !== 'Toutes') params.city = filters.city;
+                if (filters.query) params.search = filters.query;
+                if (filters.sortBy) params.sortBy = filters.sortBy;
 
                 // Pagination
-                params.append('page', page);
-                params.append('pageSize', 12);
+                params.page = page;
+                params.pageSize = 12;
 
                 // Add location if available
                 if (userLocation) {
-                    params.append('lat', userLocation.lat);
-                    params.append('lon', userLocation.lon);
+                    params.lat = userLocation.lat;
+                    params.lon = userLocation.lon;
                 }
 
-                const response = await fetch(`/api/offers?${params.toString()}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    let newItems = [];
-                    let total = 1;
+                const response = await api.get('/Offers', { params });
+                const data = response.data;
 
-                    if (Array.isArray(data)) {
-                        newItems = data;
-                        total = 1;
-                    } else {
-                        newItems = data.items || [];
-                        total = data.totalPages || 1;
-                    }
+                let newItems = [];
+                let total = 1;
 
-                    if (page === 1) {
-                        setOffers(newItems);
-                    } else {
-                        setOffers(prev => [...prev, ...newItems]);
-                    }
-                    setTotalPages(total);
+                if (Array.isArray(data)) {
+                    newItems = data;
+                    total = 1;
                 } else {
-                    setError('Failed to fetch offers');
+                    newItems = data.items || [];
+                    total = data.totalPages || 1;
                 }
+
+                if (page === 1) {
+                    setOffers(newItems);
+                } else {
+                    setOffers(prev => [...prev, ...newItems]);
+                }
+                setTotalPages(total);
             } catch (err) {
-                setError('Error fetching data');
+                setError('Failed to fetch offers');
                 console.error(err);
             } finally {
                 setLoading(false);

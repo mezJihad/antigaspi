@@ -4,12 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import { Edit, Trash2, MoreVertical } from 'lucide-react';
 import Notification from '../components/Notification';
 import { useTranslation } from 'react-i18next';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import api from '../services/api';
 
 export default function Dashboard() {
     const { t, i18n } = useTranslation();
-    const { token } = useAuth();
+    const { token } = useAuth(); // Keeping for now if used elsewhere, but mainly handled by interceptor
     const navigate = useNavigate();
     const location = useLocation();
     const [offers, setOffers] = useState([]);
@@ -39,41 +38,37 @@ export default function Dashboard() {
 
     useEffect(() => {
         async function fetchData() {
-            if (!token) return;
+            // Token is handled by api interceptor, but we still might want to check if user is logged in context
+            // actually if we are protected route, we are fine.
+            // But let's keep the check if we want to mimic previous behavior, 
+            // though api interceptor adds token. If token missing in localStorage, api might fail or send no token.
 
             // Fetch My Seller ID
             try {
-                const sellerRes = await fetch(`${API_URL}/Sellers/me`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (sellerRes.ok) {
-                    const seller = await sellerRes.json();
-                    console.log("Seller info received:", seller);
-                    setMySellerId(seller.id || seller.Id);
-                    setSellerProfile(seller);
-                }
-            } catch (e) { console.error("Error fetching seller:", e); }
-
+                const sellerRes = await api.get('/Sellers/me');
+                const seller = sellerRes.data;
+                console.log("Seller info received:", seller);
+                setMySellerId(seller.id || seller.Id);
+                setSellerProfile(seller);
+            } catch (e) {
+                console.error("Error fetching seller:", e);
+                // Handler for 404 Not Found (User has no shop yet)
+            }
         }
         fetchData();
-    }, [token]);
+    }, []); // Removed token dependency as it's not directly used for headers anymore
 
     // Fetch My Offers separately
     useEffect(() => {
         async function fetchMyOffers() {
-            if (!token || !mySellerId) return;
+            if (!mySellerId) return;
             try {
-                const offersRes = await fetch(`${API_URL}/Sellers/me/offers`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (offersRes.ok) {
-                    const data = await offersRes.json();
-                    setOffers(data);
-                }
+                const offersRes = await api.get('/Sellers/me/offers');
+                setOffers(offersRes.data);
             } catch (e) { console.error(e); }
         }
         fetchMyOffers();
-    }, [token, mySellerId]);
+    }, [mySellerId]); // Removed token dependency
 
     const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, offerId: null });
     const [isDeleting, setIsDeleting] = useState(false);
@@ -89,21 +84,18 @@ export default function Dashboard() {
         setIsDeleting(true);
 
         try {
-            const res = await fetch(`${API_URL}/Offers/${offerId}/cancel?userId=${sellerProfile.userId}`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` }
+            const res = await api.post(`/Offers/${offerId}/cancel`, null, {
+                params: { userId: sellerProfile.userId }
             });
 
-            if (res.ok) {
-                setOffers(prev => prev.filter(o => o.id !== offerId));
-                setDeleteConfirmation({ show: false, offerId: null });
-                setNotification({ type: 'success', message: t('seller_dashboard.offer_deleted_success') });
-            } else {
-                setNotification({ type: 'error', message: t('seller_dashboard.delete_error') });
-            }
+            setOffers(prev => prev.filter(o => o.id !== offerId));
+            setDeleteConfirmation({ show: false, offerId: null });
+            setNotification({ type: 'success', message: t('seller_dashboard.offer_deleted_success') });
         } catch (e) {
             console.error(e);
-            setNotification({ type: 'error', message: t('seller_dashboard.network_error') });
+            setNotification({ type: 'error', message: t('seller_dashboard.delete_error') });
+        } finally {
+            setIsDeleting(false); // Ensure we reset loading state
         }
     };
 
@@ -116,23 +108,18 @@ export default function Dashboard() {
         setIsDeleting(true);
 
         try {
-            const res = await fetch(`${API_URL}/Sellers/${sellerId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            await api.delete(`/Sellers/${sellerId}`);
 
-            if (res.ok) {
-                setShopDeleteConfirmation({ show: false, sellerId: null });
-                setMySellerId(null);
-                setSellerProfile(null);
-                setOffers([]);
-                setNotification({ type: 'success', message: t('seller_dashboard.shop_deleted_success') });
-            } else {
-                setNotification({ type: 'error', message: t('seller_dashboard.delete_error') });
-            }
+            setShopDeleteConfirmation({ show: false, sellerId: null });
+            setMySellerId(null);
+            setSellerProfile(null);
+            setOffers([]);
+            setNotification({ type: 'success', message: t('seller_dashboard.shop_deleted_success') });
         } catch (e) {
             console.error(e);
-            setNotification({ type: 'error', message: t('seller_dashboard.network_error') });
+            setNotification({ type: 'error', message: t('seller_dashboard.delete_error') });
+        } finally {
+            setIsDeleting(false);
         }
     };
 

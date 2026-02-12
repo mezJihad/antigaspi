@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Check, X, Shield, Lock, Trash2, StopCircle, PlayCircle, MapPin } from 'lucide-react';
 import Notification from '../components/Notification';
 import ConfirmModal from '../components/ConfirmModal';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import api from '../services/api';
 
 export default function AdminDashboard() {
     const { token, user } = useAuth();
@@ -37,18 +36,11 @@ export default function AdminDashboard() {
 
     const fetchItems = async () => {
         try {
-            const res = await fetch(`${API_URL}/Admin/users-overview`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setItems(data);
-            } else {
-                setNotification({ type: 'error', message: 'Impossible de charger la liste des utilisateurs.' });
-            }
+            const res = await api.get('/Admin/users-overview');
+            setItems(res.data);
         } catch (e) {
             console.error(e);
-            setNotification({ type: 'error', message: 'Erreur réseau.' });
+            setNotification({ type: 'error', message: 'Impossible de charger la liste des utilisateurs.' });
         } finally {
             setLoading(false);
         }
@@ -120,19 +112,16 @@ export default function AdminDashboard() {
             if (action === 'activate') { url = `/Admin/users/${id}/activate`; method = 'POST'; }
             if (action === 'delete') { url = `/Admin/users/${id}`; method = 'DELETE'; }
 
-            const res = await fetch(`${API_URL}${url}`, {
+            await api({
                 method: method,
-                headers: { 'Authorization': `Bearer ${token}` }
+                url: url
             });
 
-            if (res.ok || res.status === 204) {
-                setNotification({ type: 'success', message: 'Action effectuée avec succès.' });
-                fetchItems();
-            } else {
-                setNotification({ type: 'error', message: 'Erreur lors de l\'opération.' });
-            }
+            setNotification({ type: 'success', message: 'Action effectuée avec succès.' });
+            fetchItems();
+
         } catch (e) {
-            setNotification({ type: 'error', message: 'Erreur réseau.' });
+            setNotification({ type: 'error', message: 'Erreur lors de l\'opération.' });
         }
     };
 

@@ -1,31 +1,26 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import api from './api';
 
 export const registerSeller = async (token, sellerData) => {
-    const response = await fetch(`${API_URL}/Sellers`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(sellerData)
-    });
-    if (!response.ok) {
+    // Note: api.js interceptor adds the token from localStorage automatically.
+    // If the token passed here is different from localStorage, we might need to override headers.
+    // Assuming standard flow where token is in localStorage.
+    try {
+        const response = await api.post('/Sellers', sellerData);
+        return response.data;
+    } catch (error) {
         let errorMessage = 'Seller registration failed';
-        try {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorData.title || JSON.stringify(errorData);
-        } catch (e) { }
+        if (error.response && error.response.data) {
+            errorMessage = error.response.data.message || error.response.data.title || JSON.stringify(error.response.data);
+        }
         throw new Error(errorMessage);
     }
-    return response.json();
 };
 
 export const getMe = async (token) => {
-    const response = await fetch(`${API_URL}/Sellers/me`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
-    if (!response.ok) return null;
-    return response.json();
+    try {
+        const response = await api.get('/Sellers/me');
+        return response.data;
+    } catch (error) {
+        return null;
+    }
 }

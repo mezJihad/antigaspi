@@ -3,13 +3,12 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Euro, Tag, Type, Image as ImageIcon, Keyboard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import api from '../services/api';
 import VirtualKeyboard from '../components/VirtualKeyboard';
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 export default function CreateOffer() {
     const { t, i18n } = useTranslation();
-    const { token } = useAuth();
+    const { token } = useAuth(); // Token handled by interceptor
     const navigate = useNavigate();
 
     // Default startDate to today YYYY-MM-DD
@@ -70,14 +69,10 @@ export default function CreateOffer() {
 
         try {
             // Fetch Seller ID
-            const sellerRes = await fetch(`${API_URL}/Sellers/me`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
+            const sellerRes = await api.get('/Sellers/me');
             let sellerId = null;
-            if (sellerRes.ok) {
-                const seller = await sellerRes.json();
-                sellerId = seller.id || seller.Id;
+            if (sellerRes.data && (sellerRes.data.id || sellerRes.data.Id)) {
+                sellerId = sellerRes.data.id || sellerRes.data.Id;
             } else {
                 alert(t('create_offer.error_no_shop'));
                 setLoading(false);
@@ -110,29 +105,26 @@ export default function CreateOffer() {
                 body.append('pictureUrl', '');
             }
 
-            const response = await fetch(`${API_URL}/Offers`, {
-                method: 'POST',
+            const response = await api.post('/Offers', body, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                    // Content-Type must strictly NOT be set to allow browser to set boundary
-                },
-                body: body
+                    'Content-Type': 'multipart/form-data',
+                }
             });
 
-            if (response.ok) {
-                navigate('/dashboard', { state: { successMessage: t('create_offer.success_msg') } });
-            } else {
-                const errorData = await response.json();
-                console.error("Publication failed", errorData);
+            navigate('/dashboard', { state: { successMessage: t('create_offer.success_msg') } });
+
+        } catch (error) {
+            console.error("Error creating offer", error);
+            if (error.response) {
+                const errorData = error.response.data;
                 if (errorData.message === 'CREATE_OFFER_FAILED') {
                     alert(`${t('errors.create_offer_failed')}: ${errorData.detail || ''}`);
                 } else {
                     alert(`${t('errors.create_offer_failed')}: ${errorData.detail || ''}`);
                 }
+            } else {
+                alert(t('errors.generic_error'));
             }
-        } catch (error) {
-            console.error("Error creating offer", error);
-            alert(t('errors.generic_error'));
         } finally {
             setLoading(false);
         }

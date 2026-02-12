@@ -7,9 +7,8 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { cityService } from '../services/cityService';
 import { useTranslation } from 'react-i18next';
+import api from '../services/api';
 import VirtualKeyboard from '../components/VirtualKeyboard';
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 // Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -42,7 +41,7 @@ function MapRecenter({ lat, lng }) {
 
 export default function EditShop() {
     const { t, i18n } = useTranslation();
-    const { token } = useAuth();
+    // const { token } = useAuth(); // Token handled by interceptor
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -124,29 +123,25 @@ export default function EditShop() {
 
     // Fetch existing data
     useEffect(() => {
-        if (!id || !token) return;
+        if (!id) return;
         async function fetchShop() {
             try {
-                const res = await fetch(`${API_URL}/Sellers/${id}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                // Using api instance
+                const res = await api.get(`/Sellers/${id}`);
+                const data = res.data;
+
+                setFormData({
+                    storeName: data.storeName,
+                    street: data.street,
+                    city: data.city,
+                    zipCode: data.zipCode,
+                    description: data.description
                 });
-                if (res.ok) {
-                    const data = await res.json();
-                    setFormData({
-                        storeName: data.storeName,
-                        street: data.street,
-                        city: data.city,
-                        zipCode: data.zipCode,
-                        description: data.description
-                    });
-                    if (data.latitude && data.longitude) {
-                        setPosition({ lat: data.latitude, lng: data.longitude });
-                    }
-                    if (data.sourceLanguage) {
-                        setSourceLanguage(data.sourceLanguage);
-                    }
-                } else {
-                    setError(t('edit_shop.error_load'));
+                if (data.latitude && data.longitude) {
+                    setPosition({ lat: data.latitude, lng: data.longitude });
+                }
+                if (data.sourceLanguage) {
+                    setSourceLanguage(data.sourceLanguage);
                 }
             } catch (err) {
                 console.error(err);
@@ -156,7 +151,7 @@ export default function EditShop() {
             }
         }
         fetchShop();
-    }, [id, token]);
+    }, [id]);
 
 
     // Sync City Name with Language
@@ -306,31 +301,24 @@ export default function EditShop() {
                 sourceLanguage: sourceLanguage
             };
 
-            const response = await fetch(`${API_URL}/Sellers/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(body)
-            });
-            if (response.ok) {
-                navigate('/dashboard', { state: { successMessage: t('edit_shop.success_update') } });
-            } else {
-                const errorText = await response.text();
-                try {
-                    const errObj = JSON.parse(errorText);
-                    if (errObj.message === 'UPDATE_SELLER_FAILED') {
-                        setError(t('errors.update_seller_failed'));
-                    } else {
-                        setError(t('errors.update_seller_failed'));
-                    }
-                } catch {
+            const response = await api.put(`/Sellers/${id}`, body);
+
+            // Navigate on success
+            navigate('/dashboard', { state: { successMessage: t('edit_shop.success_update') } });
+
+        } catch (error) {
+            console.error("Error updating seller:", error);
+            if (error.response) {
+                // Try to parse error message if available
+                const errObj = error.response.data;
+                if (errObj && errObj.message === 'UPDATE_SELLER_FAILED') {
+                    setError(t('errors.update_seller_failed'));
+                } else {
                     setError(t('errors.update_seller_failed'));
                 }
+            } else {
+                setError(t('errors.generic_error'));
             }
-        } catch (error) {
-            setError(t('errors.generic_error'));
         }
     };
 

@@ -25,6 +25,8 @@ public class BrevoApiEmailService : IEmailService
         var apiKey = _configuration["Brevo:ApiKey"];
         var senderEmail = _configuration["Brevo:SenderEmail"];
         var senderName = _configuration["Brevo:SenderName"] ?? "NoGaspi";
+        var replyToEmail = _configuration["Brevo:ReplyToEmail"];
+        var replyToName = _configuration["Brevo:ReplyToName"];
 
         if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(senderEmail))
         {
@@ -39,6 +41,11 @@ public class BrevoApiEmailService : IEmailService
             Subject = subject,
             HtmlContent = body
         };
+
+        if (!string.IsNullOrEmpty(replyToEmail))
+        {
+            request.ReplyTo = new BrevoEmailContact { Email = replyToEmail, Name = replyToName };
+        }
 
         _httpClient.DefaultRequestHeaders.Remove("api-key");
         _httpClient.DefaultRequestHeaders.Add("api-key", apiKey);
@@ -68,6 +75,8 @@ public class BrevoApiEmailService : IEmailService
     public async Task SendTemplateEmailAsync(string to, long templateId, Dictionary<string, string> parameters)
     {
         var apiKey = _configuration["Brevo:ApiKey"];
+        var replyToEmail = _configuration["Brevo:ReplyToEmail"];
+        var replyToName = _configuration["Brevo:ReplyToName"];
         
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -81,6 +90,11 @@ public class BrevoApiEmailService : IEmailService
             TemplateId = templateId,
             Params = parameters
         };
+
+        if (!string.IsNullOrEmpty(replyToEmail))
+        {
+            request.ReplyTo = new BrevoEmailContact { Email = replyToEmail, Name = replyToName };
+        }
 
         _httpClient.DefaultRequestHeaders.Remove("api-key");
         _httpClient.DefaultRequestHeaders.Add("api-key", apiKey);
@@ -115,6 +129,9 @@ public class BrevoApiEmailService : IEmailService
         [JsonPropertyName("to")]
         public List<BrevoEmailContact> To { get; set; }
 
+        [JsonPropertyName("replyTo")]
+        public BrevoEmailContact ReplyTo { get; set; }
+
         [JsonPropertyName("subject")]
         public string Subject { get; set; }
 
@@ -126,6 +143,9 @@ public class BrevoApiEmailService : IEmailService
     {
         [JsonPropertyName("to")]
         public List<BrevoEmailContact> To { get; set; }
+
+        [JsonPropertyName("replyTo")]
+        public BrevoEmailContact ReplyTo { get; set; }
 
         [JsonPropertyName("templateId")]
         public long TemplateId { get; set; }

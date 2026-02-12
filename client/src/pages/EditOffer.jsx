@@ -3,14 +3,13 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Calendar, Euro, Tag, Type, Image as ImageIcon, ArrowLeft, Edit, Keyboard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import api from '../services/api';
 import VirtualKeyboard from '../components/VirtualKeyboard';
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 export default function EditOffer() {
     const { t, i18n } = useTranslation();
     const { id } = useParams();
-    const { token } = useAuth();
+    // const { token } = useAuth(); // Token handled by interceptor
     const navigate = useNavigate();
 
     const CAT_OPTIONS = [
@@ -58,44 +57,42 @@ export default function EditOffer() {
     useEffect(() => {
         async function fetchOffer() {
             try {
-                const res = await fetch(`${API_URL}/Offers/${id}`);
-                if (res.ok) {
-                    const data = await res.json();
+                // Using api instance
+                const res = await api.get(`/Offers/${id}`);
+                const data = res.data;
 
-                    // Map category string to int
-                    let catVal = 0;
-                    // Helper to map backend string to ID.
-                    // Backend Enum: Bakery=0, Produce=1, MeatFish=2, Dairy=3, PreparedMeals=4, Groceries=5, SurpriseBag=6, Other=7
-                    const catMap = {
-                        'Bakery': 0, 'Produce': 1, 'MeatFish': 2, 'Dairy': 3,
-                        'PreparedMeals': 4, 'Groceries': 5, 'SurpriseBag': 6, 'Other': 7
-                    };
-                    if (data.category && catMap.hasOwnProperty(data.category)) {
-                        catVal = catMap[data.category];
-                    }
-
-                    setFormData({
-                        title: data.title,
-                        description: data.description,
-                        category: catVal,
-                        priceAmount: data.price, // It's already a number
-                        originalPriceAmount: data.originalPrice, // It's already a number
-                        startDate: data.startDate.split('T')[0],
-                        endDate: data.endDate ? data.endDate.split('T')[0] : '',
-                        expirationDate: data.expirationDate.split('T')[0],
-                        pictureUrl: data.pictureUrl || ''
-                    });
-                    // Set source language if available, otherwise default fallback
-                    if (data.sourceLanguage) {
-                        setSourceLanguage(data.sourceLanguage);
-                    }
-                    if (data.pictureUrl) setImageMode('url');
-                } else {
-                    alert(t('edit_offer.error_not_found'));
-                    navigate('/dashboard');
+                // Map category string to int
+                let catVal = 0;
+                // Helper to map backend string to ID.
+                const catMap = {
+                    'Bakery': 0, 'Produce': 1, 'MeatFish': 2, 'Dairy': 3,
+                    'PreparedMeals': 4, 'Groceries': 5, 'SurpriseBag': 6, 'Other': 7
+                };
+                if (data.category && catMap.hasOwnProperty(data.category)) {
+                    catVal = catMap[data.category];
                 }
+
+                setFormData({
+                    title: data.title,
+                    description: data.description,
+                    category: catVal,
+                    priceAmount: data.price, // It's already a number
+                    originalPriceAmount: data.originalPrice, // It's already a number
+                    startDate: data.startDate.split('T')[0],
+                    endDate: data.endDate ? data.endDate.split('T')[0] : '',
+                    expirationDate: data.expirationDate.split('T')[0],
+                    pictureUrl: data.pictureUrl || ''
+                });
+                // Set source language if available, otherwise default fallback
+                if (data.sourceLanguage) {
+                    setSourceLanguage(data.sourceLanguage);
+                }
+                if (data.pictureUrl) setImageMode('url');
+
             } catch (e) {
                 console.error("Error loading offer", e);
+                alert(t('edit_offer.error_not_found'));
+                navigate('/dashboard');
             } finally {
                 setLoading(false);
             }
@@ -129,35 +126,30 @@ export default function EditOffer() {
                 body.append('pictureFile', imageFile);
                 body.append('pictureUrl', '');
             } else {
-                // Keep existing? If we send empty, implementation might overwrite?
-                // Backend: "pictureUrl ?? """.
-                // In Entity Update: if (!string.IsNullOrWhiteSpace(pictureUrl)) PictureUrl = pictureUrl;
-                // So if we send empty string, it won't update. That's good, preserves existing.
                 body.append('pictureUrl', '');
             }
 
-            const response = await fetch(`${API_URL}/Offers/${id}`, {
-                method: 'PUT',
+            // Using api.put for update with FormData
+            await api.put(`/Offers/${id}`, body, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: body
+                    'Content-Type': 'multipart/form-data',
+                }
             });
 
-            if (response.ok) { // 204 No Content
-                navigate('/dashboard');
-            } else {
-                const errorData = await response.json().catch(() => ({}));
-                console.error("Update failed", errorData);
+            navigate('/dashboard');
+
+        } catch (error) {
+            console.error("Error updating offer", error);
+            if (error.response) {
+                const errorData = error.response.data;
                 if (errorData.message === 'UPDATE_OFFER_FAILED') {
                     alert(`${t('errors.update_offer_failed')}: ${errorData.detail || ''}`);
                 } else {
                     alert(`${t('errors.update_offer_failed')}: ${errorData.detail || ''}`);
                 }
+            } else {
+                alert(t('errors.generic_error'));
             }
-        } catch (error) {
-            console.error("Error updating offer", error);
-            alert(t('errors.generic_error'));
         } finally {
             setLoading(false);
         }

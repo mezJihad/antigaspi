@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { ArrowLeft, MapPin, Store, Calendar, Tag, AlertCircle } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import api from '../services/api';
 
 // Fix for default Leaflet icon not showing
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -27,15 +28,16 @@ const OfferDetails = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+
+    // ...
+
     useEffect(() => {
         const fetchOffer = async () => {
             try {
-                const response = await fetch(`/api/offers/${id}`);
-                if (!response.ok) throw new Error(t('offer_details.not_found'));
-                const data = await response.json();
-                setOffer(data);
+                const response = await api.get(`/Offers/${id}`);
+                setOffer(response.data);
             } catch (err) {
-                setError(err.message);
+                setError(t('offer_details.not_found'));
             } finally {
                 setLoading(false);
             }

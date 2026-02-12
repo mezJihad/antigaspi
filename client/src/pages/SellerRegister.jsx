@@ -8,8 +8,7 @@ import L from 'leaflet';
 import { cityService } from '../services/cityService';
 import { useTranslation } from 'react-i18next';
 import VirtualKeyboard from '../components/VirtualKeyboard';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import api from '../services/api';
 
 // Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -269,37 +268,28 @@ export default function SellerRegister() {
 
             console.log("Payload sent to server:", body); // DEBUG: Log payload
 
-            const response = await fetch(`${API_URL}/Sellers`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(body)
-            });
+            // Using api instance - token is handled by interceptor
+            const response = await api.post('/Sellers', body);
 
             console.log("Server Response Status:", response.status); // DEBUG: Log status
 
-            if (response.ok) {
+            if (response.status === 200 || response.status === 201) {
                 console.log("Seller created successfully"); // DEBUG
                 navigate('/dashboard', { state: { successMessage: t('seller_shop.success') } });
-            } else {
-                const errorText = await response.text(); // or response.json() if you change backend to return json
-                console.error("Server Error Response:", errorText);
-                try {
-                    const errObj = JSON.parse(errorText);
-                    if (errObj.message === 'CREATE_SELLER_FAILED') {
-                        setError(t('errors.create_seller_failed'));
-                    } else {
-                        setError(t('errors.create_seller_failed'));
-                    }
-                } catch {
-                    setError(t('errors.create_seller_failed'));
-                }
             }
         } catch (error) {
             console.error("Network or Client Error during submission:", error);
-            setError(t('errors.generic_error'));
+            if (error.response) {
+                const errorData = error.response.data;
+                console.error("Server Error Response:", errorData);
+                if (errorData?.message === 'CREATE_SELLER_FAILED') {
+                    setError(t('errors.create_seller_failed'));
+                } else {
+                    setError(t('errors.create_seller_failed'));
+                }
+            } else {
+                setError(t('errors.generic_error'));
+            }
         }
     };
 

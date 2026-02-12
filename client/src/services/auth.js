@@ -1,95 +1,73 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import api from './api';
 
 export const login = async (email, password) => {
-    const response = await fetch(`${API_URL}/Auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-    });
-    if (!response.ok) {
+    try {
+        const response = await api.post('/Auth/login', { email, password });
+        return response.data;
+    } catch (error) {
         let errorMessage = 'Login failed';
-        try {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorData.title || JSON.stringify(errorData);
-        } catch (e) { }
+        if (error.response && error.response.data) {
+            errorMessage = error.response.data.message || error.response.data.title || JSON.stringify(error.response.data);
+        }
         throw new Error(errorMessage);
     }
-    return response.json();
 };
 
 export const register = async (firstName, lastName, email, password, role, language) => {
-    const response = await fetch(`${API_URL}/Auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, password, role, language }),
-    });
-    if (!response.ok) {
+    try {
+        const response = await api.post('/Auth/register', { firstName, lastName, email, password, role, language });
+        return response.data;
+    } catch (error) {
         let errorMessage = 'Registration failed';
-        try {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorData.title || JSON.stringify(errorData);
-        } catch (e) { }
+        if (error.response && error.response.data) {
+            errorMessage = error.response.data.message || error.response.data.title || JSON.stringify(error.response.data);
+        }
         throw new Error(errorMessage);
     }
-    return response.json();
 };
 
 export const verifyEmail = async (email, otp) => {
-    const response = await fetch(`${API_URL}/Auth/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, otp }),
-    });
-    if (!response.ok) {
+    try {
+        const response = await api.post('/Auth/verify', { email, otp });
+        return true;
+    } catch (error) {
         let errorMessage = 'Verification failed';
-        try {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorData.title || JSON.stringify(errorData);
-        } catch (e) { }
+        if (error.response && error.response.data) {
+            errorMessage = error.response.data.message || error.response.data.title || JSON.stringify(error.response.data);
+        }
         throw new Error(errorMessage);
     }
-    // Returns 204 typically
-    return true;
 };
 
 export const resendVerification = async (email) => {
-    const response = await fetch(`${API_URL}/Auth/resend-verification`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-    });
-    if (!response.ok) {
-        const error = new Error('Resend failed');
-        error.response = response;
-        throw error;
+    try {
+        const response = await api.post('/Auth/resend-verification', { email });
+        return response.data;
+    } catch (error) {
+        throw new Error('Resend failed');
     }
-    return response.json();
 };
 
 export const forgotPassword = async (email) => {
-    const response = await fetch(`${API_URL}/Auth/forgot-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-    });
-    // Always return true/success for security (no user enumeration) unless 500
-    if (response.status >= 500) throw new Error('Server error');
-    return true;
+    try {
+        await api.post('/Auth/forgot-password', { email });
+        return true;
+    } catch (error) {
+        if (error.response && error.response.status >= 500) throw new Error('Server error');
+        // For security, behave as success for 404 or other errors to avoid enumeration, unless it's a server error
+        return true;
+    }
 };
 
 export const resetPassword = async (email, token, newPassword) => {
-    const response = await fetch(`${API_URL}/Auth/reset-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, token, newPassword }),
-    });
-    if (!response.ok) {
+    try {
+        const response = await api.post('/Auth/reset-password', { email, token, newPassword });
+        return true;
+    } catch (error) {
         let errorMessage = 'Reset failed';
-        try {
-            const errorData = await response.json();
-            errorMessage = errorData.message || 'Erreur lors de la réinitialisation.';
-        } catch (e) { }
+        if (error.response && error.response.data) {
+            errorMessage = error.response.data.message || 'Erreur lors de la réinitialisation.';
+        }
         throw new Error(errorMessage);
     }
-    return true;
 };
