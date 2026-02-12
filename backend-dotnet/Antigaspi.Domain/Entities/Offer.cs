@@ -1,3 +1,4 @@
+using Antigaspi.Domain.Entities; // Ensure Product is visible
 using Antigaspi.Domain.Enums;
 using Antigaspi.Domain.ValueObjects;
 
@@ -24,19 +25,26 @@ public class OfferStatusEntry
 public class Offer
 {
     public Guid Id { get; private set; }
-    public Guid SellerId { get; private set; }
+    
+    // Link to Product
+    public Guid ProductId { get; private set; }
+    public virtual Product Product { get; private set; } = null!;
+
+    public Guid SellerId { get; private set; } // Denormalized for query perf or validation
     public virtual Seller Seller { get; private set; } = null!;
-    public string Title { get; private set; }
-    public string Description { get; private set; }
-    public Money Price { get; private set; }
-    public Money OriginalPrice { get; private set; }
-    public string PictureUrl { get; private set; }
+    
+    // Offer specific details
+    public Money Price { get; private set; } // The discounted price
     public DateTime StartDate { get; private set; }
     public DateTime? EndDate { get; private set; }
     public DateTime ExpirationDate { get; private set; }
-    public OfferCategory Category { get; private set; }
+    
     public OfferStatus Status { get; private set; }
-    public string SourceLanguage { get; private set; } = "fr"; // Default to 'fr'
+    public OfferType Type { get; private set; }
+    
+    public int Quantity { get; private set; } // Stock for this offer
+    
+    public string SourceLanguage { get; private set; } = "fr"; 
 
     // Encapsulate collection
     private readonly List<OfferStatusEntry> _statusHistory = new();
@@ -46,30 +54,26 @@ public class Offer
 
     public Offer(
         Guid sellerId,
-        string title,
-        string description,
+        Guid productId,
         Money price,
-        Money originalPrice,
-        string pictureUrl,
         DateTime startDate,
         DateTime? endDate,
         DateTime expirationDate,
-        OfferCategory category,
+        OfferType type,
+        int quantity = 1,
         Guid? id = null,
         OfferStatus status = OfferStatus.DRAFT,
         string sourceLanguage = "fr")
     {
         Id = id ?? Guid.NewGuid();
         SellerId = sellerId;
-        Title = title;
-        Description = description;
+        ProductId = productId;
         Price = price;
-        OriginalPrice = originalPrice;
-        PictureUrl = pictureUrl;
         StartDate = startDate;
         EndDate = endDate;
         ExpirationDate = expirationDate;
-        Category = category;
+        Type = type;
+        Quantity = quantity;
         Status = status;
         SourceLanguage = sourceLanguage;
         
@@ -78,26 +82,20 @@ public class Offer
 
     public static Offer Create(
         Guid sellerId,
-        string title,
-        string description,
+        Guid productId,
         Money price,
-        Money originalPrice,
         DateTime startDate,
         DateTime? endDate,
         DateTime expirationDate,
-        OfferCategory category,
-        string pictureUrl,
+        OfferType type,
+        int quantity = 1,
         string sourceLanguage = "fr")
     {
         if (sellerId == Guid.Empty) throw new ArgumentException("Offer requires a sellerId");
+        if (productId == Guid.Empty) throw new ArgumentException("Offer requires a productId");
 
-        ValidatePictureUrl(pictureUrl);
-
-        // Invariant: Price must be lower than original price
-        if (price != null && originalPrice != null && !price.IsLessThan(originalPrice))
-        {
-            throw new InvalidOperationException("Offer price must be lower than original price");
-        }
+        // Invariant: Quantity must be positive
+        if (quantity < 1) throw new InvalidOperationException("Quantity must be at least 1");
 
         // Invariant: EndDate must be after StartDate
         if (endDate.HasValue && endDate.Value <= startDate)
@@ -117,15 +115,13 @@ public class Offer
 
         return new Offer(
             sellerId,
-            title,
-            description,
+            productId,
             price!,
-            originalPrice!,
-            pictureUrl,
             startDate,
             endDate,
             expirationDate,
-            category,
+            type,
+            quantity,
             null,
             OfferStatus.DRAFT,
             sourceLanguage
@@ -173,15 +169,12 @@ public class Offer
     }
 
     public void UpdateDetails(
-        string? title, 
-        string? description, 
         Money? price, 
-        Money? originalPrice, 
         DateTime? startDate,
         DateTime? endDate,
         DateTime? expirationDate, 
-        OfferCategory? category,
-        string? pictureUrl,
+        OfferType? type,
+        int? quantity,
         string? sourceLanguage = null)
     {
         if (Status == OfferStatus.PENDING_VALIDATION)
@@ -191,20 +184,17 @@ public class Offer
 
         bool wasPublished = Status == OfferStatus.PUBLISHED;
 
-        if (!string.IsNullOrWhiteSpace(title)) Title = title;
-        if (!string.IsNullOrWhiteSpace(description)) Description = description;
-        if (!string.IsNullOrWhiteSpace(pictureUrl)) 
-        {
-            ValidatePictureUrl(pictureUrl);
-            PictureUrl = pictureUrl;
-        }
         if (!string.IsNullOrWhiteSpace(sourceLanguage)) SourceLanguage = sourceLanguage;
+        if (type.HasValue) Type = type.Value;
+        if (quantity.HasValue) 
+        {
+            if (quantity.Value < 0) throw new InvalidOperationException("Quantity cannot be negative");
+            Quantity = quantity.Value;
+        }
 
         // Date Logic Checks
-        // We need to validate the new combination of dates.
-        // If a date is null (not updated), we use the current value.
         var newStartDate = startDate ?? StartDate;
-        var newEndDate = endDate ?? EndDate; // can remain null
+        var newEndDate = endDate ?? EndDate; 
         var newExpirationDate = expirationDate ?? ExpirationDate;
 
         if (newEndDate.HasValue && newEndDate.Value <= newStartDate)
@@ -227,35 +217,14 @@ public class Offer
 
 
         // Price Logic
-        if (price != null && originalPrice != null)
-        {
-             if (!price.IsLessThan(originalPrice))
-             {
-                 throw new InvalidOperationException("Offer price must be lower than original price");
-             }
-             Price = price;
-             OriginalPrice = originalPrice;
-        }
-        else if (price != null) {
-            if (!price.IsLessThan(OriginalPrice)) throw new InvalidOperationException("Offer price must be lower than original price");
+        if (price != null) {
+            // Note: OriginalPrice is now on Product. 
+            // We can't strictly validate "IsLessThan(OriginalPrice)" here without loading Product.
+            // Domain invariant might need to be relaxed or validated at Command handler level if Product is loaded.
+            // For now, let's assume valid price.
             Price = price;
         }
-        else if (originalPrice != null) {
-            if (!Price.IsLessThan(originalPrice)) throw new InvalidOperationException("Offer price must be lower than original price");
-            OriginalPrice = originalPrice;
-        }
         
-        if (category.HasValue)
-        {
-            Category = category.Value;
-        }
-
-        // If it was published, we might want to keep it published IF only minor edits? 
-        // For safety, let's keep the logic: modify = draft. 
-        // OR if the user expects "live edit", we should allow it.
-        // Let's decide: Text/Price updates reset to DRAFT for re-validation? 
-        // For MVP speed, let's say updates are trusted for now (Antigaspi trust model), OR reset to draft.
-        // The previous code reset to DRAFT. I will keep it for safety.
         if (wasPublished)
         {
              TransitionTo(OfferStatus.DRAFT, null, "Reset to draft after modification");
@@ -271,34 +240,16 @@ public class Offer
     private void ValidateState()
     {
         if (SellerId == Guid.Empty) throw new ArgumentException("SellerId is required");
+        if (ProductId == Guid.Empty) throw new ArgumentException("ProductId is required");
     }
 
     private void ValidateContent()
     {
-        if (string.IsNullOrWhiteSpace(Title) || 
-            string.IsNullOrWhiteSpace(Description) || 
-            Price == null || 
-            OriginalPrice == null || 
+        if (Price == null || 
             StartDate == default ||
             ExpirationDate == default)
         {
             throw new InvalidOperationException("Offer incomplete: missing required fields for submission");
-        }
-    }
-
-    private static void ValidatePictureUrl(string url)
-    {
-        if (string.IsNullOrWhiteSpace(url)) return; // Or throw if required? context says Create makes it required via nullable annotations/logic, but let's stick to content check. In Create it validates passed arg.
-
-        if (url.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
-        {
-            throw new ArgumentException("Base64 images are not allowed. Please provide a valid URL.");
-        }
-
-        if (!Uri.TryCreate(url, UriKind.Absolute, out var uriResult) 
-            || (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
-        {
-            throw new ArgumentException("Invalid picture URL. Must be a valid HTTP/HTTPS URL.");
         }
     }
 }

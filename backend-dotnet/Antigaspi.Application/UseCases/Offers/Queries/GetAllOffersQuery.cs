@@ -33,7 +33,7 @@ public record GetAllOffersQuery(
 
             var filteredOffers = offers.Where(o => 
                 // 0. Filter by Category if provided
-                (!request.Category.HasValue || o.Category == request.Category.Value) &&
+                (!request.Category.HasValue || (o.Product != null && o.Product.Category == request.Category.Value)) &&
                 // 1. Is within validity period
                 o.StartDate <= now && 
                 (!o.EndDate.HasValue || o.EndDate.Value > now) &&
@@ -43,8 +43,8 @@ public record GetAllOffersQuery(
                 (string.IsNullOrEmpty(request.City) || o.Seller?.Address?.City == request.City) &&
                 // 4. Search functionality
                 (string.IsNullOrEmpty(request.SearchTerm) || 
-                 (o.Title != null && o.Title.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase)) ||
-                 (o.Description != null && o.Description.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase)))
+                 (o.Product != null && o.Product.Title != null && o.Product.Title.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase)) ||
+                 (o.Product != null && o.Product.Description != null && o.Product.Description.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase)))
             );
 
             // Sorting

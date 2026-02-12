@@ -88,7 +88,8 @@ public class OffersController : ControllerBase
             request.ExpirationDate,
             request.Category,
             pictureUrl ?? "",
-            request.SourceLanguage ?? "fr"
+            request.SourceLanguage ?? "fr",
+            request.ProductId
         );
 
         try

@@ -27,8 +27,8 @@ public record UpdateSellerRequest(
 
 public record CreateOfferRequest(
     Guid? SellerId,
-    string Title,
-    string Description,
+    string? Title,
+    string? Description,
     decimal PriceAmount,
     string PriceCurrency,
     decimal? OriginalPriceAmount,
@@ -36,10 +36,11 @@ public record CreateOfferRequest(
     DateTime StartDate,
     DateTime? EndDate,
     DateTime ExpirationDate,
-    Antigaspi.Domain.Enums.OfferCategory Category,
+    Antigaspi.Domain.Enums.OfferCategory? Category,
     string? PictureUrl,
     IFormFile? PictureFile,
-    string? SourceLanguage
+    string? SourceLanguage,
+    Guid? ProductId
 );
 
 public record ReasonRequest(string Reason);

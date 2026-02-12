@@ -151,41 +151,56 @@ public class AntigaspiSeeder
         {
             var seller1 = await context.Sellers.FirstOrDefaultAsync(s => s.StoreName == "La Boulangerie Hassan");
             var seller2 = await context.Sellers.FirstOrDefaultAsync(s => s.StoreName == "Epicerie Fatima");
+            var admin = await context.Users.FirstOrDefaultAsync(u => u.Email == "mez.jihad@gmail.com");
 
             if (seller1 != null)
             {
                 // Offer 1
-                var offer1 = Offer.Create(
+                var product1 = new Product(
                     seller1.Id,
                     "Panier Surprise Boulangerie",
                     "Un panier surprise contenant des viennoiseries et du pain de la veille.",
+                    OfferCategory.Bakery,
+                    new Money(60, "MAD"), // Original Price
+                    "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80"
+                );
+                await context.Products.AddAsync(product1);
+
+                var offer1 = Offer.Create(
+                    seller1.Id,
+                    product1.Id,
                     new Money(30, "MAD"),
-                    new Money(60, "MAD"),
                     DateTime.UtcNow.AddHours(-2),
                     DateTime.UtcNow.AddHours(2), // End date
                     DateTime.UtcNow.AddHours(4), // Expiration
-                    OfferCategory.Bakery,
-                    "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80"
+                    OfferType.AntiGaspi,
+                    5 // Quantity
                 );
                 offer1.SubmitForValidation();
-                // We need an admin ID to validate. Let's get the admin we created/checked earlier.
-                var admin = await context.Users.FirstOrDefaultAsync(u => u.Email == "mez.jihad@gmail.com");
                 if (admin != null) offer1.Validate(admin.Id);
                 
                 await context.Offers.AddAsync(offer1);
 
                 // Offer 2
-                 var offer2 = Offer.Create(
+                 var product2 = new Product(
                     seller1.Id,
                     "Croissants Spéciaux",
                     "Assortiment de croissants aux amandes.",
-                    new Money(20, "MAD"),
+                    OfferCategory.Bakery,
                     new Money(45, "MAD"),
+                    "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80"
+                );
+                await context.Products.AddAsync(product2);
+
+                var offer2 = Offer.Create(
+                    seller1.Id,
+                    product2.Id,
+                    new Money(20, "MAD"),
                     DateTime.UtcNow.AddHours(-1),
                     DateTime.UtcNow.AddHours(5),
                     DateTime.UtcNow.AddHours(6),
-                    OfferCategory.Bakery,
-                    "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80"
+                    OfferType.AntiGaspi,
+                    3
                 );
                 offer2.SubmitForValidation();
                 if (admin != null) offer2.Validate(admin.Id);
@@ -195,20 +210,27 @@ public class AntigaspiSeeder
             if (seller2 != null)
             {
                 // Offer 3
-                var offer3 = Offer.Create(
+                var product3 = new Product(
                     seller2.Id,
                     "Panier Fruits et Légumes",
                     "Mélange de fruits et légumes de saison.",
-                    new Money(50, "MAD"),
+                    OfferCategory.Produce,
                     new Money(100, "MAD"),
+                    "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=800&q=80"
+                );
+                await context.Products.AddAsync(product3);
+
+                var offer3 = Offer.Create(
+                    seller2.Id,
+                    product3.Id,
+                    new Money(50, "MAD"),
                     DateTime.UtcNow.AddHours(-4),
                     DateTime.UtcNow.AddHours(4),
                     DateTime.UtcNow.AddHours(5),
-                    OfferCategory.Produce,
-                    "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=800&q=80"
+                    OfferType.AntiGaspi,
+                    10
                 );
                 offer3.SubmitForValidation();
-                var admin = await context.Users.FirstOrDefaultAsync(u => u.Email == "mez.jihad@gmail.com");
                 if (admin != null) offer3.Validate(admin.Id);
                 
                 await context.Offers.AddAsync(offer3);

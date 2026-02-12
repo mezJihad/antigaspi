@@ -16,6 +16,8 @@ import VerifyEmail from './pages/VerifyEmail'; // Import VerifyEmail
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import AdminDashboard from './pages/AdminDashboard'; // Import AdminDashboard
+import ProductList from './pages/ProductList';
+import CreateProduct from './pages/CreateProduct';
 
 import OfferDetails from './pages/OfferDetails'; // Import
 
@@ -60,6 +62,18 @@ function App() {
             <Route path="/edit-shop/:id" element={
               <ProtectedRoute>
                 <EditShop />
+              </ProtectedRoute>
+            } />
+
+            {/* Product Routes */}
+            <Route path="/products" element={
+              <ProtectedRoute>
+                <ProductList />
+              </ProtectedRoute>
+            } />
+            <Route path="/create-product" element={
+              <ProtectedRoute>
+                <CreateProduct />
               </ProtectedRoute>
             } />
 

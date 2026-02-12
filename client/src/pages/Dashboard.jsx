@@ -140,9 +140,14 @@ export default function Dashboard() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <h1 className='text-3xl font-bold text-gray-900 w-full md:w-auto'>{t('seller_dashboard.title')}</h1>
                 {mySellerId && (
-                    <Link to='/create-offer' className='w-auto bg-green-600 text-white px-6 py-2 rounded-lg shadow hover:bg-green-700 transition flex items-center justify-center gap-2 font-medium'>
-                        {t('seller_dashboard.new_offer')}
-                    </Link>
+                    <div className="flex gap-3">
+                        <Link to='/products' className='w-auto bg-white text-green-700 border border-green-200 px-6 py-2 rounded-lg shadow-sm hover:bg-green-50 transition flex items-center justify-center gap-2 font-medium'>
+                            {t('products.manage_my_products')}
+                        </Link>
+                        <Link to='/create-offer' className='w-auto bg-green-600 text-white px-6 py-2 rounded-lg shadow hover:bg-green-700 transition flex items-center justify-center gap-2 font-medium'>
+                            {t('seller_dashboard.new_offer')}
+                        </Link>
+                    </div>
                 )}
             </div>
 
@@ -221,6 +226,20 @@ export default function Dashboard() {
 
                                 <div className="flex justify-between items-start mb-1">
                                     <h3 className='text-xl font-bold text-gray-900 pr-2'>{offer.title}</h3>
+
+                                    <div className="flex flex-col gap-1 items-end">
+                                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${offer.status === 'Published' ? 'bg-green-100 text-green-800' :
+                                                offer.status === 'Draft' ? 'bg-gray-100 text-gray-800' :
+                                                    offer.status === 'PendingValidation' ? 'bg-yellow-100 text-yellow-800' :
+                                                        offer.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                                                            'bg-blue-100 text-blue-800'
+                                            }`}>
+                                            {t(`status.${offer.status.toLowerCase()}`) || offer.status}
+                                        </span>
+                                        <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800">
+                                            {t(`offer_type.${offer.offerType?.toLowerCase()}`) || offer.offerType}
+                                        </span>
+                                    </div>
 
                                     {/* Kebab Menu for Actions */}
                                     <div className="relative offer-menu-container">

@@ -25,23 +25,24 @@ public record OfferResponse(
     List<OfferStatusEntryResponse> StatusHistory,
     SellerAddressResponse? SellerAddress,
     OfferSellerResponse? Seller, 
-    string SourceLanguage
+    string SourceLanguage,
+    string OfferType
 )
 {
     public static OfferResponse FromEntity(Offer offer) => new(
         offer.Id,
         offer.SellerId,
-        offer.Title,
-        offer.Description,
+        offer.Product?.Title ?? "Produit supprimé", // Handle null if necessary
+        offer.Product?.Description ?? "",
         offer.Price.Amount,
         offer.Price.Currency,
-        offer.OriginalPrice.Amount,
-        offer.OriginalPrice.Currency,
-        offer.PictureUrl,
+        offer.Product?.OriginalPrice.Amount ?? 0,
+        offer.Product?.OriginalPrice.Currency ?? "MAD",
+        offer.Product?.PictureUrl ?? "",
         offer.StartDate,
         offer.EndDate,
         offer.ExpirationDate,
-        offer.Category.ToString(),
+        offer.Product?.Category.ToString() ?? "Other",
         offer.Status.ToString(),
         offer.Seller?.StoreName ?? "Inconnu",
         offer.Seller?.Address?.City ?? "Inconnu",
@@ -63,7 +64,8 @@ public record OfferResponse(
                 offer.Seller.Address.Longitude
             )
         ) : null,
-        offer.SourceLanguage
+        offer.SourceLanguage,
+        offer.Type.ToString()
     );
 }
 

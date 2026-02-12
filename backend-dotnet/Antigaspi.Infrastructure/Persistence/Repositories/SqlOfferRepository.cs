@@ -16,7 +16,8 @@ public class SqlOfferRepository : IOfferRepository
     public async Task<Offer?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _context.Offers
-            .Include(o => o.StatusHistory) // Eagerly load owned collection
+            .Include(o => o.Product) // Include Product
+            .Include(o => o.StatusHistory) 
             .Include(o => o.Seller)
                 .ThenInclude(s => s.Address)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -37,6 +38,7 @@ public class SqlOfferRepository : IOfferRepository
     public async Task<IEnumerable<Offer>> GetAllAsync(CancellationToken cancellationToken = default)
     {
          return await _context.Offers
+            .Include(o => o.Product) // Include Product
             .Include(o => o.StatusHistory)
             .Include(o => o.Seller)
                 .ThenInclude(s => s.Address)
@@ -47,8 +49,9 @@ public class SqlOfferRepository : IOfferRepository
     {
         return await _context.Offers
            .Where(o => o.SellerId == sellerId && o.Status != Domain.Enums.OfferStatus.CANCELED)
+           .Include(o => o.Product) // Include Product
            .Include(o => o.StatusHistory)
-           .Include(o => o.Seller) // Optional if we already know the seller
+           .Include(o => o.Seller) 
            .ToListAsync(cancellationToken);
     }
 }

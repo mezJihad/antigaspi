@@ -15,8 +15,13 @@ public static class DependencyInjection
     {
         // DB Context
         // DB Context
+        // services.AddDbContext<AntigaspiDbContext>(options =>
+        //     options.UseNpgsql(
+        //         configuration.GetConnectionString("DefaultConnection"),
+        //         b => b.MigrationsAssembly(typeof(AntigaspiDbContext).Assembly.FullName)));
+
         services.AddDbContext<AntigaspiDbContext>(options =>
-            options.UseNpgsql(
+            options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection"),
                 b => b.MigrationsAssembly(typeof(AntigaspiDbContext).Assembly.FullName)));
 
@@ -25,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<IOfferRepository, SqlOfferRepository>();
         services.AddScoped<IUserRepository, SqlUserRepository>();
         services.AddScoped<ICityRepository, SqlCityRepository>();
+        services.AddScoped<IProductRepository, SqlProductRepository>();
 
 
         // Authentication
