@@ -1037,3 +1037,699 @@ System.InvalidOperationException: An exception has been raised that is likely du
 2026-02-12 14:54:58.748 +01:00 [INF] Executed action Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api) in 2086.5238ms
 2026-02-12 14:54:58.751 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api)'
 2026-02-12 14:54:58.753 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5131/api/Auth/login - 401 null application/json; charset=utf-8 2110.5878ms
+2026-02-12 15:02:53.414 +01:00 [INF] Starting Database Seeding...
+2026-02-12 15:02:54.650 +01:00 [INF] Executed DbCommand (23ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-02-12 15:02:54.701 +01:00 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-02-12 15:02:54.711 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-02-12 15:02:54.717 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-02-12 15:02:54.735 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-02-12 15:02:54.759 +01:00 [INF] No migrations were applied. The database is already up to date.
+2026-02-12 15:02:54.767 +01:00 [INF] Seeding database...
+2026-02-12 15:02:55.010 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Email], [u].[FirstName], [u].[IsActive], [u].[IsEmailVerified], [u].[LastName], [u].[LastVerificationEmailSentAt], [u].[OtpCode], [u].[OtpExpiration], [u].[PasswordHash], [u].[PreferredLanguage], [u].[Role], [u].[VerificationEmailCount]
+FROM [Users] AS [u]
+WHERE [u].[Email] = N'mez.jihad@gmail.com'
+2026-02-12 15:02:55.419 +01:00 [INF] Executed DbCommand (21ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 200), @p2='?' (Size = 100), @p3='?' (DbType = Boolean), @p4='?' (DbType = Boolean), @p5='?' (Size = 100), @p6='?' (DbType = DateTime2), @p7='?' (Size = 128), @p8='?' (DbType = DateTime2), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Users] ([Id], [Email], [FirstName], [IsActive], [IsEmailVerified], [LastName], [LastVerificationEmailSentAt], [OtpCode], [OtpExpiration], [PasswordHash], [PreferredLanguage], [Role])
+OUTPUT INSERTED.[VerificationEmailCount]
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11);
+2026-02-12 15:02:55.449 +01:00 [INF] Admin seeded / updated.
+2026-02-12 15:02:55.480 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Cities] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-02-12 15:02:55.495 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Sellers] AS [s]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-02-12 15:02:55.507 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Email], [u].[FirstName], [u].[IsActive], [u].[IsEmailVerified], [u].[LastName], [u].[LastVerificationEmailSentAt], [u].[OtpCode], [u].[OtpExpiration], [u].[PasswordHash], [u].[PreferredLanguage], [u].[Role], [u].[VerificationEmailCount]
+FROM [Users] AS [u]
+WHERE [u].[Email] = N'baker@antigaspi.ma'
+2026-02-12 15:02:55.657 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 200), @p2='?' (Size = 100), @p3='?' (DbType = Boolean), @p4='?' (DbType = Boolean), @p5='?' (Size = 100), @p6='?' (DbType = DateTime2), @p7='?' (Size = 128), @p8='?' (DbType = DateTime2), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Users] ([Id], [Email], [FirstName], [IsActive], [IsEmailVerified], [LastName], [LastVerificationEmailSentAt], [OtpCode], [OtpExpiration], [PasswordHash], [PreferredLanguage], [Role])
+OUTPUT INSERTED.[VerificationEmailCount]
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11);
+2026-02-12 15:02:55.713 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Email], [u].[FirstName], [u].[IsActive], [u].[IsEmailVerified], [u].[LastName], [u].[LastVerificationEmailSentAt], [u].[OtpCode], [u].[OtpExpiration], [u].[PasswordHash], [u].[PreferredLanguage], [u].[Role], [u].[VerificationEmailCount]
+FROM [Users] AS [u]
+WHERE [u].[Email] = N'grocer@antigaspi.ma'
+2026-02-12 15:02:55.903 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 2000), @p2='?' (Size = 500), @p3='?' (Size = 10), @p4='?' (DbType = Int32), @p5='?' (Size = 200), @p6='?' (DbType = Guid), @p7='?' (Size = 100), @p8='?' (Size = 100), @p9='?' (DbType = Double), @p10='?' (DbType = Double), @p11='?' (Size = 200), @p12='?' (Size = 20), @p13='?' (DbType = Guid), @p14='?' (Size = 200), @p15='?' (Size = 100), @p16='?' (DbType = Boolean), @p17='?' (DbType = Boolean), @p18='?' (Size = 100), @p19='?' (DbType = DateTime2), @p20='?' (Size = 128), @p21='?' (DbType = DateTime2), @p22='?' (Size = 4000), @p23='?' (Size = 4000), @p24='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Sellers] ([Id], [Description], [RejectionReason], [SourceLanguage], [Status], [StoreName], [UserId], [City], [Country], [Latitude], [Longitude], [Street], [ZipCode])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12);
+INSERT INTO [Users] ([Id], [Email], [FirstName], [IsActive], [IsEmailVerified], [LastName], [LastVerificationEmailSentAt], [OtpCode], [OtpExpiration], [PasswordHash], [PreferredLanguage], [Role])
+OUTPUT INSERTED.[VerificationEmailCount]
+VALUES (@p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, @p24);
+2026-02-12 15:02:55.924 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 2000), @p2='?' (Size = 500), @p3='?' (Size = 10), @p4='?' (DbType = Int32), @p5='?' (Size = 200), @p6='?' (DbType = Guid), @p7='?' (Size = 100), @p8='?' (Size = 100), @p9='?' (DbType = Double), @p10='?' (DbType = Double), @p11='?' (Size = 200), @p12='?' (Size = 20)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Sellers] ([Id], [Description], [RejectionReason], [SourceLanguage], [Status], [StoreName], [UserId], [City], [Country], [Latitude], [Longitude], [Street], [ZipCode])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12);
+2026-02-12 15:02:55.934 +01:00 [INF] Sellers seeded.
+2026-02-12 15:02:55.943 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Offers] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-02-12 15:02:55.976 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[StoreName] = N'La Boulangerie Hassan'
+2026-02-12 15:02:55.991 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[StoreName] = N'Epicerie Fatima'
+2026-02-12 15:02:56.001 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Email], [u].[FirstName], [u].[IsActive], [u].[IsEmailVerified], [u].[LastName], [u].[LastVerificationEmailSentAt], [u].[OtpCode], [u].[OtpExpiration], [u].[PasswordHash], [u].[PreferredLanguage], [u].[Role], [u].[VerificationEmailCount]
+FROM [Users] AS [u]
+WHERE [u].[Email] = N'mez.jihad@gmail.com'
+2026-02-12 15:02:56.197 +01:00 [INF] Executed DbCommand (34ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Int32), @p2='?' (DbType = DateTime2), @p3='?' (Size = 2000), @p4='?' (Size = 20), @p5='?' (Size = 500), @p6='?' (DbType = Guid), @p7='?' (Size = 200), @p8='?' (DbType = DateTime2), @p9='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p10='?' (Size = 3), @p11='?' (DbType = Guid), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime2), @p14='?' (Size = 2000), @p15='?' (Size = 20), @p16='?' (Size = 500), @p17='?' (DbType = Guid), @p18='?' (Size = 200), @p19='?' (DbType = DateTime2), @p20='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p21='?' (Size = 3), @p22='?' (DbType = Guid), @p23='?' (DbType = Int32), @p24='?' (DbType = DateTime2), @p25='?' (Size = 2000), @p26='?' (Size = 20), @p27='?' (Size = 500), @p28='?' (DbType = Guid), @p29='?' (Size = 200), @p30='?' (DbType = DateTime2), @p31='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p32='?' (Size = 3), @p33='?' (DbType = Guid), @p34='?' (DbType = DateTime2), @p35='?' (DbType = DateTime2), @p36='?' (DbType = Guid), @p37='?' (DbType = Int32), @p38='?' (DbType = Guid), @p39='?' (Size = 10), @p40='?' (DbType = DateTime2), @p41='?' (DbType = Int32), @p42='?' (DbType = Int32), @p43='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p44='?' (Size = 3), @p45='?' (DbType = Guid), @p46='?' (DbType = DateTime2), @p47='?' (DbType = DateTime2), @p48='?' (DbType = Guid), @p49='?' (DbType = Int32), @p50='?' (DbType = Guid), @p51='?' (Size = 10), @p52='?' (DbType = DateTime2), @p53='?' (DbType = Int32), @p54='?' (DbType = Int32), @p55='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p56='?' (Size = 3), @p57='?' (DbType = Guid), @p58='?' (DbType = DateTime2), @p59='?' (DbType = DateTime2), @p60='?' (DbType = Guid), @p61='?' (DbType = Int32), @p62='?' (DbType = Guid), @p63='?' (Size = 10), @p64='?' (DbType = DateTime2), @p65='?' (DbType = Int32), @p66='?' (DbType = Int32), @p67='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p68='?' (Size = 3), @p69='?' (DbType = Guid), @p70='?' (DbType = DateTime2), @p71='?' (DbType = Guid), @p72='?' (Size = 500), @p73='?' (DbType = Int32), @p74='?' (DbType = Guid), @p75='?' (DbType = DateTime2), @p76='?' (DbType = Guid), @p77='?' (Size = 500), @p78='?' (DbType = Int32), @p79='?' (DbType = Guid), @p80='?' (DbType = DateTime2), @p81='?' (DbType = Guid), @p82='?' (Size = 500), @p83='?' (DbType = Int32), @p84='?' (DbType = Guid), @p85='?' (DbType = DateTime2), @p86='?' (DbType = Guid), @p87='?' (Size = 500), @p88='?' (DbType = Int32), @p89='?' (DbType = Guid), @p90='?' (DbType = DateTime2), @p91='?' (DbType = Guid), @p92='?' (Size = 500), @p93='?' (DbType = Int32), @p94='?' (DbType = Guid), @p95='?' (DbType = DateTime2), @p96='?' (DbType = Guid), @p97='?' (Size = 500), @p98='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [Products] ([Id], [Category], [CreatedAt], [Description], [GTIN], [PictureUrl], [SellerId], [Title], [UpdatedAt], [OriginalPriceAmount], [OriginalPriceCurrency])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10),
+(@p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21),
+(@p22, @p23, @p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, @p32);
+INSERT INTO [Offers] ([Id], [EndDate], [ExpirationDate], [ProductId], [Quantity], [SellerId], [SourceLanguage], [StartDate], [Status], [Type], [PriceAmount], [PriceCurrency])
+VALUES (@p33, @p34, @p35, @p36, @p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44),
+(@p45, @p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54, @p55, @p56),
+(@p57, @p58, @p59, @p60, @p61, @p62, @p63, @p64, @p65, @p66, @p67, @p68);
+MERGE [OfferStatusHistory] USING (
+VALUES (@p69, @p70, @p71, @p72, @p73, 0),
+(@p74, @p75, @p76, @p77, @p78, 1),
+(@p79, @p80, @p81, @p82, @p83, 2),
+(@p84, @p85, @p86, @p87, @p88, 3),
+(@p89, @p90, @p91, @p92, @p93, 4),
+(@p94, @p95, @p96, @p97, @p98, 5)) AS i ([OfferId], [ChangedAt], [ChangedBy], [Reason], [Status], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([OfferId], [ChangedAt], [ChangedBy], [Reason], [Status])
+VALUES (i.[OfferId], i.[ChangedAt], i.[ChangedBy], i.[Reason], i.[Status])
+OUTPUT INSERTED.[Id], i._Position;
+2026-02-12 15:02:56.213 +01:00 [INF] Offers seeded.
+2026-02-12 15:02:56.216 +01:00 [INF] Database seeded successfully.
+2026-02-12 15:02:56.222 +01:00 [INF] Database Seeding Completed.
+2026-02-12 15:02:56.225 +01:00 [INF] Starting Application Host...
+2026-02-12 15:02:56.245 +01:00 [INF] User profile is available. Using 'C:\Users\j.mezouari\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-02-12 15:02:56.353 +01:00 [INF] Now listening on: http://localhost:5131
+2026-02-12 15:02:56.356 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-02-12 15:02:56.360 +01:00 [INF] Hosting environment: Development
+2026-02-12 15:02:56.363 +01:00 [INF] Content root path: C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Api
+2026-02-12 15:03:15.715 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Offers?page=1&pageSize=12 - null null
+2026-02-12 15:03:15.763 +01:00 [WRN] Failed to determine the https port for redirect.
+2026-02-12 15:03:15.767 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:03:15.805 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api)'
+2026-02-12 15:03:15.839 +01:00 [INF] Route matched with {action = "GetAllOffers", controller = "Offers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllOffers(System.Nullable`1[Antigaspi.Domain.Enums.OfferCategory], System.Nullable`1[System.Double], System.Nullable`1[System.Double], System.String, System.String, System.String, Int32, Int32) on controller Antigaspi.Api.Controllers.OffersController (Antigaspi.Api).
+2026-02-12 15:03:15.843 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Cities?onlyActiveOffers=true&country=Maroc - null null
+2026-02-12 15:03:15.857 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:03:15.862 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api)'
+2026-02-12 15:03:15.871 +01:00 [INF] Route matched with {action = "GetAll", controller = "Cities"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[Antigaspi.Application.UseCases.Cities.Queries.CityDto]]] GetAll(Boolean, System.String) on controller Antigaspi.Api.Controllers.CitiesController (Antigaspi.Api).
+2026-02-12 15:03:15.958 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[Id], [c].[IsActive], [c].[NameAr], [c].[NameEn], [c].[NameFr]
+FROM [Cities] AS [c]
+WHERE [c].[IsActive] = CAST(1 AS bit)
+ORDER BY [c].[NameFr]
+2026-02-12 15:03:16.038 +01:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[Id], [o].[EndDate], [o].[ExpirationDate], [o].[ProductId], [o].[Quantity], [o].[SellerId], [o].[SourceLanguage], [o].[StartDate], [o].[Status], [o].[Type], [o].[PriceAmount], [o].[PriceCurrency], [p].[Id], [s].[Id], [o0].[OfferId], [o0].[Id], [o0].[ChangedAt], [o0].[ChangedBy], [o0].[Reason], [o0].[Status], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Offers] AS [o]
+INNER JOIN [Products] AS [p] ON [o].[ProductId] = [p].[Id]
+INNER JOIN [Sellers] AS [s] ON [o].[SellerId] = [s].[Id]
+LEFT JOIN [OfferStatusHistory] AS [o0] ON [o].[Id] = [o0].[OfferId]
+ORDER BY [o].[Id], [p].[Id], [s].[Id], [o0].[OfferId]
+2026-02-12 15:03:16.038 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[Id], [o].[EndDate], [o].[ExpirationDate], [o].[ProductId], [o].[Quantity], [o].[SellerId], [o].[SourceLanguage], [o].[StartDate], [o].[Status], [o].[Type], [o].[PriceAmount], [o].[PriceCurrency], [p].[Id], [s].[Id], [o0].[OfferId], [o0].[Id], [o0].[ChangedAt], [o0].[ChangedBy], [o0].[Reason], [o0].[Status], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Offers] AS [o]
+INNER JOIN [Products] AS [p] ON [o].[ProductId] = [p].[Id]
+INNER JOIN [Sellers] AS [s] ON [o].[SellerId] = [s].[Id]
+LEFT JOIN [OfferStatusHistory] AS [o0] ON [o].[Id] = [o0].[OfferId]
+ORDER BY [o].[Id], [p].[Id], [s].[Id], [o0].[OfferId]
+2026-02-12 15:03:16.070 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Antigaspi.Application.UseCases.Cities.Queries.CityDto, Antigaspi.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:03:16.070 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType4`6[[System.Collections.Generic.IEnumerable`1[[Antigaspi.Api.Dtos.OfferResponse, Antigaspi.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-02-12 15:03:16.127 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Cities?onlyActiveOffers=true&country=Maroc - null null
+2026-02-12 15:03:16.128 +01:00 [INF] Executed action Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api) in 247.054ms
+2026-02-12 15:03:16.137 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:03:16.138 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api)'
+2026-02-12 15:03:16.143 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api)'
+2026-02-12 15:03:16.146 +01:00 [INF] Route matched with {action = "GetAll", controller = "Cities"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[Antigaspi.Application.UseCases.Cities.Queries.CityDto]]] GetAll(Boolean, System.String) on controller Antigaspi.Api.Controllers.CitiesController (Antigaspi.Api).
+2026-02-12 15:03:16.148 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Cities?onlyActiveOffers=true&country=Maroc - 200 null application/json; charset=utf-8 305.1625ms
+2026-02-12 15:03:16.155 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[Id], [c].[IsActive], [c].[NameAr], [c].[NameEn], [c].[NameFr]
+FROM [Cities] AS [c]
+WHERE [c].[IsActive] = CAST(1 AS bit)
+ORDER BY [c].[NameFr]
+2026-02-12 15:03:16.161 +01:00 [INF] Executed action Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api) in 314.7187ms
+2026-02-12 15:03:16.163 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Offers?page=1&pageSize=12 - null null
+2026-02-12 15:03:16.166 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[Id], [o].[EndDate], [o].[ExpirationDate], [o].[ProductId], [o].[Quantity], [o].[SellerId], [o].[SourceLanguage], [o].[StartDate], [o].[Status], [o].[Type], [o].[PriceAmount], [o].[PriceCurrency], [p].[Id], [s].[Id], [o0].[OfferId], [o0].[Id], [o0].[ChangedAt], [o0].[ChangedBy], [o0].[Reason], [o0].[Status], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Offers] AS [o]
+INNER JOIN [Products] AS [p] ON [o].[ProductId] = [p].[Id]
+INNER JOIN [Sellers] AS [s] ON [o].[SellerId] = [s].[Id]
+LEFT JOIN [OfferStatusHistory] AS [o0] ON [o].[Id] = [o0].[OfferId]
+ORDER BY [o].[Id], [p].[Id], [s].[Id], [o0].[OfferId]
+2026-02-12 15:03:16.174 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api)'
+2026-02-12 15:03:16.177 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:03:16.182 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Antigaspi.Application.UseCases.Cities.Queries.CityDto, Antigaspi.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:03:16.184 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Offers?page=1&pageSize=12 - 200 null application/json; charset=utf-8 471.4531ms
+2026-02-12 15:03:16.186 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api)'
+2026-02-12 15:03:16.192 +01:00 [INF] Executed action Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api) in 41.2763ms
+2026-02-12 15:03:16.199 +01:00 [INF] Route matched with {action = "GetAllOffers", controller = "Offers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllOffers(System.Nullable`1[Antigaspi.Domain.Enums.OfferCategory], System.Nullable`1[System.Double], System.Nullable`1[System.Double], System.String, System.String, System.String, Int32, Int32) on controller Antigaspi.Api.Controllers.OffersController (Antigaspi.Api).
+2026-02-12 15:03:16.200 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api)'
+2026-02-12 15:03:16.207 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Cities?onlyActiveOffers=true&country=Maroc - 200 null application/json; charset=utf-8 80.3025ms
+2026-02-12 15:03:16.209 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[Id], [o].[EndDate], [o].[ExpirationDate], [o].[ProductId], [o].[Quantity], [o].[SellerId], [o].[SourceLanguage], [o].[StartDate], [o].[Status], [o].[Type], [o].[PriceAmount], [o].[PriceCurrency], [p].[Id], [s].[Id], [o0].[OfferId], [o0].[Id], [o0].[ChangedAt], [o0].[ChangedBy], [o0].[Reason], [o0].[Status], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Offers] AS [o]
+INNER JOIN [Products] AS [p] ON [o].[ProductId] = [p].[Id]
+INNER JOIN [Sellers] AS [s] ON [o].[SellerId] = [s].[Id]
+LEFT JOIN [OfferStatusHistory] AS [o0] ON [o].[Id] = [o0].[OfferId]
+ORDER BY [o].[Id], [p].[Id], [s].[Id], [o0].[OfferId]
+2026-02-12 15:03:16.221 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType4`6[[System.Collections.Generic.IEnumerable`1[[Antigaspi.Api.Dtos.OfferResponse, Antigaspi.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-02-12 15:03:16.225 +01:00 [INF] Executed action Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api) in 19.4816ms
+2026-02-12 15:03:16.228 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api)'
+2026-02-12 15:03:16.231 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Offers?page=1&pageSize=12 - 200 null application/json; charset=utf-8 67.9035ms
+2026-02-12 15:03:20.741 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Auth/login - null null
+2026-02-12 15:03:20.748 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:03:20.752 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Auth/login - 204 null null 10.6773ms
+2026-02-12 15:03:20.762 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5131/api/Auth/login - application/json 63
+2026-02-12 15:03:20.769 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:03:20.772 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api)'
+2026-02-12 15:03:20.779 +01:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Antigaspi.Api.Dtos.LoginRequest) on controller Antigaspi.Api.Controllers.AuthController (Antigaspi.Api).
+2026-02-12 15:03:20.810 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__email_0='?' (Size = 200)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Email], [u].[FirstName], [u].[IsActive], [u].[IsEmailVerified], [u].[LastName], [u].[LastVerificationEmailSentAt], [u].[OtpCode], [u].[OtpExpiration], [u].[PasswordHash], [u].[PreferredLanguage], [u].[Role], [u].[VerificationEmailCount]
+FROM [Users] AS [u]
+WHERE [u].[Email] = @__email_0
+2026-02-12 15:03:20.819 +01:00 [INF] Executing UnauthorizedObjectResult, writing value of type '<>f__AnonymousType1`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-02-12 15:03:20.823 +01:00 [INF] Executed action Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api) in 39.0601ms
+2026-02-12 15:03:20.825 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api)'
+2026-02-12 15:03:20.828 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5131/api/Auth/login - 401 null application/json; charset=utf-8 66.4178ms
+2026-02-12 15:04:09.454 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Auth/login - null null
+2026-02-12 15:04:09.463 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:04:09.466 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Auth/login - 204 null null 12.5547ms
+2026-02-12 15:04:09.478 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5131/api/Auth/login - application/json 63
+2026-02-12 15:04:09.484 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:04:09.486 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api)'
+2026-02-12 15:04:09.488 +01:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Antigaspi.Api.Dtos.LoginRequest) on controller Antigaspi.Api.Controllers.AuthController (Antigaspi.Api).
+2026-02-12 15:04:09.496 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__email_0='?' (Size = 200)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Email], [u].[FirstName], [u].[IsActive], [u].[IsEmailVerified], [u].[LastName], [u].[LastVerificationEmailSentAt], [u].[OtpCode], [u].[OtpExpiration], [u].[PasswordHash], [u].[PreferredLanguage], [u].[Role], [u].[VerificationEmailCount]
+FROM [Users] AS [u]
+WHERE [u].[Email] = @__email_0
+2026-02-12 15:04:09.502 +01:00 [INF] Executing UnauthorizedObjectResult, writing value of type '<>f__AnonymousType1`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-02-12 15:04:09.505 +01:00 [INF] Executed action Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api) in 11.9916ms
+2026-02-12 15:04:09.508 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api)'
+2026-02-12 15:04:09.511 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5131/api/Auth/login - 401 null application/json; charset=utf-8 33.7987ms
+2026-02-12 15:04:40.929 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Auth/register - null null
+2026-02-12 15:04:40.937 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:04:40.939 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Auth/register - 204 null null 10.3671ms
+2026-02-12 15:04:40.949 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5131/api/Auth/register - application/json 137
+2026-02-12 15:04:40.957 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:04:40.960 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.AuthController.Register (Antigaspi.Api)'
+2026-02-12 15:04:40.967 +01:00 [INF] Route matched with {action = "Register", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Register(Antigaspi.Api.Dtos.RegisterRequest) on controller Antigaspi.Api.Controllers.AuthController (Antigaspi.Api).
+2026-02-12 15:04:40.995 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__email_0='?' (Size = 200)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Email], [u].[FirstName], [u].[IsActive], [u].[IsEmailVerified], [u].[LastName], [u].[LastVerificationEmailSentAt], [u].[OtpCode], [u].[OtpExpiration], [u].[PasswordHash], [u].[PreferredLanguage], [u].[Role], [u].[VerificationEmailCount]
+FROM [Users] AS [u]
+WHERE [u].[Email] = @__email_0
+2026-02-12 15:04:41.152 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 200), @p2='?' (Size = 100), @p3='?' (DbType = Boolean), @p4='?' (DbType = Boolean), @p5='?' (Size = 100), @p6='?' (DbType = DateTime2), @p7='?' (Size = 128), @p8='?' (DbType = DateTime2), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Users] ([Id], [Email], [FirstName], [IsActive], [IsEmailVerified], [LastName], [LastVerificationEmailSentAt], [OtpCode], [OtpExpiration], [PasswordHash], [PreferredLanguage], [Role])
+OUTPUT INSERTED.[VerificationEmailCount]
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11);
+2026-02-12 15:04:41.509 +01:00 [ERR] Failed to send template email to jihad.mezouari@outlook.com. Status: "Unauthorized". Error: {"message":"Key not found","code":"unauthorized"}
+
+2026-02-12 15:04:41.517 +01:00 [ERR] Exception occurred while sending template email to jihad.mezouari@outlook.com via Brevo API.
+System.Exception: Brevo API Error: Unauthorized - {"message":"Key not found","code":"unauthorized"}
+
+   at Antigaspi.Infrastructure.Services.BrevoApiEmailService.SendTemplateEmailAsync(String to, Int64 templateId, Dictionary`2 parameters) in C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Infrastructure\Services\BrevoApiEmailService.cs:line 114
+2026-02-12 15:04:41.529 +01:00 [INF] Executed action Antigaspi.Api.Controllers.AuthController.Register (Antigaspi.Api) in 556.1073ms
+2026-02-12 15:04:41.534 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.AuthController.Register (Antigaspi.Api)'
+2026-02-12 15:04:41.537 +01:00 [ERR] An unhandled exception has occurred. ErrorId: "366d89a0-7c43-46de-937b-dd0312708c07"
+System.Exception: Brevo API Error: Unauthorized - {"message":"Key not found","code":"unauthorized"}
+
+   at Antigaspi.Infrastructure.Services.BrevoApiEmailService.SendTemplateEmailAsync(String to, Int64 templateId, Dictionary`2 parameters) in C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Infrastructure\Services\BrevoApiEmailService.cs:line 114
+   at Antigaspi.Application.UseCases.Auth.Commands.RegisterUserCommandHandler.Handle(RegisterUserCommand request, CancellationToken cancellationToken) in C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Application\UseCases\Auth\Commands\RegisterUserCommand.cs:line 93
+   at Antigaspi.Api.Controllers.AuthController.Register(RegisterRequest request) in C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Api\Controllers\AuthController.cs:line 27
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Antigaspi.Api.Middleware.GlobalExceptionHandlerMiddleware.Invoke(HttpContext context) in C:\Users\j.mezouari\.gemini\antigravity\scratch\antigaspi\backend-dotnet\Antigaspi.Api\Middleware\GlobalExceptionHandlerMiddleware.cs:line 20
+2026-02-12 15:04:41.567 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5131/api/Auth/register - 500 null application/json 617.6336ms
+2026-02-12 15:04:51.741 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Auth/login - null null
+2026-02-12 15:04:51.748 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:04:51.750 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Auth/login - 204 null null 9.5411ms
+2026-02-12 15:04:51.761 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5131/api/Auth/login - application/json 55
+2026-02-12 15:04:51.769 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:04:51.772 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api)'
+2026-02-12 15:04:51.776 +01:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Antigaspi.Api.Dtos.LoginRequest) on controller Antigaspi.Api.Controllers.AuthController (Antigaspi.Api).
+2026-02-12 15:04:51.782 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__email_0='?' (Size = 200)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Email], [u].[FirstName], [u].[IsActive], [u].[IsEmailVerified], [u].[LastName], [u].[LastVerificationEmailSentAt], [u].[OtpCode], [u].[OtpExpiration], [u].[PasswordHash], [u].[PreferredLanguage], [u].[Role], [u].[VerificationEmailCount]
+FROM [Users] AS [u]
+WHERE [u].[Email] = @__email_0
+2026-02-12 15:04:51.791 +01:00 [INF] Executing UnauthorizedObjectResult, writing value of type '<>f__AnonymousType1`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-02-12 15:04:51.794 +01:00 [INF] Executed action Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api) in 15.0009ms
+2026-02-12 15:04:51.797 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api)'
+2026-02-12 15:04:51.800 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5131/api/Auth/login - 401 null application/json; charset=utf-8 39.599ms
+2026-02-12 15:05:55.141 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Auth/login - null null
+2026-02-12 15:05:55.150 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:05:55.152 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Auth/login - 204 null null 11.0458ms
+2026-02-12 15:05:55.163 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5131/api/Auth/login - application/json 55
+2026-02-12 15:05:55.171 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:05:55.173 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api)'
+2026-02-12 15:05:55.176 +01:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Antigaspi.Api.Dtos.LoginRequest) on controller Antigaspi.Api.Controllers.AuthController (Antigaspi.Api).
+2026-02-12 15:05:55.185 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__email_0='?' (Size = 200)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Email], [u].[FirstName], [u].[IsActive], [u].[IsEmailVerified], [u].[LastName], [u].[LastVerificationEmailSentAt], [u].[OtpCode], [u].[OtpExpiration], [u].[PasswordHash], [u].[PreferredLanguage], [u].[Role], [u].[VerificationEmailCount]
+FROM [Users] AS [u]
+WHERE [u].[Email] = @__email_0
+2026-02-12 15:05:55.355 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.AuthResponse'.
+2026-02-12 15:05:55.362 +01:00 [INF] Executed action Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api) in 180.2335ms
+2026-02-12 15:05:55.368 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.AuthController.Login (Antigaspi.Api)'
+2026-02-12 15:05:55.370 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5131/api/Auth/login - 200 null application/json; charset=utf-8 207.757ms
+2026-02-12 15:05:55.440 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:05:55.442 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:05:55.453 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:05:55.457 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:05:55.458 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - 204 null null 17.7853ms
+2026-02-12 15:05:55.465 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - 204 null null 23.2318ms
+2026-02-12 15:05:55.471 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:05:55.486 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:05:55.550 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:05:55.556 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:05:55.576 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:05:55.585 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:05:55.592 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 31.2961ms
+2026-02-12 15:05:55.593 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:05:55.598 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:05:55.602 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:05:55.605 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 134.4871ms
+2026-02-12 15:05:55.609 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:05:55.618 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:05:55.625 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me/offers - null null
+2026-02-12 15:05:55.626 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:05:55.637 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:05:55.640 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:05:55.643 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me/offers - 204 null null 17.7399ms
+2026-02-12 15:05:55.644 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 21.7877ms
+2026-02-12 15:05:55.653 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me/offers - null null
+2026-02-12 15:05:55.655 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:05:55.665 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:05:55.667 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 74.6364ms
+2026-02-12 15:05:55.675 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMeOffers (Antigaspi.Api)'
+2026-02-12 15:05:55.684 +01:00 [INF] Route matched with {action = "GetMeOffers", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMeOffers() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:05:55.694 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:05:55.730 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__sellerId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[Id], [o].[EndDate], [o].[ExpirationDate], [o].[ProductId], [o].[Quantity], [o].[SellerId], [o].[SourceLanguage], [o].[StartDate], [o].[Status], [o].[Type], [o].[PriceAmount], [o].[PriceCurrency], [p].[Id], [s].[Id], [o0].[OfferId], [o0].[Id], [o0].[ChangedAt], [o0].[ChangedBy], [o0].[Reason], [o0].[Status], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Offers] AS [o]
+INNER JOIN [Products] AS [p] ON [o].[ProductId] = [p].[Id]
+INNER JOIN [Sellers] AS [s] ON [o].[SellerId] = [s].[Id]
+LEFT JOIN [OfferStatusHistory] AS [o0] ON [o].[Id] = [o0].[OfferId]
+WHERE [o].[SellerId] = @__sellerId_0 AND [o].[Status] <> 4
+ORDER BY [o].[Id], [p].[Id], [s].[Id], [o0].[OfferId]
+2026-02-12 15:05:55.738 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[Antigaspi.Domain.Entities.Offer, Antigaspi.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[Antigaspi.Api.Dtos.OfferResponse, Antigaspi.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:05:55.742 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMeOffers (Antigaspi.Api) in 52.0937ms
+2026-02-12 15:05:55.745 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMeOffers (Antigaspi.Api)'
+2026-02-12 15:05:55.748 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me/offers - 200 null application/json; charset=utf-8 94.3893ms
+2026-02-12 15:06:18.412 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:06:18.413 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:06:18.423 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:06:18.426 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:06:18.430 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - 204 null null 17.9038ms
+2026-02-12 15:06:18.431 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - 204 null null 17.8043ms
+2026-02-12 15:06:18.448 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:06:18.456 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:06:18.459 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:06:18.462 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:06:18.469 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:06:18.476 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:06:18.480 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 13.3753ms
+2026-02-12 15:06:18.481 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:06:18.487 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:06:18.490 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:06:18.494 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 46.3102ms
+2026-02-12 15:06:18.496 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:06:18.504 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - null null
+2026-02-12 15:06:18.506 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:06:18.515 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:06:18.517 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:06:18.524 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:06:18.525 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - 204 null null 20.8602ms
+2026-02-12 15:06:18.531 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 17.8092ms
+2026-02-12 15:06:18.535 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - null null
+2026-02-12 15:06:18.540 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:06:18.543 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:06:18.546 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 65.1211ms
+2026-02-12 15:06:18.549 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:06:18.558 +01:00 [INF] Route matched with {action = "GetBySeller", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBySeller(System.Guid) on controller Antigaspi.Api.Controllers.ProductsController (Antigaspi.Api).
+2026-02-12 15:06:18.576 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@__sellerId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency]
+FROM [Products] AS [p]
+WHERE [p].[SellerId] = @__sellerId_0
+ORDER BY [p].[CreatedAt] DESC
+2026-02-12 15:06:18.581 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Antigaspi.Domain.Entities.Product, Antigaspi.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:06:18.596 +01:00 [INF] Executed action Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api) in 33.2035ms
+2026-02-12 15:06:18.597 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - null null
+2026-02-12 15:06:18.602 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:06:18.604 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:06:18.607 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - 200 null application/json; charset=utf-8 72.6334ms
+2026-02-12 15:06:18.609 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:06:18.618 +01:00 [INF] Route matched with {action = "GetBySeller", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBySeller(System.Guid) on controller Antigaspi.Api.Controllers.ProductsController (Antigaspi.Api).
+2026-02-12 15:06:18.625 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__sellerId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency]
+FROM [Products] AS [p]
+WHERE [p].[SellerId] = @__sellerId_0
+ORDER BY [p].[CreatedAt] DESC
+2026-02-12 15:06:18.631 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Antigaspi.Domain.Entities.Product, Antigaspi.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:06:18.634 +01:00 [INF] Executed action Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api) in 11.7056ms
+2026-02-12 15:06:18.638 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:06:18.640 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - 200 null application/json; charset=utf-8 43.8288ms
+2026-02-12 15:08:48.467 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:08:48.475 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:48.477 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - 204 null null 10.6286ms
+2026-02-12 15:08:48.485 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:08:48.492 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:48.494 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:08:48.496 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:08:48.502 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:08:48.508 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:08:48.512 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 12.1759ms
+2026-02-12 15:08:48.515 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:08:48.518 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 32.5378ms
+2026-02-12 15:08:48.525 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/products - null null
+2026-02-12 15:08:48.530 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:48.533 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/products - 204 null null 7.4056ms
+2026-02-12 15:08:48.541 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5131/api/products - application/json 274
+2026-02-12 15:08:48.546 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:48.549 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.ProductsController.Create (Antigaspi.Api)'
+2026-02-12 15:08:48.553 +01:00 [INF] Route matched with {action = "Create", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Create(Antigaspi.Api.Controllers.CreateProductRequest) on controller Antigaspi.Api.Controllers.ProductsController (Antigaspi.Api).
+2026-02-12 15:08:48.567 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-02-12 15:08:48.587 +01:00 [INF] Executed action Antigaspi.Api.Controllers.ProductsController.Create (Antigaspi.Api) in 27.9226ms
+2026-02-12 15:08:48.592 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.ProductsController.Create (Antigaspi.Api)'
+2026-02-12 15:08:48.597 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5131/api/products - 400 null application/problem+json; charset=utf-8 56.5316ms
+2026-02-12 15:08:54.736 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:08:54.743 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:54.746 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - 204 null null 9.5767ms
+2026-02-12 15:08:54.755 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:08:54.762 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:54.765 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:08:54.769 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:08:54.774 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:08:54.781 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:08:54.785 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 12.5148ms
+2026-02-12 15:08:54.790 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:08:54.792 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 37.0386ms
+2026-02-12 15:08:54.800 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/products - null null
+2026-02-12 15:08:54.805 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:54.807 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/products - 204 null null 6.8033ms
+2026-02-12 15:08:54.815 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5131/api/products - application/json 274
+2026-02-12 15:08:54.820 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:54.821 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.ProductsController.Create (Antigaspi.Api)'
+2026-02-12 15:08:54.824 +01:00 [INF] Route matched with {action = "Create", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Create(Antigaspi.Api.Controllers.CreateProductRequest) on controller Antigaspi.Api.Controllers.ProductsController (Antigaspi.Api).
+2026-02-12 15:08:54.829 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-02-12 15:08:54.834 +01:00 [INF] Executed action Antigaspi.Api.Controllers.ProductsController.Create (Antigaspi.Api) in 5.4834ms
+2026-02-12 15:08:54.838 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.ProductsController.Create (Antigaspi.Api)'
+2026-02-12 15:08:54.841 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5131/api/products - 400 null application/problem+json; charset=utf-8 26.3049ms
+2026-02-12 15:08:55.998 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:08:56.007 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:56.009 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:08:56.014 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:08:56.023 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:08:56.031 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:08:56.036 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 14.5514ms
+2026-02-12 15:08:56.038 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:08:56.045 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:08:56.048 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:56.051 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 52.9448ms
+2026-02-12 15:08:56.053 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:08:56.061 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - null null
+2026-02-12 15:08:56.062 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:08:56.069 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:56.072 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:08:56.073 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - 204 null null 11.9194ms
+2026-02-12 15:08:56.080 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:08:56.083 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - null null
+2026-02-12 15:08:56.089 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 17.8677ms
+2026-02-12 15:08:56.091 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:56.094 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:08:56.095 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:08:56.099 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 60.7189ms
+2026-02-12 15:08:56.100 +01:00 [INF] Route matched with {action = "GetBySeller", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBySeller(System.Guid) on controller Antigaspi.Api.Controllers.ProductsController (Antigaspi.Api).
+2026-02-12 15:08:56.112 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__sellerId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency]
+FROM [Products] AS [p]
+WHERE [p].[SellerId] = @__sellerId_0
+ORDER BY [p].[CreatedAt] DESC
+2026-02-12 15:08:56.116 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Antigaspi.Domain.Entities.Product, Antigaspi.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:08:56.119 +01:00 [INF] Executed action Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api) in 9.6053ms
+2026-02-12 15:08:56.120 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - null null
+2026-02-12 15:08:56.126 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:08:56.128 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:08:56.131 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - 200 null application/json; charset=utf-8 47.6815ms
+2026-02-12 15:08:56.132 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:08:56.142 +01:00 [INF] Route matched with {action = "GetBySeller", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBySeller(System.Guid) on controller Antigaspi.Api.Controllers.ProductsController (Antigaspi.Api).
+2026-02-12 15:08:56.149 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__sellerId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency]
+FROM [Products] AS [p]
+WHERE [p].[SellerId] = @__sellerId_0
+ORDER BY [p].[CreatedAt] DESC
+2026-02-12 15:08:56.158 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Antigaspi.Domain.Entities.Product, Antigaspi.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:08:56.164 +01:00 [INF] Executed action Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api) in 16.071ms
+2026-02-12 15:08:56.169 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:08:56.172 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - 200 null application/json; charset=utf-8 51.5625ms
+2026-02-12 15:09:08.467 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:09:08.474 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:09:08.475 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:09:08.485 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - 204 null null 17.5625ms
+2026-02-12 15:09:08.488 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:09:08.499 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:09:08.500 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me - 204 null null 25.3036ms
+2026-02-12 15:09:08.511 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:09:08.517 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:09:08.520 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:09:08.526 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:09:08.531 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:09:08.535 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 10.2841ms
+2026-02-12 15:09:08.536 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:09:08.543 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:09:08.547 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:09:08.552 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 53.383ms
+2026-02-12 15:09:08.554 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:09:08.562 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me/offers - null null
+2026-02-12 15:09:08.563 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:09:08.570 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:09:08.574 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:09:08.574 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Sellers/me/offers - 204 null null 11.9772ms
+2026-02-12 15:09:08.582 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:09:08.585 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me/offers - null null
+2026-02-12 15:09:08.591 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 18.9302ms
+2026-02-12 15:09:08.594 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:09:08.597 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:09:08.598 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMeOffers (Antigaspi.Api)'
+2026-02-12 15:09:08.601 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 65.6536ms
+2026-02-12 15:09:08.603 +01:00 [INF] Route matched with {action = "GetMeOffers", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMeOffers() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:09:08.616 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:09:08.622 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__sellerId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[Id], [o].[EndDate], [o].[ExpirationDate], [o].[ProductId], [o].[Quantity], [o].[SellerId], [o].[SourceLanguage], [o].[StartDate], [o].[Status], [o].[Type], [o].[PriceAmount], [o].[PriceCurrency], [p].[Id], [s].[Id], [o0].[OfferId], [o0].[Id], [o0].[ChangedAt], [o0].[ChangedBy], [o0].[Reason], [o0].[Status], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Offers] AS [o]
+INNER JOIN [Products] AS [p] ON [o].[ProductId] = [p].[Id]
+INNER JOIN [Sellers] AS [s] ON [o].[SellerId] = [s].[Id]
+LEFT JOIN [OfferStatusHistory] AS [o0] ON [o].[Id] = [o0].[OfferId]
+WHERE [o].[SellerId] = @__sellerId_0 AND [o].[Status] <> 4
+ORDER BY [o].[Id], [p].[Id], [s].[Id], [o0].[OfferId]
+2026-02-12 15:09:08.628 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectListIterator`2[[Antigaspi.Domain.Entities.Offer, Antigaspi.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[Antigaspi.Api.Dtos.OfferResponse, Antigaspi.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:09:08.632 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMeOffers (Antigaspi.Api) in 17.119ms
+2026-02-12 15:09:08.635 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMeOffers (Antigaspi.Api)'
+2026-02-12 15:09:08.638 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me/offers - 200 null application/json; charset=utf-8 52.9325ms
+2026-02-12 15:09:10.284 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:09:10.291 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:09:10.294 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:09:10.300 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:09:10.309 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:09:10.316 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:09:10.321 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 13.4781ms
+2026-02-12 15:09:10.322 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Sellers/me - null null
+2026-02-12 15:09:10.329 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:09:10.333 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:09:10.336 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 52.7603ms
+2026-02-12 15:09:10.338 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:09:10.347 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - null null
+2026-02-12 15:09:10.348 +01:00 [INF] Route matched with {action = "GetMe", controller = "Sellers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetMe() on controller Antigaspi.Api.Controllers.SellersController (Antigaspi.Api).
+2026-02-12 15:09:10.357 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:09:10.360 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Sellers] AS [s]
+WHERE [s].[UserId] = @__userId_0
+2026-02-12 15:09:10.361 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - 204 null null 14.081ms
+2026-02-12 15:09:10.372 +01:00 [INF] Executing OkObjectResult, writing value of type 'Antigaspi.Api.Dtos.SellerResponse'.
+2026-02-12 15:09:10.377 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - null null
+2026-02-12 15:09:10.387 +01:00 [INF] Executed action Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api) in 27.9424ms
+2026-02-12 15:09:10.389 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:09:10.394 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.SellersController.GetMe (Antigaspi.Api)'
+2026-02-12 15:09:10.395 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:09:10.398 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Sellers/me - 200 null application/json; charset=utf-8 75.9842ms
+2026-02-12 15:09:10.399 +01:00 [INF] Route matched with {action = "GetBySeller", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBySeller(System.Guid) on controller Antigaspi.Api.Controllers.ProductsController (Antigaspi.Api).
+2026-02-12 15:09:10.413 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__sellerId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency]
+FROM [Products] AS [p]
+WHERE [p].[SellerId] = @__sellerId_0
+ORDER BY [p].[CreatedAt] DESC
+2026-02-12 15:09:10.419 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Antigaspi.Domain.Entities.Product, Antigaspi.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:09:10.422 +01:00 [INF] Executed action Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api) in 11.045ms
+2026-02-12 15:09:10.423 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - null null
+2026-02-12 15:09:10.429 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:09:10.431 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:09:10.434 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - 200 null application/json; charset=utf-8 57.4808ms
+2026-02-12 15:09:10.435 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:09:10.444 +01:00 [INF] Route matched with {action = "GetBySeller", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBySeller(System.Guid) on controller Antigaspi.Api.Controllers.ProductsController (Antigaspi.Api).
+2026-02-12 15:09:10.450 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__sellerId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency]
+FROM [Products] AS [p]
+WHERE [p].[SellerId] = @__sellerId_0
+ORDER BY [p].[CreatedAt] DESC
+2026-02-12 15:09:10.455 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Antigaspi.Domain.Entities.Product, Antigaspi.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:09:10.458 +01:00 [INF] Executed action Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api) in 9.4816ms
+2026-02-12 15:09:10.463 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.ProductsController.GetBySeller (Antigaspi.Api)'
+2026-02-12 15:09:10.467 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/products/seller/45850282-2ea8-4c39-86eb-ed0c89aef557 - 200 null application/json; charset=utf-8 43.7872ms
+2026-02-12 15:10:12.572 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Offers?page=1&pageSize=12 - null null
+2026-02-12 15:10:12.572 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Offers?page=1&pageSize=12 - null null
+2026-02-12 15:10:12.584 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:10:12.588 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:10:12.589 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Offers?page=1&pageSize=12 - 204 null null 16.6389ms
+2026-02-12 15:10:12.596 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Offers?page=1&pageSize=12 - 204 null null 23.3309ms
+2026-02-12 15:10:12.600 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Offers?page=1&pageSize=12 - null null
+2026-02-12 15:10:12.616 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:10:12.619 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api)'
+2026-02-12 15:10:12.622 +01:00 [INF] Route matched with {action = "GetAllOffers", controller = "Offers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllOffers(System.Nullable`1[Antigaspi.Domain.Enums.OfferCategory], System.Nullable`1[System.Double], System.Nullable`1[System.Double], System.String, System.String, System.String, Int32, Int32) on controller Antigaspi.Api.Controllers.OffersController (Antigaspi.Api).
+2026-02-12 15:10:12.632 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[Id], [o].[EndDate], [o].[ExpirationDate], [o].[ProductId], [o].[Quantity], [o].[SellerId], [o].[SourceLanguage], [o].[StartDate], [o].[Status], [o].[Type], [o].[PriceAmount], [o].[PriceCurrency], [p].[Id], [s].[Id], [o0].[OfferId], [o0].[Id], [o0].[ChangedAt], [o0].[ChangedBy], [o0].[Reason], [o0].[Status], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Offers] AS [o]
+INNER JOIN [Products] AS [p] ON [o].[ProductId] = [p].[Id]
+INNER JOIN [Sellers] AS [s] ON [o].[SellerId] = [s].[Id]
+LEFT JOIN [OfferStatusHistory] AS [o0] ON [o].[Id] = [o0].[OfferId]
+ORDER BY [o].[Id], [p].[Id], [s].[Id], [o0].[OfferId]
+2026-02-12 15:10:12.638 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType4`6[[System.Collections.Generic.IEnumerable`1[[Antigaspi.Api.Dtos.OfferResponse, Antigaspi.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-02-12 15:10:12.643 +01:00 [INF] Executed action Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api) in 14.8896ms
+2026-02-12 15:10:12.645 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Offers?page=1&pageSize=12 - null null
+2026-02-12 15:10:12.650 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api)'
+2026-02-12 15:10:12.654 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:10:12.658 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Offers?page=1&pageSize=12 - 200 null application/json; charset=utf-8 57.798ms
+2026-02-12 15:10:12.660 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api)'
+2026-02-12 15:10:12.671 +01:00 [INF] Route matched with {action = "GetAllOffers", controller = "Offers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllOffers(System.Nullable`1[Antigaspi.Domain.Enums.OfferCategory], System.Nullable`1[System.Double], System.Nullable`1[System.Double], System.String, System.String, System.String, Int32, Int32) on controller Antigaspi.Api.Controllers.OffersController (Antigaspi.Api).
+2026-02-12 15:10:12.678 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[Id], [o].[EndDate], [o].[ExpirationDate], [o].[ProductId], [o].[Quantity], [o].[SellerId], [o].[SourceLanguage], [o].[StartDate], [o].[Status], [o].[Type], [o].[PriceAmount], [o].[PriceCurrency], [p].[Id], [s].[Id], [o0].[OfferId], [o0].[Id], [o0].[ChangedAt], [o0].[ChangedBy], [o0].[Reason], [o0].[Status], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Offers] AS [o]
+INNER JOIN [Products] AS [p] ON [o].[ProductId] = [p].[Id]
+INNER JOIN [Sellers] AS [s] ON [o].[SellerId] = [s].[Id]
+LEFT JOIN [OfferStatusHistory] AS [o0] ON [o].[Id] = [o0].[OfferId]
+ORDER BY [o].[Id], [p].[Id], [s].[Id], [o0].[OfferId]
+2026-02-12 15:10:12.686 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType4`6[[System.Collections.Generic.IEnumerable`1[[Antigaspi.Api.Dtos.OfferResponse, Antigaspi.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-02-12 15:10:12.690 +01:00 [INF] Executed action Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api) in 14.3872ms
+2026-02-12 15:10:12.694 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.OffersController.GetAllOffers (Antigaspi.Api)'
+2026-02-12 15:10:12.697 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Offers?page=1&pageSize=12 - 200 null application/json; charset=utf-8 52.6753ms
+2026-02-12 15:10:12.749 +01:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5131/api/Cities?onlyActiveOffers=true&country=Maroc - null null
+2026-02-12 15:10:12.756 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:10:12.758 +01:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5131/api/Cities?onlyActiveOffers=true&country=Maroc - 204 null null 8.8473ms
+2026-02-12 15:10:12.766 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Cities?onlyActiveOffers=true&country=Maroc - null null
+2026-02-12 15:10:12.772 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:10:12.775 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api)'
+2026-02-12 15:10:12.778 +01:00 [INF] Route matched with {action = "GetAll", controller = "Cities"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[Antigaspi.Application.UseCases.Cities.Queries.CityDto]]] GetAll(Boolean, System.String) on controller Antigaspi.Api.Controllers.CitiesController (Antigaspi.Api).
+2026-02-12 15:10:12.786 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[Id], [c].[IsActive], [c].[NameAr], [c].[NameEn], [c].[NameFr]
+FROM [Cities] AS [c]
+WHERE [c].[IsActive] = CAST(1 AS bit)
+ORDER BY [c].[NameFr]
+2026-02-12 15:10:12.793 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[Id], [o].[EndDate], [o].[ExpirationDate], [o].[ProductId], [o].[Quantity], [o].[SellerId], [o].[SourceLanguage], [o].[StartDate], [o].[Status], [o].[Type], [o].[PriceAmount], [o].[PriceCurrency], [p].[Id], [s].[Id], [o0].[OfferId], [o0].[Id], [o0].[ChangedAt], [o0].[ChangedBy], [o0].[Reason], [o0].[Status], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Offers] AS [o]
+INNER JOIN [Products] AS [p] ON [o].[ProductId] = [p].[Id]
+INNER JOIN [Sellers] AS [s] ON [o].[SellerId] = [s].[Id]
+LEFT JOIN [OfferStatusHistory] AS [o0] ON [o].[Id] = [o0].[OfferId]
+ORDER BY [o].[Id], [p].[Id], [s].[Id], [o0].[OfferId]
+2026-02-12 15:10:12.801 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Antigaspi.Application.UseCases.Cities.Queries.CityDto, Antigaspi.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:10:12.805 +01:00 [INF] Executed action Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api) in 22.1952ms
+2026-02-12 15:10:12.808 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api)'
+2026-02-12 15:10:12.811 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Cities?onlyActiveOffers=true&country=Maroc - 200 null application/json; charset=utf-8 45.53ms
+2026-02-12 15:10:12.823 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5131/api/Cities?onlyActiveOffers=true&country=Maroc - null null
+2026-02-12 15:10:12.829 +01:00 [INF] CORS policy execution successful.
+2026-02-12 15:10:12.832 +01:00 [INF] Executing endpoint 'Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api)'
+2026-02-12 15:10:12.834 +01:00 [INF] Route matched with {action = "GetAll", controller = "Cities"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[Antigaspi.Application.UseCases.Cities.Queries.CityDto]]] GetAll(Boolean, System.String) on controller Antigaspi.Api.Controllers.CitiesController (Antigaspi.Api).
+2026-02-12 15:10:12.840 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[Id], [c].[IsActive], [c].[NameAr], [c].[NameEn], [c].[NameFr]
+FROM [Cities] AS [c]
+WHERE [c].[IsActive] = CAST(1 AS bit)
+ORDER BY [c].[NameFr]
+2026-02-12 15:10:12.846 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[Id], [o].[EndDate], [o].[ExpirationDate], [o].[ProductId], [o].[Quantity], [o].[SellerId], [o].[SourceLanguage], [o].[StartDate], [o].[Status], [o].[Type], [o].[PriceAmount], [o].[PriceCurrency], [p].[Id], [s].[Id], [o0].[OfferId], [o0].[Id], [o0].[ChangedAt], [o0].[ChangedBy], [o0].[Reason], [o0].[Status], [p].[Category], [p].[CreatedAt], [p].[Description], [p].[GTIN], [p].[PictureUrl], [p].[SellerId], [p].[Title], [p].[UpdatedAt], [p].[OriginalPriceAmount], [p].[OriginalPriceCurrency], [s].[Description], [s].[RejectionReason], [s].[SourceLanguage], [s].[Status], [s].[StoreName], [s].[UserId], [s].[City], [s].[Country], [s].[Latitude], [s].[Longitude], [s].[Street], [s].[ZipCode]
+FROM [Offers] AS [o]
+INNER JOIN [Products] AS [p] ON [o].[ProductId] = [p].[Id]
+INNER JOIN [Sellers] AS [s] ON [o].[SellerId] = [s].[Id]
+LEFT JOIN [OfferStatusHistory] AS [o0] ON [o].[Id] = [o0].[OfferId]
+ORDER BY [o].[Id], [p].[Id], [s].[Id], [o0].[OfferId]
+2026-02-12 15:10:12.852 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Antigaspi.Application.UseCases.Cities.Queries.CityDto, Antigaspi.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-02-12 15:10:12.855 +01:00 [INF] Executed action Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api) in 16.2879ms
+2026-02-12 15:10:12.859 +01:00 [INF] Executed endpoint 'Antigaspi.Api.Controllers.CitiesController.GetAll (Antigaspi.Api)'
+2026-02-12 15:10:12.862 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5131/api/Cities?onlyActiveOffers=true&country=Maroc - 200 null application/json; charset=utf-8 39.4711ms
